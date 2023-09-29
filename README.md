@@ -286,6 +286,54 @@ The frontend client will use React js.
 >
 >So that I can make informed purchases that best suit my playstyle
 
+#Additional Features
+
+## Custom Game Settings
+>As a logged in user
+>
+>I want to be able to create a game with my own words
+>
+>So that I can adjust the difficulty of the game
+>
+>So that I can include words that do not exist already
+
+>As a logged in user
+>
+>I want to be able to set custom game settings
+>
+>So that I can specify my own time limit and difficulty
+
+>As a logged in user
+>
+>I want to be able to disallow powerups
+>
+>So that I can play multiplayer on a level playing field
+
+
+### *Scenario*
+
+>User creates a custom game with a list of word-definition pair
+>
+>"Given that I am in a role of a signed-in user
+>
+>When I click the button create custom game at the main screen
+>
+>The system shows a screen with an empty list and a button to add a new word
+>
+>When I click the button to add a new word
+>
+>Then the system shows two text fields where one is a word field and another is a definition field
+>
+>When I fill in both of the text fields
+>
+>And I click on the add button
+>
+>Then the system saves my new word
+>
+>And the system shows my new word on the list
+>
+>And the system shows "remove" and "edit" icons next to my new word"
+
 # Architecture
 ![block diagram](wordeo_arch_v1.png)
 #
