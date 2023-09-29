@@ -147,13 +147,13 @@ The frontend client will use React js.
 >And the system shows my highest score highlighted”
 
 ## Core Game
->As a logged in user
+>As a user
 >
 >I want to be able to start a Wordeo game
 >
 >So that I can play a game of Wordeo alone to reach a new high score
 
-> As a logged in user
+> As a user
 >
 > I want to be able to adjust the game settings
 >
@@ -179,6 +179,37 @@ The frontend client will use React js.
 
 
 ### *Scenario*
+>User starts a single player game
+>
+>“Given that I am a user
+>
+>When I click the button ‘Singleplayer’ at the main screen
+>
+>Then the system starts a game of Wordle
+>
+>The system presents me with a hint, empty word boxes, and a timer
+>
+>When I click on a letter in my keyboard
+>
+>The system will reveal a letter of the word if it is correct
+>
+>The system will display the letter at the bottom of the screen if it is incorrect
+>
+>When I have guessed all the letters of the word
+>
+>The system will display a victory message and the game ends
+>
+>When I have run out of time
+>
+>The system will display a defeat message and the game ends
+>
+>When I click on the button 'Play again'
+>
+>Then the system starts a new game
+>
+>When I otherwise click on the button 'Leave game'
+>
+>The system displays the main screen"
 
 ## Multiplayer Rooms
 >As a logged in user
