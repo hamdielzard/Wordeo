@@ -286,7 +286,7 @@ The frontend client will use React js.
 >
 >So that I can make informed purchases that best suit my playstyle
 
-#Additional Features
+# Additional Features
 
 ## Custom Game Settings
 >As a logged in user
