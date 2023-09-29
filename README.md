@@ -1,11 +1,24 @@
-# Wordeo
+![wordeo logo](./WordeoLogo.png)
 
 **Table of Contents**
 
-1. [Project Proposal](#project-proposal)
-2. [User Stories](#user-stories)
-3. [Meetings](https://github.com/hamdielzard/Wordeo/wiki/Meetings)
-4. [Wiki Homepage](https://github.com/hamdielzard/Wordeo/wiki)
+1. [Puzzlers Team](#puzzlers-team)
+2. [Project Proposal](#project-proposal)
+3. [User Stories](#user-stories)
+4. [Architecture](#architecture)
+5. [Meetings](https://github.com/hamdielzard/Wordeo/wiki/Meetings)
+6. [Wiki Homepage](https://github.com/hamdielzard/Wordeo/wiki)
+
+# Puzzlers Team
+Dani Youn
+
+Alyssa Gregorash
+
+Souvik Ray
+
+Hamdi Elzard
+
+Benedict Agupitan
 
 # Project Proposal
 ## Summary and Vision
@@ -288,3 +301,7 @@ The frontend client will use React js.
 >And the system shows my new word on the list
 >
 >And the system shows "remove" and "edit" icons next to my new word"
+
+# Architecture
+![block diagram](wordeo_arch_v1.png)
+#
