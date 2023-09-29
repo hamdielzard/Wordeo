@@ -1,4 +1,4 @@
-# Wordeo
+![wordeo logo](./WordeoLogo.png)
 
 **Table of Contents**
 
@@ -10,9 +10,13 @@
 
 # Puzzlers Team
 Dani Youn
+
 Alyssa Gregorash
+
 Souvik Ray
+
 Hamdi Elzard
+
 Benedict Agupitan
 
 # Project Proposal
