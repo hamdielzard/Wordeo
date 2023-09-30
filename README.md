@@ -335,5 +335,5 @@ The frontend client will use React js.
 >And the system shows "remove" and "edit" icons next to my new word"
 
 # Architecture
-![block diagram](wordeo_arch_v1.png)
+![block diagram](wordeo_arch_v2.png)
 #
