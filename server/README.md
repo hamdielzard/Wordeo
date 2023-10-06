@@ -48,6 +48,14 @@ Follow the steps to start the backend server locally on your machine.
 
 ## Additional Resources
 
+### Project Structure
+- `server`: root directory for backend server
+   - `models`: store database schemas here
+   - `routes`: store different routes for each component here
+   - `tests`: store all backend related tests here
+   - `.env`: store project configurations here
+   - `server.js`: this is the main entry point for the backend server
+
 ### MongoDB
 - [Install MongoDB](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-windows/)
 - [MongoDB Shell Reference](https://www.mongodb.com/docs/mongodb-shell/)
