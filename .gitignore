@@ -1,0 +1,5 @@
+# don't push modules
+node_modules/
+
+# ignore specifically for mac OS
+.DS_Store
