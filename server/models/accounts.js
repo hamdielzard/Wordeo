@@ -17,7 +17,7 @@ const AccountSchema = new Schema ({
 }, {timestamps: true}) // creates 'createdAt' & 'updatedAt' timestamps automatically
 
 // mongoose will reference the collection 'Accounts' from the database
-const Account = mongoose.Model('Account', AccountSchema);
+const Account = mongoose.model('Account', AccountSchema);
 
 // export
 module.exports = AccountSchema;

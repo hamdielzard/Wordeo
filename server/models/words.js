@@ -13,7 +13,7 @@ const WordSchema = new Schema ({
 }) 
 
 // mongoose will reference the collection 'Words' from the database
-const Word = mongoose.Model('Word', WordSchema);
+const Word = mongoose.model('Word', WordSchema);
 
 // export
 module.exports = Word;

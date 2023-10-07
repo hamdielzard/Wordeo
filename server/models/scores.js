@@ -14,7 +14,7 @@ const ScoreSchema = new Schema({
 }, {timestamps: true}) // creates 'createdAt' & 'updatedAt' timestamps automatically
 
 // mongoose will reference the collection 'Scores' from the database
-const Score = mongoose.Model('Score', ScoreSchema);
+const Score = mongoose.model('Score', ScoreSchema);
 
 // export
 module.exports = Score;
