@@ -5,7 +5,6 @@ const router = express.Router();
 const Word = require('../models/accounts'); 
 
 // endpoints
-router.get('/')
 
 // export
 module.exports = router;
