@@ -27,7 +27,10 @@ mongoose.connect(process.env.DB_CONNECTION_STRING)
     }))
     .catch((err) => console.log(err));
 
+// test endpoint
 app.get("/", (req, res) => {
     res.json({"version": "V1"});
 });
 
+// export
+module.exports = app;

@@ -12,6 +12,9 @@ Backend server for Wordeo.
 #### Modules
 - [mongoose](https://mongoosejs.com/docs/guide.html): ODM for MongoDB
 - [dotenv](https://www.npmjs.com/package/dotenv): for managing and loading environment variables
+- [jest](https://jestjs.io/): for testing
+- [supertest](https://www.npmjs.com/package/supertest): for testing http
+- [cross-env](https://www.npmjs.com/package/cross-env): for setting environments inline
 
 <!-- GETTING STARTED -->
 ## Getting Started
@@ -46,6 +49,13 @@ Follow the steps to start the backend server locally on your machine.
    npm run start
    ```
 
+### Test
+ 
+To run tests locally, make sure the database is running and execute the following command:
+```sh
+npm run test
+```
+
 ## Additional Resources
 
 ### Project Structure
@@ -53,7 +63,7 @@ Follow the steps to start the backend server locally on your machine.
    - `models`: store database schemas here
    - `routes`: store different routes for each component here
    - `tests`: store all backend related tests here
-   - `.env`: store project configurations here
+   - `.env`: store project configurations in this file; importing the module `dotenv` is required to access these configurations
    - `server.js`: this is the main entry point for the backend server
 
 ### MongoDB
