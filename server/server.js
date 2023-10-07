@@ -1,11 +1,22 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const cors = require("cors");
+
 require('dotenv').config();
+
+// load router modules: https://expressjs.com/en/guide/routing.html
+const accounts = require('./routes/accounts');
+const words = require('./routes/words');
+const scores = require('./routes/scores');
 
 // set express app
 const app = express();
-
 const port = process.env.PORT;
+
+app.use(cors());
+app.use('/accounts', accounts);
+app.use('/words', words);
+app.use('scores', scores);
 
 // connect to the database
 // only listen to incoming requests when database connection is successful
