@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "cross-env NODE_ENV=test jest --runInBand --detectOpenHandles --forceExit",
-    "start": "node server"
+    "start": "node index"
   },
   "keywords": [],
   "author": "",

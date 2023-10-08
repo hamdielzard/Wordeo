@@ -61,10 +61,12 @@ npm run test
 ### Project Structure
 - `server`: root directory for backend server
    - `models`: store database schemas here
-   - `routes`: store different routes for each component here
+   - `routes`: store different routes & controllers for each component here
    - `tests`: store all backend related tests here
    - `.env`: store project configurations in this file; importing the module `dotenv` is required to access these configurations
-   - `server.js`: this is the main entry point for the backend server
+   - `index.js`: this is the main entry point for the backend server
+   - `server.js`: all server settings & middleware are set here
+   
 
 ### MongoDB
 - [Install MongoDB](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-windows/)
