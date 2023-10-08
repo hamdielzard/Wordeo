@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const { AccountSchema } = require('.accounts/');
+const { AccountSchema } = require('./accounts');
 
 const ScoreSchema = new Schema({
     score: {

@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 // load models
-const Score = require('../models/accounts'); 
+const Score = require('../models/scores'); 
 
 // endpoints
 

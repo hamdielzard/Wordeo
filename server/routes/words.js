@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 // load models
-const Word = require('../models/accounts'); 
+const Word = require('../models/words'); 
 
 // endpoints
 
