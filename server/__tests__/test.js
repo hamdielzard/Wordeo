@@ -3,6 +3,10 @@ const supertest = require("supertest");
 const mongoose = require("mongoose");
 require("dotenv").config();
   
+beforeEach(async () => {
+    await mongoose.connect(process.env.MONGODB_URL_TEST);
+});
+
 afterEach(async () => {
     await mongoose.connection.close();
 });
