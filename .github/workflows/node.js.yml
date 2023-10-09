@@ -14,6 +14,12 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    # run each of the jobs with the working directories specified in the directory from the matrix
+    defaults:
+      run:
+        working-directory: ${{ matrix.directory }}
+
+
     strategy:
       matrix:
         node-version: [14.x, 16.x, 18.x]
@@ -29,8 +35,5 @@ jobs:
         cache: 'npm'
     # similar to npm i: installs the dependencies and returns an error when package-lock & package don't match
     - run: npm ci
-      working-directory: ${{ matrix.directory }}
     - run: npm run build --if-present
-      working-directory: ${{ matrix.directory }}
     - run: npm test
-      working-directory: ${{ matrix.directory }}
