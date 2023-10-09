@@ -14,17 +14,18 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    # run each of the jobs with the working directories specified in the directory from the matrix
+    defaults:
+      run:
+        working-directory: ${{ matrix.server }}
+
+
     strategy:
       matrix:
         node-version: [14.x, 16.x, 18.x]
         directory: ['server']
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
     
-    # run each of the jobs with the working directories specified in the directory from the matrix
-    defaults:
-      run:
-        working-directory: ${{ matrix.server }}
-
     steps:
     - uses: actions/checkout@v3
     - name: Use Node.js ${{ matrix.node-version }}
