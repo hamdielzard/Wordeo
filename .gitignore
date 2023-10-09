@@ -1,3 +1,10 @@
+# test coverage
+coverage/
+
+# environment config
+.env
+.env.*
+
 # don't push modules
 node_modules/
 
