@@ -30,6 +30,27 @@ The following software are required when running the backend server locally. Mak
   ```
 * MongoDB
 
+### Setting up the database
+
+Once you have MongoDB installed locally and the server is running, you will to grab the connection string for the database and update it in the `.env` file.
+
+From the mongodb shell, 
+
+1. To get the connection string:
+```sh
+   db.getMongo()
+```
+- To connect to a specific database within the cluster, specify the db name after the port: `mongodb://HOST:PORT/database_name`
+2. To get a list of existing databases:
+```sh
+   show dbs
+```
+3. To create a new database with the name `newDB` or to switch to another database:
+```sh
+   use newDB
+```
+- Note that a new database is not initialized until any data is populated, so if you run `show dbs` after this command, `newDB` will not be available yet.
+
 ### Build & Run
 
 Follow the steps to start the backend server locally on your machine.
@@ -43,7 +64,6 @@ Follow the steps to start the backend server locally on your machine.
    npm install
    ```
 3. Ensure that you are connected to your local mongo db server that is up and running.
-   - Update the connectionString
 4. Start the server
    ```sh
    npm run start
