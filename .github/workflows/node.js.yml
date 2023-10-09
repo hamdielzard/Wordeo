@@ -17,7 +17,7 @@ jobs:
     # run each of the jobs with the working directories specified in the directory from the matrix
     defaults:
       run:
-        working-directory: ${{ matrix.server }}
+        working-directory: ${{ matrix.directory }}
 
 
     strategy:
