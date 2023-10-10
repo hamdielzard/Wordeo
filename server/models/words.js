@@ -10,6 +10,14 @@ const WordSchema = new Schema ({
         type: String,
         required: false
     }],
+    category: {
+        type: String,
+        required: true
+    },
+    difficulty: {
+        type: Number,
+        required: true
+    },
 }) 
 
 // mongoose will reference the collection 'Words' from the database
