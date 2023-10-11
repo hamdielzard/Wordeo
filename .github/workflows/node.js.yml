@@ -10,18 +10,29 @@ on:
     branches: [ "main" ]
 
 jobs:
+  strategy:
+        matrix:
+          directory: ['./server']
+
+  # run each of the jobs with the working directories specified in the directory from the matrix
+  defaults:
+    run:
+      working-directory: ${{ matrix.directory }}
+
+  create-envfile:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Create .env file
+      uses: SpicyPizza/create-envfile@v2.0.2
+      envkey_MONGODB_URL_TEST: ${{ secrets.MONGOURL }}
+            
   build:
 
     runs-on: ubuntu-latest
 
-    # run each of the jobs with the working directories specified in the directory from the matrix
-    defaults:
-      run:
-        working-directory: ${{ matrix.directory }}
-
     strategy:
       matrix:
-        directory: ['./server']
         node-version: [16.x, 18.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
     
