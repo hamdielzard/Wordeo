@@ -2,11 +2,9 @@ const server = require("../server")
 const supertest = require("supertest");
 const mongoose = require("mongoose");
 require("dotenv").config();
-
-const mongourl = process.env.MONGODB_URL_TEST || process.env.npm_config_mongourl; // fetch from .env or argument (for pipelines)
-
+  
 beforeEach(async () => {
-    await mongoose.connect(mongourl);
+    await mongoose.connect(process.env.MONGODB_URL_TEST);
 });
 
 afterEach(async () => {

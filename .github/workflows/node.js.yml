@@ -36,4 +36,4 @@ jobs:
     # similar to npm i: installs the dependencies and returns an error when package-lock & package don't match
     - run: npm ci
     - run: npm run build --if-present
-    - run: npm test ${{ secrets.MONGODB_URL_TEST }}
+    - run: npm test

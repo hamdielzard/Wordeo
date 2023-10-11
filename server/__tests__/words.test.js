@@ -4,10 +4,8 @@ const supertest = require("supertest");
 const mongoose = require("mongoose");
 require("dotenv").config();
 
-const mongourl = process.env.MONGODB_URL_TEST || process.argv[2]; // fetch from .env or argument (for pipeline)
-
 beforeEach(async () => {
-    await mongoose.connect(mongourl);
+    await mongoose.connect(process.env.MONGODB_URL_TEST);
 
     // seed some fake data
     const testWord = new Word({ word: "test", hints: ["test1", "test2"] });
