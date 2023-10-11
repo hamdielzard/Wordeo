@@ -39,8 +39,4 @@ jobs:
 
       # Test server
       - name: Run test
-        env: 
-          MONGODB_URL_TEST: ${{ secrets.MONGOURL }}
-          MONGODB_USER: ${{ secrets.MONGODB_USER }}
-          MONGODB_PASS: ${{ secrets.MONGODB_PASS }}
         run: npm run test
