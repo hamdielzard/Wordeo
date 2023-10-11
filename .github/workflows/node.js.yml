@@ -36,6 +36,7 @@ jobs:
       env:
         MONGODB_URL_TEST: ${{ secrets.MONGODB_URL_TEST }}
     # similar to npm i: installs the dependencies and returns an error when package-lock & package don't match
+    - run: echo $MONGODB_URL_TEST
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test
