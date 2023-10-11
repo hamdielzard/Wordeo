@@ -10,6 +10,8 @@ const accounts = require('./routes/accounts');
 const words = require('./routes/words');
 const scores = require('./routes/scores');
 
+const AuthRoute = require('./routes/auth')
+
 // set express app
 const app = express();
 
@@ -19,6 +21,7 @@ app.use(urlencodedParser);
 app.use('/accounts', accounts);
 app.use('/words', words);
 app.use('scores', scores);
+app.use('/api', AuthRoute)
 
 // test endpoint
 app.get("/", (req, res) => {
