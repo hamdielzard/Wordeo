@@ -1,40 +1,42 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
-
-name: Node.js CI
+name: Test Backend
 
 on:
+  # On every push to main, and pull request for merging to main, run this action.
   push:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
 jobs:
-  build:
-
+  Test:
     runs-on: ubuntu-latest
-    environment: WordeoEnv
 
-    # run each of the jobs with the working directories specified in the directory from the matrix
     defaults:
       run:
-        working-directory: ${{ matrix.directory }}
-
-    strategy:
-      matrix:
-        directory: ['./server']
-        node-version: [16.x, 18.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+        working-directory: ./server
     
     steps:
-    - uses: actions/checkout@v3
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-        cache-dependency-path: ${{ matrix.directory }}/package-lock.json
-    # similar to npm i: installs the dependencies and returns an error when package-lock & package don't match
-    - run: npm ci
-    - run: npm run build --if-present
-    - run: npm test
+      # Checkout Code
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # Test on Node 20
+      - name: Setup Node ver. 20
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache-dependency-path: package-lock.json
+
+      # Setup mongodb server at default port: 27017
+      - name: MongoDB in GitHub Actions
+        uses: supercharge/mongodb-github-action@v1.10.0
+        with:
+          mongodb-version: 7.0
+
+      # Install dependencies
+      - name: Install dependencies
+        run: npm ci
+
+      # Test server
+      - name: Run test
+        run: npm run test

@@ -4,8 +4,10 @@ const supertest = require("supertest");
 const mongoose = require("mongoose");
 require("dotenv").config();
 
+const address = process.env.MONGODB_URL_TEST || `mongodb://localhost:27017/test?directConnection=true&serverSelectionTimeoutMS=2000`;
+
 beforeEach(async () => {
-    await mongoose.connect(process.env.MONGODB_URL_TEST);
+    await mongoose.connect(address);
 
     // seed some fake data
     const testWord = new Word({ word: "test", hints: ["test1", "test2"] });
