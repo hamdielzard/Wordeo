@@ -26,13 +26,13 @@ jobs:
         with:
           node-version: 16
           cache-dependency-path: package-lock.json
-      - run: pwd
 
+      # Install dependencies
+      - name: Install dependencies
+        run: npm ci
+      
+      # Test server
       - name: Run test
         env: 
           MONGODB_URL_TEST: ${{ secrets.MONGOURL }}
-        run: |
-          pwd
-          echo $MONGODB_URL_TEST
-          npm ci
-          npm run test
+        run: npm run test
