@@ -1,42 +1,61 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
-
-name: Node.js CI
+name: Test Backend
 
 on:
+  # On every push to main, and pull request for merging to main, run this action.
   push:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
 jobs:
-  build:
-
+  Build:
     runs-on: ubuntu-latest
 
-    # run each of the jobs with the working directories specified in the directory from the matrix
-    defaults:
-      run:
-        working-directory: ${{ matrix.directory }}
-
-    strategy:
-      matrix:
-        directory: ['./server']
-        node-version: [16.x, 18.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
     
     steps:
-    - uses: actions/checkout@v3
-    - name: Build and test on ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-        cache-dependency-path: ${{ matrix.directory }}/package-lock.json
-      env:
-        MONGODB_URL_TEST: ${{ secrets.MONGODB_URL_TEST }}
-    # similar to npm i: installs the dependencies and returns an error when package-lock & package don't match
-    - run: echo $MONGODB_URL_TEST
-    - run: npm ci
-    - run: npm run build --if-present
-    - run: npm test
+      # Checkout Code
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # Build on Node 16
+      - name: Build on Node ver. 16
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - run: npm ci
+      - run: npm build
+
+      # Build on Node 18
+      - name: Build on Node ver. 18
+        uses: actions/setup-node@v3
+        with: 
+          node-version: 18
+      - run: npm ci
+      - run: npm build
+
+  Test:
+    runs-on: ubuntu-latest
+
+    
+    steps:
+      # Checkout Code
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # Test on Node 16
+      - name: Build on Node ver. 16
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - run: npm ci
+      - run: npm test
+
+      # Test on Node 18
+      - name: Build on Node ver. 18
+        uses: actions/setup-node@v3
+        with: 
+          node-version: 18
+      - run: npm ci
+      - run: npm test
+
+
