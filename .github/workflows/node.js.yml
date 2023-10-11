@@ -22,6 +22,7 @@ jobs:
         with:
           node-version: 16
       - run: |
+          pwd
           npm ci
           npm run build
         working-directory: ./server
