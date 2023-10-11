@@ -33,6 +33,8 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
         cache-dependency-path: ${{ matrix.directory }}/package-lock.json
+    - name: Echo secret
+      run: echo "URL = ${{ secrets.MONGOURL }}"
     - name: Create .env file
       uses: SpicyPizza/create-envfile@v2.0.2
       with:
