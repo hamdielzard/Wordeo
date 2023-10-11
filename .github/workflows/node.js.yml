@@ -1,4 +1,4 @@
-name: Test and Build Backend
+name: Test Backend
 
 on:
   # On every push to main, and pull request for merging to main, run this action.
@@ -20,11 +20,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      # Test on Node 16
-      - name: Setup Node ver. 16
+      # Test on Node 20
+      - name: Setup Node ver. 20
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 20
           cache-dependency-path: package-lock.json
 
       # Install dependencies
@@ -35,5 +35,6 @@ jobs:
       - name: Run test
         env: 
           MONGODB_URL_TEST: ${{ secrets.MONGOURL }}
-          
+          MONGODB_USER: ${{ secrets.MONGODB_USER }}
+          MONGODB_PASS: ${{ secrets.MONGODB_PASS }}
         run: npm run test
