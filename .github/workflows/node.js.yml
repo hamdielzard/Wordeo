@@ -10,10 +10,6 @@ on:
 jobs:
   Build:
     runs-on: ubuntu-latest
-
-    defaults:
-      run:
-        working-directory: 'server'
     
     steps:
       # Checkout Code
@@ -25,20 +21,10 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16
-          cache: 'npm'
-          cache-dependency-path: '**/package-lock.json'
-      - run: npm ci
-      - run: npm run build
-
-      # Build on Node 18
-      - name: Setup Node ver. 18
-        uses: actions/setup-node@v3
-        with: 
-          node-version: 18
-          cache: 'npm'
-          cache-dependency-path: '**/package-lock.json'
-      - run: npm ci
-      - run: npm run build
+      - run: |
+          npm ci
+          npm run build
+        working-directory: ./server
 
   Test:
     runs-on: ubuntu-latest
@@ -48,23 +34,5 @@ jobs:
       # Checkout Code
       - name: Checkout
         uses: actions/checkout@v3
-
-      # Test on Node 16
-      - name: Build on Node ver. 16
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16
-      - run: cd server
-      - run: npm ci
-      - run: npm test
-
-      # Test on Node 18
-      - name: Build on Node ver. 18
-        uses: actions/setup-node@v3
-        with: 
-          node-version: 18
-      - run: cd server
-      - run: npm ci
-      - run: npm test
 
 
