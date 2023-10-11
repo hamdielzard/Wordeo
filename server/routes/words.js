@@ -8,13 +8,17 @@ const Word = require('../models/words');
 
 // create a single word
 router.post("/word", async (req, res) => {
-    // the JSON request body: e.g., {"word": "my word", "hints": ["hint1", "hint2"]}
-    const word = req.body.word;     // a single word
-    const hints = req.body.hints;   // list of hints for the word
+    // the JSON request body: e.g., {"word": "my word", "hints": ["hint1", "hint2"], "category": "Vocabulary", "difficulty": 1}
+    const word = req.body.word;             // a single word
+    const hints = req.body.hints;           // list of hints for the word
+    const category = req.body.category;     // category for the word
+    const difficulty = req.body.difficulty; // difficulty of a word from 0 
 
     const newWord = new Word({
         word: word,
-        hints: hints
+        hints: hints,
+        category: category,
+        difficulty: difficulty
     });
 
     try {
@@ -25,7 +29,7 @@ router.post("/word", async (req, res) => {
     }
 });
 
-// read multiple words
+// fetch a word by it's "word"
 // Note: this could return multiple words since a word is not unique
 router.get("/word", async (req, res) => {
     // the JSON request body: e.g., {"word": "my word"}
@@ -73,7 +77,7 @@ router.delete("/word", async (req, res) => {
 
 // create multiple words
 router.post("/", async (req, res) => {
-    // the JSON request body: e.g., {"words": [{"word": "my word", "hints": ["hint1", "hint2"]}]}
+    // the JSON request body: e.g., {"words": [{"word": "my word", "hints": ["hint1", "hint2"],...}, {...}]}
     const words = req.body.words;   // list of word & hints pair
 
     try {
