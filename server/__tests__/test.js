@@ -3,11 +3,7 @@ const supertest = require("supertest");
 const mongoose = require("mongoose");
 require("dotenv").config();
 
-const username = process.env.MONGODB_USER
-const password = process.env.MONGODB_PASS
-const URL = process.env.MONGOURL
-
-const address = `mongodb+srv://${username}:${password}@${URL}/?retryWrites=true&w=majority`
+const address = process.env.MONGODB_URL_TEST || `mongodb://localhost:27017/test?directConnection=true&serverSelectionTimeoutMS=2000`;
   
 beforeEach(async () => {
     await mongoose.connect(address);

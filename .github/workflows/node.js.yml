@@ -27,10 +27,16 @@ jobs:
           node-version: 20
           cache-dependency-path: package-lock.json
 
+      # Setup mongodb server at default port: 27017
+      - name: MongoDB in GitHub Actions
+        uses: supercharge/mongodb-github-action@v1.10.0
+        with:
+          mongodb-version: 7.0
+
       # Install dependencies
       - name: Install dependencies
         run: npm ci
-      
+
       # Test server
       - name: Run test
         env: 
