@@ -1,4 +1,4 @@
-name: Test Backend
+name: Test and Build Backend
 
 on:
   # On every push to main, and pull request for merging to main, run this action.
@@ -8,6 +8,26 @@ on:
     branches: [ "main" ]
 
 jobs:
+  Test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      # Checkout Code
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # Test on Node 16
+      - name: Setup Node ver. 16
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache-dependency-path: package-lock.json
+        env:
+          MONGODB_URL_TEST: ${{ secrets.MONGODB_URL_TEST }}
+      - run: npm ci
+      - run: npm run test
+        working-directory: ./server
+
   Build:
     runs-on: ubuntu-latest
     
@@ -22,19 +42,6 @@ jobs:
         with:
           node-version: 16
           cache-dependency-path: package-lock.json
-      - run: |
-          pwd
-          npm ci
-          npm run build
+      - run: npm ci
+      - run: npm run build --if-present
         working-directory: ./server
-
-  Test:
-    runs-on: ubuntu-latest
-
-    
-    steps:
-      # Checkout Code
-      - name: Checkout
-        uses: actions/checkout@v3
-
-
