@@ -89,9 +89,20 @@ router.post("/", async (req, res) => {
 });
 
 // get all words
+// you can filter by category or difficulty using query parameters: e.g., ?difficulty=1&category=Odd
 router.get("/", async (req, res) => {
+    var filter = {};
+
+    if (req.query.category) {
+        filter.category = req.query.category;
+    }
+
+    if (req.query.difficulty) {
+        filter.difficulty = req.query.difficulty;
+    }
+    
     try {
-        const result = await Word.find();
+        const result = await Word.find(filter);
         res.status(200).json(result);
     } catch (err) {
         res.status(404).json({ message: err.message });
