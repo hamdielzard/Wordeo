@@ -1,4 +1,4 @@
-![wordeo logo](./WordeoLogo.png)
+![wordeo logo](images/WordeoLogo.png)
 
 **Table of Contents**
 
@@ -6,8 +6,9 @@
 2. [Project Proposal](#project-proposal)
 3. [User Stories](#user-stories)
 4. [Architecture](#architecture)
-5. [Meetings](https://github.com/hamdielzard/Wordeo/wiki/Meetings)
-6. [Wiki Homepage](https://github.com/hamdielzard/Wordeo/wiki)
+5. [Design](/images/design/DESIGN.md)
+6. [Meetings](https://github.com/hamdielzard/Wordeo/wiki/Meetings)
+7. [Wiki Homepage](https://github.com/hamdielzard/Wordeo/wiki)
 
 # Puzzlers Team
 Dani Youn
@@ -335,5 +336,5 @@ The frontend client will use React js.
 >And the system shows "remove" and "edit" icons next to my new word"
 
 # Architecture
-![block diagram](wordeo_arch_v2.png)
+![block diagram](images/wordeo_arch_v2.png)
 #
