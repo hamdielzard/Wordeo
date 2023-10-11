@@ -9,6 +9,8 @@ const accounts = require('./routes/accounts');
 const words = require('./routes/words');
 const scores = require('./routes/scores');
 
+const AuthRoute = require('./routes/auth')
+
 // set express app
 const app = express();
 const port = process.env.PORT;
@@ -17,6 +19,7 @@ app.use(cors());
 app.use('/accounts', accounts);
 app.use('/words', words);
 app.use('scores', scores);
+app.use('/api', AuthRoute)
 
 // connect to the database
 // only listen to incoming requests when database connection is successful
