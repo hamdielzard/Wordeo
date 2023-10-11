@@ -22,10 +22,15 @@ jobs:
         with:
           node-version: 16
           cache-dependency-path: package-lock.json
+        env:
+          MONGODB_URL_TEST: ${{ secrets.MONGODB_URL_TEST }}
       - run: pwd
+        working-directory: ./server
       - run: npm ci
+        working-directory: ./server
       - run: npm run test
         working-directory: ./server
+
 
   Build:
     runs-on: ubuntu-latest
