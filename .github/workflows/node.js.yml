@@ -26,7 +26,7 @@ jobs:
         with:
           node-version: 16
       - run: npm ci
-      - run: npm build
+      - run: npm run build
 
       # Build on Node 18
       - name: Build on Node ver. 18
@@ -34,7 +34,7 @@ jobs:
         with: 
           node-version: 18
       - run: npm ci
-      - run: npm build
+      - run: npm run build
 
   Test:
     runs-on: ubuntu-latest
