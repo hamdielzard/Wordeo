@@ -35,8 +35,8 @@ jobs:
         cache-dependency-path: ${{ matrix.directory }}/package-lock.json
     - name: Create .env file
       uses: SpicyPizza/create-envfile@v2.0.2
-        with:
-          envkey_MONGODB_URL_TEST: ${{ secrets.MONGOURL }}
+      with:
+        envkey_MONGODB_URL_TEST: ${{ secrets.MONGOURL }}
     # similar to npm i: installs the dependencies and returns an error when package-lock & package don't match
     - run: npm ci
     - run: npm run build --if-present
