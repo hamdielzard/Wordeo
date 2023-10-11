@@ -10,6 +10,10 @@ on:
 jobs:
   Test:
     runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./server
     
     steps:
       # Checkout Code
@@ -22,29 +26,13 @@ jobs:
         with:
           node-version: 16
           cache-dependency-path: package-lock.json
-        env:
-          MONGODB_URL_TEST: ${{ secrets.MONGOURL }}
       - run: pwd
-        working-directory: ./server
-      - run: export MONGODB_URL_TEST=$MONGODB_URL_TEST
-      - run: echo $MONGODB_URL_TEST
-      - run: echo $MONGOURL
 
-
-  Build:
-    runs-on: ubuntu-latest
-    
-    steps:
-      # Checkout Code
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      # Build on Node 16
-      - name: Setup Node ver. 16
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16
-          cache-dependency-path: package-lock.json
-      - run: npm ci
-      - run: npm run build --if-present
-        working-directory: ./server
+      - name: Run test
+        env: 
+          MONGODB_URL_TEST: ${{ secrets.MONGOURL }}
+        run: |
+          pwd
+          echo $MONGODB_URL_TEST
+          npm ci
+          npm run test
