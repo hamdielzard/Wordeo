@@ -13,6 +13,7 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    environment: WordeoEnv
 
     # run each of the jobs with the working directories specified in the directory from the matrix
     defaults:
