@@ -21,9 +21,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16
-          cache-dependency-path: server/package-lock.json
-        env:
-          MONGODB_URL_TEST: ${{ secrets.MONGODB_URL_TEST }}
+          cache-dependency-path: package-lock.json
       - run: pwd
       - run: npm ci
       - run: npm run test
