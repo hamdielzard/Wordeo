@@ -1,6 +1,8 @@
 import React from 'react';
-import './Styles/Home.css';
-import Button from './Components/Button';
+import '../Styles/Home.css';
+
+// Components
+import Button from '../Components/Button';
 
 function Home() {
     return (
