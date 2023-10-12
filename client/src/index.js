@@ -5,13 +5,13 @@ import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
 
 // Pages
-import Home from './Pages/Home';
+import App from './App';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <Home />
+      <App />
     </BrowserRouter>
   </React.StrictMode>
 );

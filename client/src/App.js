@@ -1,20 +1,19 @@
-import './App.css';
-import {Route, Routes} from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 
-//pages
-import HomePage from './pages/HomePage.js';
-import AccountPage from './pages/AccountPage';
-import SignInPage from './pages/SignInPage';
-import GamePage from './pages/GamePage';
+// Pages
+import Home from './Pages/Home.js';
+import Account from './Pages/Account';
+import SignIn from './Pages/SignIn';
+import Game from './Pages/Game';
 
-//routes
+// Routes
 function App() {
   return (
     <Routes>
-      <Route path='/' element={<HomePage/>}/>
-      <Route path='/account/signin' element={<SignInPage/>}/>
-      <Route path='/account/:user' element={<AccountPage/>}/>
-      <Route path='/game' element={<GamePage/>}/>
+      <Route path='/' element={<Home />} />
+      <Route path='/account/signin' element={<SignIn />} />
+      <Route path='/account/:user' element={<Account />} />
+      <Route path='/game' element={<Game />} />
     </Routes>
   );
 }
