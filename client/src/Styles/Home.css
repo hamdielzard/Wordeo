@@ -1,0 +1,56 @@
+html {}
+
+body {
+    background: #F0F0F0;
+    font-family: Inter, Arial, Helvetica, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0px;
+    padding: 0px;
+    height: 100vh;
+    width: 100%;
+}
+
+.homepage {
+    /* TODO: Can't get this div to take up the entire screen */
+    display: flex;
+    justify-content: left;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.homepageHeader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 10vh;
+}
+
+.homepageInteractive {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 75vh;
+}
+
+.homepageFooter {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 10vh;
+}
+
+
+.musicSFXToggle {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    width: 100%;
+}

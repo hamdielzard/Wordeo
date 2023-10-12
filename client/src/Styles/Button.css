@@ -1,0 +1,90 @@
+/* Primary Button */
+.button-primary {
+    border-radius: 20px;
+    border: 5px solid #5B42F4;
+    background: #4285F4;
+    color: #FFF;
+    text-align: center;
+    font-family: Inter, Arial, Helvetica, sans-serif;
+    font-size: 48px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    padding: 10px;
+    width: 340px;
+    height: 75px;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+/* Secondary Button */
+.button-secondary {
+    border-radius: 20px;
+    border: 5px solid #248C28;
+    background: #4CAF50;
+    color: #FFF;
+    text-align: center;
+    font-family: Inter, Arial, Helvetica, sans-serif;
+    font-size: 48px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    padding: 10px;
+    width: 340px;
+    height: 75px;
+    cursor: pointer;
+
+}
+
+/* Ternary Button */
+.button-ternary {
+    border-radius: 20px;
+    border: 5px solid #FF6767;
+    background: #F44242;
+    color: #FFF;
+    text-align: center;
+    font-family: Inter, Arial, Helvetica, sans-serif;
+    font-size: 48px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    padding: 10px;
+    width: 340px;
+    height: 75px;
+    cursor: pointer;
+
+}
+
+/* Toggles Button */
+.button-toggles {
+    border-radius: 20px;
+    max-height: 75px;
+    border: 5px solid #5B42F4;
+    background: #4285F4;
+    color: #FFF;
+    text-align: center;
+    font-family: Inter, Arial, Helvetica, sans-serif;
+    font-size: 48px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    display: block;
+    width: 100%;
+    padding: 10px;
+    cursor: pointer;
+}
