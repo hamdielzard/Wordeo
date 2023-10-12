@@ -25,7 +25,7 @@ router.post("/word", async (req, res) => {
         const result = await newWord.save();
         res.status(200).json(result);
     } catch (err) {
-        res.status(404).json({ message: err.message });
+        res.status(400).json({ message: err.message });
     }
 });
 
@@ -39,7 +39,7 @@ router.get("/word", async (req, res) => {
         const result = await Word.find({ word: word });
         res.status(200).json(result);
     } catch (err) {
-        res.status(404).json({ message: err.message });
+        res.status(500).json({ message: err.message });
     }
 });
 
@@ -56,7 +56,7 @@ router.patch("/word", async (req, res) => {
         const result = await Word.updateOne({ word: word, hints: hint }, { hints: newHints });
         res.status(200).json(result);
     } catch (err) {
-        res.status(404).json({ message: err.message });
+        res.status(500).json({ message: err.message });
     }
 });
 
@@ -71,7 +71,7 @@ router.delete("/word", async (req, res) => {
         const result = await Word.deleteOne({ word: word, hints: hint });
         res.status(200).json(result);
     } catch (err) {
-        res.status(404).json({ message: err.message });
+        res.status(500).json({ message: err.message });
     }
 });
 
@@ -84,30 +84,42 @@ router.post("/", async (req, res) => {
         const result = await Word.insertMany(words);
         res.status(200).json(result);
     } catch (err) {
-        res.status(404).json({ message: err.message });
-    } 
+        res.status(400).json({ message: err.message });
+    }
 });
 
 // get all words
 // you can filter by category or difficulty using query parameters: e.g., ?difficulty=1&category=Odd
+// when specifying a count int the query parameters, the resulting list will be a randomized 
 router.get("/", async (req, res) => {
     var filter = {};
 
+    // filter by category
     if (req.query.category) {
         filter.category = req.query.category;
     }
 
+    // filter by difficulty
     if (req.query.difficulty) {
         filter.difficulty = req.query.difficulty;
     }
-    
+
     try {
-        const result = await Word.find(filter);
+        var result;
+        // limit the number of items used and return randomized list
+        if (req.query.count) {
+            result = await Word.aggregate([
+                { $match: filter },
+                { $sample: { size: parseInt(req.query.count) } }
+            ]);
+        } else {
+            result = await Word.find(filter);
+        }
         res.status(200).json(result);
     } catch (err) {
-        res.status(404).json({ message: err.message });
+        res.status(500).json({ message: err.message });
     }
-})
+});
 
 // export
 module.exports = router;
