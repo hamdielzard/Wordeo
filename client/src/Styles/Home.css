@@ -35,6 +35,7 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    text-decoration: none;
     width: 100%;
     height: 75vh;
 }
@@ -47,10 +48,13 @@ body {
     height: 10vh;
 }
 
-
 .musicSFXToggle {
     display: flex;
     justify-content: space-between;
     gap: 10px;
     width: 100%;
+}
+
+.noStyle {
+    text-decoration: none;
 }

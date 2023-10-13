@@ -1,4 +1,5 @@
 import React from 'react';
+import {Link} from "react-router-dom";
 import '../Styles/Home.css';
 
 // Components
@@ -11,7 +12,9 @@ function Home() {
                 <h1>Wordeo</h1>
             </div>
             <div className='homepageInteractive'>
-                <Button label="PLAY" onClick={() => { }} type="primary" size="large" />
+                <Link to='/game' className='noStyle'>
+                    <Button label="PLAY" type="primary" size="large" />       
+                </Link>
                 <Button label="Leaderboards" onClick={() => { }} type="primary" size="medium" />
                 <div className='musicSFXToggle'>
                     <Button label="Music" onClick={() => { }} type="toggles" size="medium" />
