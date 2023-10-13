@@ -4,6 +4,7 @@ import React from 'react';
 import WordeoLogo from '../Images/WordeoLogo.png';
 import '../Styles/SignIn.css';
 import '../Styles/General.css'
+import Button from '../Components/Button';
 
 const SignInPage = () => {
 
@@ -55,7 +56,7 @@ const SignInPage = () => {
                         <p id='upWarning' style={{color:'white'}}></p>
                         <input id='upUser' type='text' placeholder='username' maxLength='16' className='inputField'></input>
                         <input id='upPass' type='text' placeholder='password' maxLength='16' className='inputField'></input>
-                        <button className='greenButton' onClick={validateSignUp}>Create Account</button>
+                        <Button label="Create Account" onClick={validateSignUp} type="secondary" size="medium"/>
                     </div>
                 </div>
                 <div>
@@ -67,7 +68,7 @@ const SignInPage = () => {
                         <p id='inWarning' style={{color:'white'}}></p>
                         <input id='inUser' type='text' placeholder='username' maxLength='16' className='inputField'></input>
                         <input id='inPass' type='text' placeholder='password' maxLength='16' className='inputField'></input>
-                        <button className='greenButton' onClick={validateSignIn}>Login</button>
+                        <Button label="Login" onClick={validateSignIn} type="secondary" size="medium"/>
                     </div>
                 </div>
             </div>

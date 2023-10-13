@@ -19,23 +19,23 @@ body {
     padding-right: 15%;
 }
 
-.inputHolder{
+.inputHolder {
     display: flex;
     justify-content: center;
+    flex-direction: column;
     align-items: center;
     text-align: center;
-    display: block;
     padding-left: 20px;
     padding-right: 20px;
     padding-top: 10px;
     padding-bottom: 10px;
     background-color: #4285F4;
-    border-radius: 10%;
+    border-radius: 10px;
     border: 5px solid;
     border-color: #5B42F4;
 }
 
-.inputField{
+.inputField {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -43,31 +43,16 @@ body {
     padding-top: 3%;
     padding-bottom: 3%;
     background-color: #FFF;
-    border-radius: 15%;
+    border-radius: 15px;
     border: 2px solid;
     border-color: #5B42F4;
     margin-bottom: 5%;
     font-size: 24px;
+    max-width: 320px;
+    width: 100%;
 }
 
-.greenButton{
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 3%;
-    margin-top: 5%;
-    margin-bottom: 5%;
-    font-size: 24px;
-    color: white;
-    background-color: #4CAF50;
-    border-radius: 10%;
-    border: 5px solid;
-    border-color: #248C28;
-    cursor: pointer;
-    min-width:240px;
-}
-
-.signinFooter{
+.signinFooter {
     justify-content: center;
     align-items: center;
     text-align: center;
