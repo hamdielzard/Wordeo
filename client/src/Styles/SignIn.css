@@ -1,0 +1,76 @@
+body {
+    background: #F0F0F0;
+    font-family: Inter, Arial, Helvetica, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0px;
+    padding: 0px;
+    height: 100vh;
+    width: 100%;
+}
+
+.signin {
+    display: flex;
+    justify-content: left;
+    flex-direction: column;
+    align-items: center;
+    padding-left: 15%;
+    padding-right: 15%;
+}
+
+.inputHolder{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    display: block;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background-color: #4285F4;
+    border-radius: 10%;
+    border: 5px solid;
+    border-color: #5B42F4;
+}
+
+.inputField{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding-top: 3%;
+    padding-bottom: 3%;
+    background-color: #FFF;
+    border-radius: 15%;
+    border: 2px solid;
+    border-color: #5B42F4;
+    margin-bottom: 5%;
+    font-size: 24px;
+}
+
+.greenButton{
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 3%;
+    margin-top: 5%;
+    margin-bottom: 5%;
+    font-size: 24px;
+    color: white;
+    background-color: #4CAF50;
+    border-radius: 10%;
+    border: 5px solid;
+    border-color: #248C28;
+    cursor: pointer;
+    min-width:240px;
+}
+
+.signinFooter{
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: #5B42F4;
+    margin-top: 128px;
+}
