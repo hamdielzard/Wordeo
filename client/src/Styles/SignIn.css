@@ -1,0 +1,61 @@
+body {
+    background: #F0F0F0;
+    font-family: Inter, Arial, Helvetica, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0px;
+    padding: 0px;
+    height: 100vh;
+    width: 100%;
+}
+
+.signin {
+    display: flex;
+    justify-content: left;
+    flex-direction: column;
+    align-items: center;
+    padding-left: 15%;
+    padding-right: 15%;
+}
+
+.inputHolder {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background-color: #4285F4;
+    border-radius: 10px;
+    border: 5px solid;
+    border-color: #5B42F4;
+}
+
+.inputField {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding-top: 3%;
+    padding-bottom: 3%;
+    background-color: #FFF;
+    border-radius: 15px;
+    border: 2px solid;
+    border-color: #5B42F4;
+    margin-bottom: 5%;
+    font-size: 24px;
+    max-width: 320px;
+    width: 100%;
+}
+
+.signinFooter {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: #5B42F4;
+    margin-top: 128px;
+}

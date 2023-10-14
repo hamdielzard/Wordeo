@@ -2,9 +2,9 @@ import { Route, Routes } from 'react-router-dom';
 
 // Pages
 import Home from './Pages/Home.js';
-import Account from './Pages/Account';
-import SignIn from './Pages/SignIn';
-import Game from './Pages/Game';
+import Account from './Pages/Account.js';
+import SignIn from './Pages/SignIn.js';
+import Game from './Pages/Game.js';
 
 // Routes
 function App() {
