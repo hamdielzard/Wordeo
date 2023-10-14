@@ -1,7 +1,8 @@
-body {
+.game {
     background-color: #393939;
     justify-content: left;
     align-items: baseline;
+    height: 100vh;
 }
 
 .bold {
@@ -30,3 +31,11 @@ body {
     padding: 12px;
 }
 
+.hint {
+    color: #FFF;
+    font-family: Inter;
+    font-size: 64px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}

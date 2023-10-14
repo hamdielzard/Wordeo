@@ -2,7 +2,6 @@
 
 import React from 'react'
 import GameHeader from '../Components/Game/GameHeader';
-import Timer from '../Components/Game/Timer';
 import CoreGame from '../Components/Game/CoreGame';
 import '../Styles/Game.css';
 
@@ -11,11 +10,15 @@ import data from '../TEMPDB/data';
 
 const GamePage = () =>
 {
-    const [gameStatus, updataStatus] = React.useState({
+    const [gameStatus, updateGameStatus] = React.useState({
         round: 1,
-        score: 0,
-        currWord: data[0]
+        currWord: data[0],
+        score: 0
     })
+
+    function roundEnd(scoreEarned) {
+        console.log(scoreEarned)
+    }
 
     return(
         <div className='game'>
@@ -25,8 +28,10 @@ const GamePage = () =>
                 maxRound = {data.length}
                 name = "Player1"
             />
-            <Timer />
-            <CoreGame />
+            <CoreGame 
+                wordData = {gameStatus.currWord}
+                roundEnd = {roundEnd}
+            />
         </div>
     )
 }
