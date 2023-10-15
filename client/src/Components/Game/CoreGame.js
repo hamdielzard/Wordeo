@@ -10,7 +10,7 @@ const CoreGame = (props) => {
 
     const [roundStatus, updateRoundStatus] = React.useState({
         wordsGuessed: [],
-        correctWords: [],
+        correctLetters: [],
         incorrectLetters: []
     })
 
@@ -46,7 +46,7 @@ const CoreGame = (props) => {
         let isCorrect = false
         
         let newWordsGuessed = roundStatus.wordsGuessed
-        let newCorrectWords = roundStatus.correctWords
+        let newCorrectLetters = roundStatus.correctLetters
         let newIncorrectLetters = roundStatus.incorrectLetters
 
         // Only do logic if this letter has not been guessed yet
@@ -83,7 +83,7 @@ const CoreGame = (props) => {
                 // any variables modified within updateLetters() into updateLetter() itself
 
                 // Update states from roundStatus
-                if (!isCorrect) {
+                if (!isCorrect && !roundStatus.incorrectLetters.includes(e.key)) {
                     // Update round status to reflect the new incorrect word
                     newIncorrectLetters.push(e.key)
                     updateRoundStatus(prev => ({
@@ -107,22 +107,43 @@ const CoreGame = (props) => {
                         return incorrectLetterBoxes
                     })                
                 }
-                else {
-                    newCorrectWords.push(e.key)
+                else if (isCorrect && !roundStatus.correctLetters.includes(e.key)) {
+                    newCorrectLetters.push(e.key)
                 }
                 newWordsGuessed.push(e.key)
 
                 updateRoundStatus({
                     wordsGuessed: newWordsGuessed,
-                    correctWords: newCorrectWords,
+                    correctLetters: newCorrectLetters,
                 })
 
                 return newLetterBoxes
             })
-
-            
-        }
+        }   
         
+        checkIfWon()
+    }
+
+    function checkIfWon() {
+        let allWordsGuessed = true
+
+        for (let i = 0; i < word.length && allWordsGuessed; i++) {
+            if (!roundStatus.correctLetters.includes(word.charAt(i).toLowerCase())) {
+                allWordsGuessed = false;
+                console.log(allWordsGuessed)
+            }
+        }
+
+        if (allWordsGuessed) {
+            // Reset all the states in core game
+            updateRoundStatus({
+                wordsGuessed: [],
+                correctLetters: [],
+                incorrectLetters: [],
+            })
+            console.log(roundStatus)
+            props.roundEnd(100)
+        }
     }
 
     return(

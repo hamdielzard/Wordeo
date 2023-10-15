@@ -18,6 +18,12 @@ const GamePage = () =>
 
     function roundEnd(scoreEarned) {
         console.log(scoreEarned)
+
+        updateGameStatus(prev =>({
+            ...prev,
+            round: prev.round + 1,
+            score: prev.score + scoreEarned
+        }))
     }
 
     return(
