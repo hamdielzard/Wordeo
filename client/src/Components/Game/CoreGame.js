@@ -43,13 +43,12 @@ const CoreGame = (props) => {
         document.addEventListener('keydown', letterInputHandler, true)
     })
     const letterInputHandler = (e) => {
-        let flippedBoxes = 0
+        let isCorrect = false
         
         let newWordsGuessed = roundStatus.wordsGuessed
         let newCorrectWords = roundStatus.correctWords
         let newIncorrectLetters = roundStatus.incorrectLetters
 
-        
         // Only do logic if this letter has not been guessed yet
         if (!roundStatus.wordsGuessed.includes(e.key))
         {     
@@ -60,6 +59,7 @@ const CoreGame = (props) => {
                 for (let i = 0; i < word.length; i++) {
                     // If it matches, create a new LetterBox that is green and displays a letter
                     if (word.charAt(i).toLowerCase() == e.key.toLowerCase()) {
+                        isCorrect = true
                         newLetterBoxes.push(
                             <div className="letterbox" style={{background: '#ABFF68'}} key = {i}>
                                 <LetterBox 
@@ -68,7 +68,6 @@ const CoreGame = (props) => {
                                 />
                             </div>
                         )
-                        flippedBoxes++
                     }
                     // If it does not match, use the previous letterBox
                     else {
@@ -78,46 +77,50 @@ const CoreGame = (props) => {
                     }
                 }
 
+                // NOTE
+                // updateLetters() is asynchronous, any variables modified within here may not reflect
+                // immediately upon code execution outside, so bring any conditional statements that uses
+                // any variables modified within updateLetters() into updateLetter() itself
+
+                // Update states from roundStatus
+                if (!isCorrect) {
+                    // Update round status to reflect the new incorrect word
+                    newIncorrectLetters.push(e.key)
+                    updateRoundStatus(prev => ({
+                        ...prev,
+                        incorrectLetters: newIncorrectLetters
+                    }))
+                    console.log(roundStatus)
+
+                    // Fill and create incorrect letter boxes with the new data
+                    updateIncorrectLetters(() => {
+                        let incorrectLetterBoxes = newIncorrectLetters.map(incorrectLetter => {
+                            return (
+                                <div className="incorrectLetterBox">
+                                    <IncorrectLetterBox 
+                                        letter = {incorrectLetter}
+                                    />
+                                </div>
+                            )
+                        })
+
+                        return incorrectLetterBoxes
+                    })                
+                }
+                else {
+                    newCorrectWords.push(e.key)
+                }
+                newWordsGuessed.push(e.key)
+
+                updateRoundStatus({
+                    wordsGuessed: newWordsGuessed,
+                    correctWords: newCorrectWords,
+                })
+
                 return newLetterBoxes
             })
 
-            // Update states from roundStatus
-            if (flippedBoxes == 0) {
-                // Update round status to reflect the new incorrect word
-                newIncorrectLetters.push(e.key)
-                updateRoundStatus(prev => ({
-                    ...prev,
-                    incorrectLetters: newIncorrectLetters
-                }))
-                console.log(roundStatus)
-
-                // Fill and create incorrect letter boxes with the new data
-                updateIncorrectLetters(() => {
-                    let incorrectLetterBoxes = newIncorrectLetters.map(incorrectLetter => {
-                        return (
-                            <div className="incorrectLetterBox">
-                                <IncorrectLetterBox 
-                                    letter = {incorrectLetter}
-                                />
-                            </div>
-                        )
-                    })
-
-                    return incorrectLetterBoxes
-                })
-
-                console.log(incorrectLetters)
-                
-            }
-            else {
-                newCorrectWords.push(e.key)
-            }
-            newWordsGuessed.push(e.key)
-
-            updateRoundStatus({
-                wordsGuessed: newWordsGuessed,
-                correctWords: newCorrectWords,
-            })
+            
         }
         
     }
