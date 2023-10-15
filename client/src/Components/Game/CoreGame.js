@@ -3,6 +3,7 @@ import { useEffect } from "react";
 
 import Timer from './Timer';
 import LetterBox from "./LetterBox";
+import IncorrectLetterBox from "./InocrrectLetterBox";
 
 const CoreGame = (props) => {
     const word = props.wordData.word
@@ -10,7 +11,7 @@ const CoreGame = (props) => {
     const [roundStatus, updateRoundStatus] = React.useState({
         wordsGuessed: [],
         correctWords: [],
-        incorrectWords: []
+        incorrectLetters: []
     })
 
     const [time, updateTime] = React.useState({
@@ -20,6 +21,7 @@ const CoreGame = (props) => {
     // For every letter in a word, create a letter box for it
     const [letters, updateLetters] = React.useState(() => {
         var initialLetters = []
+
         for (let i = 0; i < word.length; i++) {
             initialLetters.push(
                 <div className="letterbox" style={{background: '#FFF'}} key = {i}>
@@ -30,8 +32,11 @@ const CoreGame = (props) => {
                 </div>
             )
         }
+
         return initialLetters
     })
+
+    const [incorrectLetters, updateIncorrectLetters] = React.useState([])
 
     // Listen for key strokes
     useEffect(() => {
@@ -42,7 +47,7 @@ const CoreGame = (props) => {
         
         let newWordsGuessed = roundStatus.wordsGuessed
         let newCorrectWords = roundStatus.correctWords
-        let newIncorrectWords = roundStatus.incorrectWords
+        let newIncorrectLetters = roundStatus.incorrectLetters
 
         
         // Only do logic if this letter has not been guessed yet
@@ -78,7 +83,31 @@ const CoreGame = (props) => {
 
             // Update states from roundStatus
             if (flippedBoxes == 0) {
-                newIncorrectWords.push(e.key)
+                // Update round status to reflect the new incorrect word
+                newIncorrectLetters.push(e.key)
+                updateRoundStatus(prev => ({
+                    ...prev,
+                    incorrectLetters: newIncorrectLetters
+                }))
+                console.log(roundStatus)
+
+                // Fill and create incorrect letter boxes with the new data
+                updateIncorrectLetters(() => {
+                    let incorrectLetterBoxes = newIncorrectLetters.map(incorrectLetter => {
+                        return (
+                            <div className="incorrectLetterBox">
+                                <IncorrectLetterBox 
+                                    letter = {incorrectLetter}
+                                />
+                            </div>
+                        )
+                    })
+
+                    return incorrectLetterBoxes
+                })
+
+                console.log(incorrectLetters)
+                
             }
             else {
                 newCorrectWords.push(e.key)
@@ -88,12 +117,10 @@ const CoreGame = (props) => {
             updateRoundStatus({
                 wordsGuessed: newWordsGuessed,
                 correctWords: newCorrectWords,
-                incorrectWords: newIncorrectWords
             })
         }
         
     }
-
 
     return(
         <div className="coreGame">
@@ -104,9 +131,9 @@ const CoreGame = (props) => {
             <div className="lettergrid">
                 {letters}
             </div>
-            <script>
-                document
-            </script>
+            <div className ="lettergrid">
+                {incorrectLetters}
+            </div>
         </div>
     )
 }

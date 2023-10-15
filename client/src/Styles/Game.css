@@ -72,16 +72,35 @@
     border: 1px solid #000;
 }
 
-.letter {
+.incorrectLetterBox {
+    width: 68px;
+    height: 96px;
+    flex-shrink: 0;
+    margin: 5px;
+
+    border-radius: 20px;
+    border: 1px solid #F00;
+    background: #FF6767;
+}
+
+
+.letter, .incorrectLetter {
     color: #FFF;
     font-family: Inter;
-    font-size: 128px;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
     text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-
     position: relative;
     text-align: center;
     top: 8%;
+    overflow: hidden;
+}
+
+.letter {
+    font-size: 128px;
+}
+
+.incorrectLetter {
+    font-size: 64px;
 }
