@@ -1,8 +1,11 @@
 .game {
     background-color: #393939;
-    justify-content: left;
-    align-items: baseline;
+    position: absolute;
+    top: 0;
+    left: 0;
     height: 100vh;
+    width: 100%;
+    overflow: auto;
 }
 
 .bold {
@@ -31,6 +34,16 @@
     padding: 12px;
 }
 
+.coreGame {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    top: 45%;
+}
+
 .hint {
     color: #FFF;
     font-family: Inter;
@@ -38,4 +51,38 @@
     font-style: normal;
     font-weight: 700;
     line-height: normal;
+    text-align: center;
+}
+
+.lettergrid
+{
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 15px;
+    justify-content: center;
+}
+
+.letterbox {
+    width: 132px;
+    height: 187px;
+    flex-shrink: 0;
+    margin: 15px;
+
+    border-radius: 20px;
+    border: 1px solid #000;
+    background: #FFF;
+}
+
+.letter {
+    color: #FFF;
+    font-family: Inter;
+    font-size: 128px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+
+    position: relative;
+    text-align: center;
+    top: 8%;
 }
