@@ -1,8 +1,16 @@
 import React from "react";
 
 const LetterBox = (props) => {
+    const styles = {
+        visibility: props.visibility,
+    }
+
     return (
-        <div className="letter">
+        <div 
+            style={styles}
+            className="letter"
+            id = {props.id}
+        >
             {props.letter}
         </div>
     )
