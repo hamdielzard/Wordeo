@@ -1,3 +1,10 @@
 .outlinetext {
     text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
 }
+
+.dividerH{
+    height:2px;
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
