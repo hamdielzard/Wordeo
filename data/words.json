@@ -179,6 +179,86 @@
             ],
             "category": "Gaming",
             "difficulty": 2
+        },
+        {
+            "word": "Volcano",
+            "hints": [
+                "Natural disaster",
+                "Molten rock and ash",
+                "Eruption"
+            ],
+            "category": "Geology",
+            "difficulty": 7
+        },
+        {
+            "word": "Chocolate",
+            "hints": [
+                "Sweet treat",
+                "Cocoa beans",
+                "Milk or dark"
+            ],
+            "category": "Food",
+            "difficulty": 3
+        },
+        {
+            "word": "Computer",
+            "hints": [
+                "Electronic device",
+                "Processes data",
+                "Has hardware and software"
+            ],
+            "category": "Technology",
+            "difficulty": 4
+        },
+        {
+            "word": "Guitar",
+            "hints": [
+                "Musical instrument",
+                "Strings",
+                "Acoustic or electric"
+            ],
+            "category": "Music",
+            "difficulty": 5
+        },
+        {
+            "word": "Soccer",
+            "hints": [
+                "Sport with a foot",
+                "Played with a ball",
+                "11 players"
+            ],
+            "category": "Sport",
+            "difficulty": 2
+        },
+        {
+            "word": "Telescope",
+            "hints": [
+                "Optical instrument",
+                "Used to observe distant objects",
+                "Has lenses and mirrors"
+            ],
+            "category": "Astronomy",
+            "difficulty": 6
+        },
+        {
+            "word": "Coffee",
+            "hints": [
+                "Beverage",
+                "Made from roasted beans",
+                "Hot or Cold"
+            ],
+            "category": "Food",
+            "difficulty": 3
+        },
+        {
+            "word": "Horror",
+            "hints": [
+                "Scary",
+                "Halloween",
+                "Spooky"
+            ],
+            "category": "Genre",
+            "difficulty": 2
         }
     ]
 }
