@@ -338,3 +338,5 @@ The frontend client will use React js.
 # Architecture
 ![block diagram](images/wordeo_arch_v2.png)
 #
+# Sequence Diagram
+![sequence diagram](images/wordeo-sequence.png)
