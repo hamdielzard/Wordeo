@@ -19,7 +19,6 @@ test('Check if Home page renders Sign In button', () => {
   expect(signInButton).toBeInTheDocument();
 });
 
-
 // Potential tests:
 // Sign in Button after signing in should be updated to say "Account"
 // PLAY button should redirect to game page

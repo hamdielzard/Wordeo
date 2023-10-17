@@ -29,5 +29,4 @@ function Play() {
     return -1;
 }
 
-
 export default Home;
