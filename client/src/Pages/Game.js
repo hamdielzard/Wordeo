@@ -12,17 +12,17 @@ const GamePage = () =>
 {
     const [gameStatus, updateGameStatus] = React.useState({
         round: 1,
-        currWord: data[0],
-        score: 0
+        score: 0,
+        currWord: data[0]
     })
 
     function roundEnd(scoreEarned) {
         console.log(scoreEarned)
 
         updateGameStatus(prev =>({
-            ...prev,
             round: prev.round + 1,
-            score: prev.score + scoreEarned
+            score: prev.score + scoreEarned,
+            currWord: data[prev.round]
         }))
     }
 
