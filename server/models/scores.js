@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const { AccountSchema } = require('./accounts');
 
 const ScoreSchema = new Schema({
     score: {
@@ -8,7 +7,7 @@ const ScoreSchema = new Schema({
         required: true
     },
     user: {
-        type: AccountSchema,
+        type: mongoose.Schema.Types.ObjectId,
         required: true
     }
 }, {timestamps: true}) // creates 'createdAt' & 'updatedAt' timestamps automatically
