@@ -6,9 +6,10 @@
 2. [Project Proposal](#project-proposal)
 3. [User Stories](#user-stories)
 4. [Architecture](#architecture)
-5. [Design](/images/design/DESIGN.md)
-6. [Meetings](https://github.com/hamdielzard/Wordeo/wiki/Meetings)
-7. [Wiki Homepage](https://github.com/hamdielzard/Wordeo/wiki)
+5. [Sequence](#sequence-diagram)
+6. [Design](/images/design/DESIGN.md)
+7. [Meetings](https://github.com/hamdielzard/Wordeo/wiki/Meetings)
+8. [Wiki Homepage](https://github.com/hamdielzard/Wordeo/wiki)
 
 # Puzzlers Team
 Dani Youn
