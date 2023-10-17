@@ -5,6 +5,7 @@ import Home from './Pages/Home.js';
 import Account from './Pages/Account.js';
 import SignIn from './Pages/SignIn.js';
 import Game from './Pages/Game.js';
+import NotFound from './Pages/NotFound.js';
 
 // Routes
 function App() {
@@ -14,6 +15,7 @@ function App() {
       <Route path='/account/signin' element={<SignIn />} />
       <Route path='/account/:user' element={<Account />} />
       <Route path='/game' element={<Game />} />
+      <Route path='*' element={<NotFound/>}/>
     </Routes>
   );
 }
