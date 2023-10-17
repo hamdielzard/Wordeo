@@ -1,0 +1,184 @@
+{
+    "words": [
+        {
+            "word": "Discord",
+            "hints": [
+                "Communication Platform",
+                "Gamer-Friendly",
+                "Voice Chat"
+            ],
+            "category": "Applications",
+            "difficulty": 1
+        },
+        {
+            "word": "Python",
+            "hints": [
+                "Programming Language",
+                "Versatile",
+                "Popular"
+            ],
+            "category": "Technology",
+            "difficulty": 1
+        },
+        {
+            "word": "Canvas",
+            "hints": [
+                "Artistic Surface",
+                "Painting",
+                "Drawing"
+            ],
+            "category": "Art",
+            "difficulty": 1
+        },
+        {
+            "word": "Galaxy",
+            "hints": [
+                "Celestial Body",
+                "Stars",
+                "Space"
+            ],
+            "category": "Science",
+            "difficulty": 2
+        },
+        {
+            "word": "Adventure",
+            "hints": [
+                "Exciting Journey",
+                "Exploration",
+                "Thrills"
+            ],
+            "category": "Entertainment",
+            "difficulty": 1
+        },
+        {
+            "word": "Pineapple",
+            "hints": [
+                "Tropical Fruit",
+                "Sweet",
+                "Juicy"
+            ],
+            "category": "Food",
+            "difficulty": 1
+        },
+        {
+            "word": "Cactus",
+            "hints": [
+                "Prickly Plant",
+                "Desert",
+                "Spikes"
+            ],
+            "category": "Nature",
+            "difficulty": 1
+        },
+        {
+            "word": "Penguin",
+            "hints": [
+                "Flightless Bird",
+                "Antarctica",
+                "Waddle"
+            ],
+            "category": "Animals",
+            "difficulty": 1
+        },
+        {
+            "word": "Piano",
+            "hints": [
+                "Musical Instrument",
+                "Keys",
+                "Strings"
+            ],
+            "category": "Music",
+            "difficulty": 1
+        },
+        {
+            "word": "Candle",
+            "hints": [
+                "Wax",
+                "Flame",
+                "Light"
+            ],
+            "category": "Objects",
+            "difficulty": 1
+        },
+        {
+            "word": "Obfuscate",
+            "hints": [
+                "Confuse",
+                "Bewilder",
+                "Make Unclear"
+            ],
+            "category": "Language",
+            "difficulty": 4
+        },
+        {
+            "word": "Voracious",
+            "hints": [
+                "Ravenous",
+                "Insatiable",
+                "Eager to Consume"
+            ],
+            "category": "Language",
+            "difficulty": 4
+        },
+        {
+            "word": "Ubiquitous",
+            "hints": [
+                "Omnipresent",
+                "Everywhere",
+                "Widespread"
+            ],
+            "category": "Language",
+            "difficulty": 3
+        },
+        {
+            "word": "Surreptitious",
+            "hints": [
+                "Secret",
+                "Stealthy",
+                "Sneaky"
+            ],
+            "category": "Language",
+            "difficulty": 6
+        },
+        {
+            "word": "Quintessential",
+            "hints": [
+                "Typical",
+                "Representative",
+                "Classic"
+            ],
+            "category": "Language",
+            "difficulty": 5
+        },
+        {
+            "word": "Bread",
+            "hints": [
+                "Food",
+                "Dough",
+                "Baked"
+            ],
+            "category": "Food",
+            "difficulty": 1
+        },
+        {
+            "word": "Overwatch",
+            "hints": [
+                "Team-Based Shooter",
+                "Blizzard",
+                "Heroes"
+            ],
+            "category": "Gaming",
+            "difficulty": 2
+        },
+        {
+            "word": "Minecraft",
+            "hints": [
+                "Sandbox Game",
+                "Building",
+                "Mining"
+            ],
+            "category": "Gaming",
+            "difficulty": 2
+        }
+    ]
+}
