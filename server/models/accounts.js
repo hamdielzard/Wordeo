@@ -21,6 +21,5 @@ const Account = mongoose.model('Account', AccountSchema);
 
 // export
 module.exports = {
-    Account,
-    AccountSchema
+    Account
 };
