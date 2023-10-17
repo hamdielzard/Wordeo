@@ -6,4 +6,5 @@ test('Check if Home page renders', () => {
   // Find image
   const wordeoLogo = screen.getByAltText(/Wordeo Logo/i);
   expect(wordeoLogo).toBeInTheDocument();
+  expect(window.location.pathname).toBe("/");
 });

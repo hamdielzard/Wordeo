@@ -16,12 +16,9 @@ function Home() {
             </div>
             <div className='homepageInteractive'>
                 <Button label="PLAY" onClick={Play} type="primary" size="large" />
-                <Button label="Leaderboards" onClick={Leaderboards} type="primary" size="medium" />
-                <Button label="Music" onClick={Music} type="primary" size="medium" />
-                <Button label="SFX" onClick={SFX} type="primary" size="medium" />
             </div>
             <div className="homepageFooter">
-                Login to save your progress, compete on the leaderboards, play online, and earn coins!
+                Login to save your progress and earn coins!
             </div>
         </div>
     );
@@ -31,21 +28,5 @@ function Play() {
     // Redirect to game page
     return -1;
 }
-
-function Leaderboards() {
-    // Redirect to leaderboards page
-    return -1;
-}
-
-function Music() {
-    // Disable music across the game
-    return -1;
-}
-
-function SFX() {
-    // Disable SFX across the game
-    return -1;
-}
-
 
 export default Home;
