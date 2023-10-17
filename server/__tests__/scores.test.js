@@ -1,5 +1,5 @@
 const server = require("../server");
-const Score = require("../models/scores");
+const { Score, Modes } = require("../models/scores");
 const { Account } = require("../models/accounts");
 const supertest = require("supertest");
 const mongoose = require("mongoose");
@@ -16,7 +16,7 @@ beforeEach(async () => {
     const testAccount = new Account({ user_id: 'user1', user_name: 'test1', password: 'pass' });
     const accountDoc = await testAccount.save();
     testAccountID = accountDoc._id;
-    const testScore = new Score({ score: 999, user: testAccountID });
+    const testScore = new Score({ score: 999, user: testAccountID, gameMode: Modes.Solo });
     await testScore.save();
 });
 
@@ -31,7 +31,7 @@ afterEach(async () => {
 
 describe('POST /scores', () => {
     it('on success, should return the created result with an http status 200', async () => {
-        const payload = { score: 111, userID: testAccountID };
+        const payload = { score: 111, userID: testAccountID, gameMode: Modes.Solo };
         const res = await supertest(server)
             .post('/scores')
             .send(payload)
@@ -42,9 +42,11 @@ describe('POST /scores', () => {
     });
 
     it('on fail due to a database error, should return an http status 500', async () => {
+        const payload = { score: 111, userID: testAccountID, gameMode: Modes.Solo };
         await mongoose.connection.close();
         const res = await supertest(server)
             .post('/scores')
+            .send(payload)
             .set('Content-Type', 'application/json');
         expect(res.status).toEqual(500);
     });
@@ -52,19 +54,29 @@ describe('POST /scores', () => {
     it('on no user matched, should return an http status 404', async () => {
         // delete the existing account
         await Account.deleteOne({ _id:  testAccountID});
-        const payload = { score: 999, userID: testAccountID };
+        const payload = { score: 999, userID: testAccountID, gameMode: Modes.Solo  };
         const res = await supertest(server)
             .post('/scores')
             .send(payload)
             .set('Content-Type', 'application/json');
         expect(res.status).toEqual(404);
     });
+
+    it('on an invalid game mode, should return an http status 400', async () => {
+        // delete the existing account
+        const payload = { score: 999, userID: testAccountID, gameMode: 'yolo'  };
+        const res = await supertest(server)
+            .post('/scores')
+            .send(payload)
+            .set('Content-Type', 'application/json');
+        expect(res.status).toEqual(400);
+    });
 });
 
 describe('GET /scores', () => {
     it('should return the list of all words', async () => {
         // add a new score
-        const newScore = new Score({ score: 999, user: testAccountID});
+        const newScore = new Score({ score: 999, user: testAccountID, gameMode: Modes.Solo });
         await newScore.save();
         const res = await supertest(server)
             .get('/scores');
@@ -76,7 +88,7 @@ describe('GET /scores', () => {
         // add a new score with a different user
         const testAccount2 = new Account({ user_id: 'user2', user_name: 'test2', password: 'pass' });
         const accountDoc = await testAccount2.save();
-        const newScore = new Score({ score: 111, user: accountDoc._id });
+        const newScore = new Score({ score: 111, user: accountDoc._id, gameMode: Modes.Solo });
         await newScore.save();
         const res = await supertest(server)
             .get(`/scores?userID=${ accountDoc._id }`);
@@ -84,10 +96,19 @@ describe('GET /scores', () => {
         expect(res.body).toHaveLength(1);
     });
 
+    it('should filter by the game mode when given a query parameter', async () => {
+        // add a new score with a different user
+        const newScore = new Score({ score: 111, user: testAccountID, gameMode: Modes.Multi });
+        await newScore.save();
+        const res = await supertest(server)
+            .get(`/scores?gameMode=${ Modes.Multi }`);
+        expect(res.status).toEqual(200);
+        expect(res.body).toHaveLength(1);
+    });
+
     it('should limit the number of data when given a query parameter', async () => {
         // add a new score
-        const accountDoc = await Account.findOne();
-        const newScore = new Score({ score: 999, user: testAccountID });
+        const newScore = new Score({ score: 999, user: testAccountID, gameMode: Modes.Solo });
         await newScore.save();
         const res = await supertest(server)
             .get('/scores?count=1');

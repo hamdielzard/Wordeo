@@ -1,6 +1,12 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+// enumerations of game types
+const Modes = Object.freeze({
+    Solo: 'solo',
+    Multi: 'multi'
+});
+
 const ScoreSchema = new Schema({
     score: {
         type: Number,
@@ -9,11 +15,21 @@ const ScoreSchema = new Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
         required: true
+    },
+    gameMode: {
+        type: String,
+        enum: Object.values(Modes),
+        required: true
     }
 }, {timestamps: true}) // creates 'createdAt' & 'updatedAt' timestamps automatically
+
+Object.assign(ScoreSchema.statics, { Modes });
 
 // mongoose will reference the collection 'Scores' from the database
 const Score = mongoose.model('Score', ScoreSchema);
 
 // export
-module.exports = Score;
+module.exports = {
+    Score,
+    Modes
+};
