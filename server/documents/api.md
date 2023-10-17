@@ -7,7 +7,7 @@
 
 ### Words
 ---
-#### Create a Word
+#### Create a word
 `POST /words/word`
 
 Creates a single word in the database
@@ -29,7 +29,7 @@ request.post('/words/word', payload);
 ```
 
 ---
-#### Get a Word
+#### Get a word
 `GET /words/word`
 
 Finds a list of words in the database by a given "word"
@@ -48,7 +48,7 @@ request.get('/words/word', payload);
 ```
 
 ---
-#### Update a Word
+#### Update a word
 `PATCH /words/word`
 
 Finds a single word from the database
@@ -69,7 +69,7 @@ request.patch('/words/word', payload);
 ```
 
 ---
-#### Delete a Word
+#### Delete a word
 `DELETE /words/word`
 
 Deletes a single word from the database
@@ -115,7 +115,7 @@ request.post('/words', payload);
 ```
 
 ---
-#### Get Words
+#### Get words
 `GET /words`
 
 Gets a list of words or all words in the database
@@ -140,3 +140,57 @@ request.get('/words?count=1');         // gets 1 random word from the database
 ---
 
 ### Scores
+
+---
+#### Create a score
+`POST /scores`
+
+Creates a score in the database
+
+##### Request Body
+- `score` (number): The user's score
+- `userID` (ObjectId): The MongoDB object id of the user
+- `mode` (string, enum): The game mode this score was obtained from
+
+##### Returns
+Returns the created score document in the database.
+
+##### Example
+```
+/*
+The Enum from ./server/models/scores.js
+{
+    Solo: 'solo',
+    Multi: 'multi'
+}
+*/
+
+// ... obtain UserDocument
+const user = UserDocument._id;
+const payload = { score: 111, userID: user, gameMode: Modes.Solo };
+
+request.post('/scores', payload);
+```
+
+---
+#### Get scores
+`POST /scores`
+
+Creates a score in the database
+
+##### Request Parameters
+- `userID` (ObjectId): The MongoDB object id of the user
+- `gameMode` (string, enum): The game mode this score was obtained from
+
+##### Returns
+Returns a list of scores from the database.
+
+##### Example
+```
+request.get('/scores');                 // gets all scores
+request.get('/scores?gameMode=solo');   // gets all scores with the category "solo"
+request.get('/scores?userID={_id}');    // gets all words with the user with the given id
+request.get('/scores?count=10');         // gets top 10 scores from the database
+```
+
+---
