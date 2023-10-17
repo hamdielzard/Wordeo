@@ -1,0 +1,36 @@
+name: Test Frontend
+
+on:
+  # On every push to main, and pull request for merging to main, run this action.
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  Test:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./client
+    
+    steps:
+      # Checkout Code
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # Test on Node 20
+      - name: Setup Node ver. 20
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache-dependency-path: package-lock.json
+
+      # Install dependencies
+      - name: Install dependencies
+        run: npm ci
+
+      # Test client
+      - name: Run test
+        run: npm test

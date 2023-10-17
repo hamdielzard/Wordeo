@@ -21,18 +21,18 @@ const Button = ({ label, onClick, type, size }) => {
         buttonType = 'button-toggles';
     }
 
-    let buttonSize = 32;
+    let buttonTextSize = 32;
 
     if (size === 'small') {
-        buttonSize = 16;
+        buttonTextSize = 16;
     }
     else if (size === 'large') {
-        buttonSize = 48;
+        buttonTextSize = 48;
     }
 
 
     return (
-        <button className={buttonType} style={{ fontSize: buttonSize }} onClick={onClick}>
+        <button className={buttonType} style={{ fontSize: buttonTextSize }} onClick={onClick}>
             {label}
         </button>
     );

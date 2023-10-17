@@ -46,7 +46,7 @@ const SignInPage = () => {
     return (
         <div className='signin'>
             <div style={{justifyContent:'center',paddingBottom:'5%'}}>
-                <img src={WordeoLogo} alt='Wordeo'/>
+                <img src={WordeoLogo} alt='Wordeo' onClick={() => {window.location = "/"}} style={{cursor:'pointer'}}/>
             </div>
 
             <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gridGap: 40,justifyContent:'center' }}>
