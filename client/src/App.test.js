@@ -1,8 +1,11 @@
 import { render, screen } from '@testing-library/react';
-import App from './App';
+import Home from './Pages/Home';
 
-test('renders learn react link', () => {
-  render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+test('Check if Home page renders', () => {
+  render(<Home />);
+  // Find image
+  const wordeoLogo = screen.getByAltText(/Wordeo Logo/i);
+  expect(wordeoLogo).toBeInTheDocument();
+  expect(window.location.pathname).toBe("/");
+  
 });

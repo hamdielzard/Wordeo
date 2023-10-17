@@ -37,6 +37,7 @@ body {
     align-items: center;
     width: 100%;
     height: 75vh;
+    max-width: 80%;
 }
 
 .homepageFooter {
@@ -45,12 +46,15 @@ body {
     align-items: center;
     width: 100%;
     height: 10vh;
+    text-align: center;
+    color: #003366;
+    font-weight: 500;
+    font-size: 24px;
 }
 
-
-.musicSFXToggle {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-    width: 100%;
+.signInButton {
+    position: absolute;
+    right: 0;
+    padding-right: 2%;
+    opacity: 0.5;
 }
