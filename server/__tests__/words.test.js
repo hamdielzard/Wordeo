@@ -192,7 +192,7 @@ describe('POST /words', () => {
     });
 });
 
-// get a single word
+// get all words
 describe('GET /words', () => {
     it('should return the list of all words', async () => {
         // add a new word
@@ -214,7 +214,7 @@ describe('GET /words', () => {
         expect(res.body).toHaveLength(1);
     });
 
-    it('should filter by the category when given a query parameter', async () => {
+    it('should filter by the difficulty when given a query parameter', async () => {
         // add another word with a different difficulty
         const newWord = new Word({ word: "new word", hints: ["test1", "test2"], category: "testing", difficulty: 1 });
         await newWord.save();
