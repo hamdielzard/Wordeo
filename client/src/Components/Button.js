@@ -2,6 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import '../Styles/Button.css';
 
+/**
+ * Button component in the style of Wordeo
+ * @param label - String that is displayed on the button
+ * @param onClick - Function that is called when the button is clicked
+ * @param type - String that determines the type of button [primary, secondary, ternary, toggles]
+ * @param size - String that determines the text size of the button [small, medium, large]
+ */
 const Button = ({ label, onClick, type, size }) => {
 
     let buttonType = 'button-primary';
@@ -14,18 +21,18 @@ const Button = ({ label, onClick, type, size }) => {
         buttonType = 'button-toggles';
     }
 
-    let buttonSize = 32;
+    let buttonTextSize = 32;
 
     if (size === 'small') {
-        buttonSize = 16;
+        buttonTextSize = 16;
     }
     else if (size === 'large') {
-        buttonSize = 48;
+        buttonTextSize = 48;
     }
 
 
     return (
-        <button className={buttonType} style={{ fontSize: buttonSize }} onClick={onClick}>
+        <button className={buttonType} style={{ fontSize: buttonTextSize }} onClick={onClick}>
             {label}
         </button>
     );

@@ -8,24 +8,28 @@ const Word = require('../models/words');
 
 // create a single word
 router.post("/word", async (req, res) => {
-    // the JSON request body: e.g., {"word": "my word", "hints": ["hint1", "hint2"]}
-    const word = req.body.word;     // a single word
-    const hints = req.body.hints;   // list of hints for the word
+    // the JSON request body: e.g., {"word": "my word", "hints": ["hint1", "hint2"], "category": "Vocabulary", "difficulty": 1}
+    const word = req.body.word;             // a single word
+    const hints = req.body.hints;           // list of hints for the word
+    const category = req.body.category;     // category for the word
+    const difficulty = req.body.difficulty; // difficulty of a word from 0 
 
     const newWord = new Word({
         word: word,
-        hints: hints
+        hints: hints,
+        category: category,
+        difficulty: difficulty
     });
 
     try {
         const result = await newWord.save();
         res.status(200).json(result);
     } catch (err) {
-        res.status(404).json({ message: err.message });
+        res.status(400).json({ message: err.message });
     }
 });
 
-// read multiple words
+// fetch a word by it's "word"
 // Note: this could return multiple words since a word is not unique
 router.get("/word", async (req, res) => {
     // the JSON request body: e.g., {"word": "my word"}
@@ -35,7 +39,7 @@ router.get("/word", async (req, res) => {
         const result = await Word.find({ word: word });
         res.status(200).json(result);
     } catch (err) {
-        res.status(404).json({ message: err.message });
+        res.status(500).json({ message: err.message });
     }
 });
 
@@ -52,7 +56,7 @@ router.patch("/word", async (req, res) => {
         const result = await Word.updateOne({ word: word, hints: hint }, { hints: newHints });
         res.status(200).json(result);
     } catch (err) {
-        res.status(404).json({ message: err.message });
+        res.status(500).json({ message: err.message });
     }
 });
 
@@ -67,32 +71,55 @@ router.delete("/word", async (req, res) => {
         const result = await Word.deleteOne({ word: word, hints: hint });
         res.status(200).json(result);
     } catch (err) {
-        res.status(404).json({ message: err.message });
+        res.status(500).json({ message: err.message });
     }
 });
 
 // create multiple words
 router.post("/", async (req, res) => {
-    // the JSON request body: e.g., {"words": [{"word": "my word", "hints": ["hint1", "hint2"]}]}
+    // the JSON request body: e.g., {"words": [{"word": "my word", "hints": ["hint1", "hint2"],...}, {...}]}
     const words = req.body.words;   // list of word & hints pair
 
     try {
         const result = await Word.insertMany(words);
         res.status(200).json(result);
     } catch (err) {
-        res.status(404).json({ message: err.message });
-    } 
+        res.status(400).json({ message: err.message });
+    }
 });
 
 // get all words
+// you can filter by category or difficulty using query parameters: e.g., ?difficulty=1&category=Odd
+// when specifying a count int the query parameters, the resulting list will be a randomized 
 router.get("/", async (req, res) => {
+    var filter = {};
+
+    // filter by category
+    if (req.query.category) {
+        filter.category = req.query.category;
+    }
+
+    // filter by difficulty
+    if (req.query.difficulty) {
+        filter.difficulty = req.query.difficulty;
+    }
+
     try {
-        const result = await Word.find();
+        var result;
+        // limit the number of items used and return randomized list
+        if (req.query.count) {
+            result = await Word.aggregate([
+                { $match: filter },
+                { $sample: { size: parseInt(req.query.count) } }
+            ]);
+        } else {
+            result = await Word.find(filter);
+        }
         res.status(200).json(result);
     } catch (err) {
-        res.status(404).json({ message: err.message });
+        res.status(500).json({ message: err.message });
     }
-})
+});
 
 // export
 module.exports = router;

@@ -1,5 +1,3 @@
-html {}
-
 body {
     background: #F0F0F0;
     font-family: Inter, Arial, Helvetica, sans-serif;
@@ -10,63 +8,56 @@ body {
     padding: 0px;
     height: 100vh;
     width: 100%;
-    overflow: hidden;
 }
 
-.homepage {
-    /* TODO: Can't get this div to take up the entire screen */
+.signin {
     display: flex;
     justify-content: left;
     flex-direction: column;
     align-items: center;
-    width: 100%;
-    height: 100%;
+    padding-left: 15%;
+    padding-right: 15%;
 }
 
-.homepageHeader {
+.inputHolder {
     display: flex;
     justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 10vh;
-}
-
-.homepageInteractive {
-    display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    text-decoration: none;
-    width: 100%;
-    height: 75vh;
-    max-width: 80%;
+    text-align: center;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background-color: #4285F4;
+    border-radius: 10px;
+    border: 5px solid;
+    border-color: #5B42F4;
 }
 
-.homepageFooter {
+.inputField {
     display: flex;
     justify-content: center;
     align-items: center;
+    text-align: center;
+    padding-top: 3%;
+    padding-bottom: 3%;
+    background-color: #FFF;
+    border-radius: 15px;
+    border: 2px solid;
+    border-color: #5B42F4;
+    margin-bottom: 5%;
+    font-size: 24px;
+    max-width: 320px;
     width: 100%;
-    height: 10vh;
+}
+
+.signinFooter {
+    justify-content: center;
+    align-items: center;
     text-align: center;
     color: #003366;
     font-weight: 500;
     font-size: 24px;
-}
-
-.musicSFXToggle {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-    width: 100%;
-}
-
-.noStyle {
-    text-decoration: none;
-
-.signInButton {
-    position: absolute;
-    right: 0;
-    padding-right: 2%;
-    opacity: 0.5;
+    margin-top: 128px;
 }
