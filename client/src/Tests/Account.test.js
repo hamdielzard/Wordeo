@@ -37,7 +37,7 @@ test ('check headers render',()=>{
     </MemoryRouter>
   )
   expect(screen.getByText(/Highest Score/)).toBeInTheDocument()
-  expect(screen.getByText(/Games Played/)).toBeInTheDocument()
+  expect(screen.getByText(/Words Guessed/)).toBeInTheDocument()
   expect(screen.getByText(/Achievements/)).toBeInTheDocument()
 })
 

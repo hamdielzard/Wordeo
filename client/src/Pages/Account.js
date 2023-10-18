@@ -26,7 +26,7 @@ const AccountPage = () =>
     const [userData,setUserData] = useState({
         username:user,
         highscore:100,
-        games:200,
+        guessed:200,
         description:'This is template information to be overwritten outside tests',
         achievements:[
             {
@@ -89,7 +89,7 @@ const AccountPage = () =>
                 {
                     username:userData.username,
                     highscore:userData.highscore,
-                    games:userData.games,
+                    guessed:userData.guessed,
                     description:desc,
                     achievements:userData.achievements
                 }
@@ -156,8 +156,8 @@ const AccountPage = () =>
                         <h1 color='#FCFCFC'>Highest Score</h1>
                         <h1 id='highscore'>{userData.highscore}</h1>
 
-                        <h1>Games Played</h1>
-                        <h1 id='played'>{userData.games}</h1>
+                        <h1>Words Guessed</h1>
+                        <h1 id='played'>{userData.guessed}</h1>
                     </div>
                     <div className='accountColoumn' style={{display:'inline-block', position:'absolute',top:'15%',left:'30%'}}>
                         <div id='desc' style={{marginBtoom:10,wordWrap:'break-word',maxWidth:'960px'}}>
