@@ -19,11 +19,16 @@ const GamePage = () =>
     function roundEnd(scoreEarned) {
         console.log(scoreEarned)
 
-        updateGameStatus(prev =>({
-            round: prev.round + 1,
-            score: prev.score + scoreEarned,
-            currWord: data[prev.round]
-        }))
+        if (gameStatus.round+1 <= data.length) {
+            updateGameStatus(prev =>({
+                round: prev.round + 1,
+                score: prev.score + scoreEarned,
+                currWord: data[prev.round]
+            }))
+        }
+        else {
+
+        }
     }
 
     return(
