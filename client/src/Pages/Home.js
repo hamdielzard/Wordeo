@@ -16,9 +16,7 @@ function Home() {
                 </div>
             </div>
             <div className='homepageInteractive'>
-                <Link to='/game' className='noStyle'>
-                    <Button label="PLAY" type="primary" size="large" />       
-                </Link>
+                <Button label="PLAY" onClick={() => { window.location = "/game" }} type="primary" size="large" />       
                 <Button label="Leaderboards" onClick={() => { }} type="primary" size="medium" />
                 <div className='musicSFXToggle'>
                     <Button label="Music" onClick={() => { }} type="toggles" size="medium" />

@@ -16,9 +16,7 @@ const GameOver = (props) => {
                 + {props.coins} coins
             </div>
             <Button label="Play again?" onClick={props.restartGame} type="primary" size="medium" />
-            <Link to='/' className='noStyle'>
-                <Button label="Leave game" onClick={() => {}} type="secondary" size="medium" />
-            </Link>
+            <Button label="Leave game" onClick={() => {window.location = "/"}} type="secondary" size="medium" />
         </div>
     )
 }
