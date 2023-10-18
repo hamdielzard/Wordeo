@@ -1,0 +1,138 @@
+.game {
+    background-color: #393939;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100%;
+    overflow: auto;
+}
+
+.bold {
+    font-weight: bold;
+    padding-left: 10px;
+}
+
+.gameheader {
+    position: fixed;
+    width: 100%;
+    height: 77px;
+    background-color:#FFF;
+    display: flex;
+    justify-content: space-between;
+
+    color: #036;
+    font-family: Inter;
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.gameheader--score, .gameheader--name, .gameheader--round {
+    display: flex;
+    padding: 12px;
+}
+
+.coreGame, .gameOver {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    top: 45%;
+}
+
+.hint {
+    color: #FFF;
+    font-family: Inter;
+    font-size: 64px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    text-align: center;
+}
+
+.lettergrid
+{
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 15px;
+    justify-content: center;
+}
+
+.letterbox {
+    width: 132px;
+    height: 187px;
+    flex-shrink: 0;
+    margin: 15px;
+
+    border-radius: 20px;
+    border: 1px solid #000;
+}
+
+.incorrectLetterBox {
+    width: 68px;
+    height: 96px;
+    flex-shrink: 0;
+    margin: 5px;
+
+    border-radius: 20px;
+    border: 1px solid #F00;
+    background: #FF6767;
+}
+
+
+.letter, .incorrectLetter {
+    color: #FFF;
+    font-family: Inter;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+    position: relative;
+    text-align: center;
+    top: 8%;
+    overflow: hidden;
+}
+
+.letter {
+    font-size: 128px;
+}
+
+.incorrectLetter {
+    font-size: 64px;
+}
+
+/* GAME OVER CSS */
+.gameOver--text {
+    color: #42FF00;
+    text-align: center;
+    font-family: Inter;
+    font-size: 96px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+
+.gameOver--score {
+    color: #F5F5F5;
+    text-align: center;
+    font-family: Inter;
+    font-size: 128px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+
+.gameOver--coins {
+    color: #72A2F1;
+    font-family: Inter;
+    font-size: 48px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+
+    margin-bottom: 25px;
+}
