@@ -34,7 +34,7 @@
     padding: 12px;
 }
 
-.coreGame {
+.coreGame, .gameOver {
     position: relative;
     display: flex;
     flex-direction: column;
@@ -103,4 +103,36 @@
 
 .incorrectLetter {
     font-size: 64px;
+}
+
+/* GAME OVER CSS */
+.gameOver--text {
+    color: #42FF00;
+    text-align: center;
+    font-family: Inter;
+    font-size: 96px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+
+.gameOver--score {
+    color: #F5F5F5;
+    text-align: center;
+    font-family: Inter;
+    font-size: 128px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+
+.gameOver--coins {
+    color: #72A2F1;
+    font-family: Inter;
+    font-size: 48px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+
+    margin-bottom: 25px;
 }
