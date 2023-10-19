@@ -52,9 +52,6 @@ const CoreGame = (props) => {
         let newCorrectLetters = roundStatus.correctLetters
         let newIncorrectLetters = roundStatus.incorrectLetters
 
-        console.log("RAN")
-        console.log(roundStatus)
-
         // Only do logic if this letter has not been guessed yet
         if (!roundStatus.wordsGuessed.includes(e.key))
         {  
@@ -165,7 +162,6 @@ const CoreGame = (props) => {
 
     return(
         <div className="coreGame">
-            <Timer initialTime={30} onEnd={() => {console.log("Time's up!")}}/>
             <div className="hint">
                 {props.wordData.hints[0]}
             </div>
