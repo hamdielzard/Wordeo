@@ -22,6 +22,9 @@ const AccountPage = () =>
     const [editing,setEditing] = useState(false);
     const [wantDelete,setDelete] = useState(false);
 
+    const [reply,setReply] = useState({})
+    const APIPath = 'http://localhost:8080'
+
     //stub data
     const [userData,setUserData] = useState({
         username:user,
@@ -56,10 +59,38 @@ const AccountPage = () =>
             if(canLogin)
             {
                 //logged in, so get auth from backend to update the data template
-                
+                callAPIAccount(cookie)
             }
         }
     },[])
+
+    async function callAPIAccount(name)
+    {
+        const reqJson = 
+        {
+            userID: name
+        }
+
+        const res = await fetch(APIPath+'/api/show', {
+            method: 'POST',
+            headers: {
+                "Content-type": "application/json"
+            },
+            body: (reqJson)
+        });
+
+        const data = await res.json()
+
+        if(data)
+            setReply(data)
+        else
+            {
+                setReply("An error occured")
+                console.log('error')
+            }
+
+        console.log(reply)
+    }
 
     //login check with backend is skipped if in test mode
     //  (test renders with the template info)
@@ -123,8 +154,14 @@ const AccountPage = () =>
     {
         //backend deletion go here
         //remove cookie
+        callAPIDelete({user})
         document.cookie = "user=;path=/;expires=Thu, 01 Jan 1970 00:00:00 GMT"
         toHome();
+    }
+
+    async function callAPIDelete(name)
+    {
+        console.log('delete account '+name)
     }
 
     function toHome()
