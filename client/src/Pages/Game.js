@@ -18,7 +18,7 @@ import data from '../TEMPDB/data';
 
 let timeLost = 0
 
-const GamePage = () =>
+const GamePage = ({initialState = false}) =>
 {
     const cookie = ('; '+document.cookie).split(`; user=`).pop().split(';')[0];
     var user;
