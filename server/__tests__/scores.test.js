@@ -71,6 +71,16 @@ describe('POST /scores', () => {
             .set('Content-Type', 'application/json');
         expect(res.status).toEqual(400);
     });
+
+    it('on an negative score, should return an http status 400', async () => {
+        // delete the existing User
+        const payload = { score: -50, userID: testAccountID, gameMode: Modes.Solo  };
+        const res = await supertest(server)
+            .post('/scores')
+            .send(payload)
+            .set('Content-Type', 'application/json');
+        expect(res.status).toEqual(400);
+    });
 });
 
 describe('GET /scores', () => {

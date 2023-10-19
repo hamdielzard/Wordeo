@@ -14,7 +14,13 @@ router.post("/", async (req, res) => {
     const mode = req.body.gameMode;
 
     try {
-        if (Object.values(Modes).includes(req.body.gameMode)) {
+        if (!Object.values(Modes).includes(req.body.gameMode)) {
+            // client provided non existing game mode
+            res.status(400).json({ message: `the provided game mode: ${mode} was invalid` });
+        } else if (parseInt(score) < 0) {
+            // client provided a negative score
+            res.status(400).json({ message: `negative scores are not allowed` });
+        } else {
             const user = await User.exists({ _id: userID });
             const newScore = new Score({
                 score: score,
@@ -28,8 +34,6 @@ router.post("/", async (req, res) => {
             } else {
                 res.status(404).json({ message: `no user with given id: ${userID} was found` });
             }
-        } else {
-            res.status(400).json({ message: `the provided game mode: ${mode} was invalid` });
         }
     } catch (err) {
         res.status(500).json({ message: err.message });
