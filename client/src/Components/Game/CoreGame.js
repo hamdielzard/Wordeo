@@ -3,7 +3,7 @@ import { useEffect } from "react";
 
 import Timer from './Timer';
 import LetterBox from "./LetterBox";
-import IncorrectLetterBox from "./InocrrectLetterBox";
+import IncorrectLetterBox from "./IncorrectLetterBox";
 
 const CoreGame = (props) => {
     let word = props.wordData.word
@@ -165,7 +165,7 @@ const CoreGame = (props) => {
 
     return(
         <div className="coreGame">
-            <Timer />
+            <Timer initialTime={30} onEnd={() => {console.log("Time's up!")}}/>
             <div className="hint">
                 {props.wordData.hints[0]}
             </div>
