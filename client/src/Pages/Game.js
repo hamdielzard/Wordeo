@@ -15,7 +15,7 @@ import data from '../TEMPDB/data';
 // Coin calculation
 // 
 
-const GamePage = () =>
+const GamePage = ({initialState = false}) =>
 {
     const cookie = ('; '+document.cookie).split(`; user=`).pop().split(';')[0];
     var user;
@@ -28,7 +28,7 @@ const GamePage = () =>
         round: 1,
         score: 0,
         currWord: data[0],
-        gameEnd: false,
+        gameEnd: initialState,
         roundTime: 0
     })
 
