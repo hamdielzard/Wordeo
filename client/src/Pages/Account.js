@@ -49,8 +49,13 @@ const AccountPage = () =>
         if((process.env.JEST_WORKER_ID === undefined || process.env.NODE_ENV !== 'test'))
         {
             //check for cookie to set canLogin (stub for now)
-            setCanLogin(true);
+            const cookie = ('; '+document.cookie).split(`; user=`).pop().split(';')[0];
 
+            setCanLogin(false);
+            if(cookie===user)
+            {
+                setCanLogin(true);
+            }
             if(canLogin)
             {
                 //logged in, so get auth from backend to update the data template
@@ -106,6 +111,7 @@ const AccountPage = () =>
     function handleLogout()
     {
         //remove login cookie here
+        document.cookie = "user=;path=/;expires=Thu, 01 Jan 1970 00:00:00 GMT"
         toHome();
     }
 
@@ -118,7 +124,8 @@ const AccountPage = () =>
     function doDelete()
     {
         //backend deletion go here
-        //also remove cookie
+        //remove cookie
+        document.cookie = "user=;path=/;expires=Thu, 01 Jan 1970 00:00:00 GMT"
         toHome();
     }
 

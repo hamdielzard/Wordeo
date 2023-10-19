@@ -17,6 +17,13 @@ import data from '../TEMPDB/data';
 
 const GamePage = () =>
 {
+    const cookie = ('; '+document.cookie).split(`; user=`).pop().split(';')[0];
+    var user;
+    if(cookie.length>0)
+        user=cookie;
+    else
+        user='Guest';
+
     const [gameStatus, updateGameStatus] = React.useState({
         round: 1,
         score: 0,
@@ -63,7 +70,7 @@ const GamePage = () =>
                 score = {gameStatus.score}
                 round = {gameStatus.round}
                 maxRound = {data.length}
-                name = "Player1"
+                name = {user}
             />
             {gameStatus.gameEnd ? 
             <GameOver 
