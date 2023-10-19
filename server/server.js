@@ -20,7 +20,7 @@ app.use(jsonParser);
 app.use(urlencodedParser);
 app.use('/accounts', accounts);
 app.use('/words', words);
-app.use('scores', scores);
+app.use('/scores', scores);
 app.use('/api', AuthRoute)
 
 // test endpoint
