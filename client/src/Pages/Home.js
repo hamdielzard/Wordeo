@@ -21,13 +21,7 @@ function Home() {
                 </div>
             </div>
             <div className='homepageInteractive'>
-                <Button label="PLAY" onClick={() => { window.location = "/game" }} type="primary" size="large" />       
-                <Button label="Leaderboards" onClick={() => { }} type="primary" size="medium" />
-                <div className='musicSFXToggle'>
-                    <Button label="Music" onClick={() => { }} type="toggles" size="medium" />
-                    <Button label="SFX" onClick={() => { }} type="toggles" size="medium" />
-                </div>
-
+                <Button label="PLAY" onClick={() => { window.location = "/game" }} type="primary" size="large" />
             </div>
             <div className="homepageFooter">
                 Login to save your progress!

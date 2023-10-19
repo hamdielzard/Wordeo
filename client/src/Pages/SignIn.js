@@ -46,7 +46,7 @@ const SignInPage = () => {
 
             //if validated add cookie
             document.cookie = "user="+name+";domain=;path=/";
-            window.location = '/account/'+name;
+            window.location = '/';
             //otherwise update warning message
         }
     }

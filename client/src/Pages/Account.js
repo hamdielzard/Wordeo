@@ -245,7 +245,7 @@ const AccountPage = () =>
             return(
                 userData.achievements.map(({title,desc})=>{
                 return (
-                    <Achievement name={title} description={desc}/>
+                    <Achievement key={(title,desc)} name={title} description={desc}/>
                 )})
             )
         else
