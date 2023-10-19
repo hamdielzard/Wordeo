@@ -51,14 +51,12 @@ const AccountPage = () =>
             //check for cookie to set canLogin (stub for now)
             const cookie = ('; '+document.cookie).split(`; user=`).pop().split(';')[0];
 
-            setCanLogin(false);
-            if(cookie===user)
-            {
-                setCanLogin(true);
-            }
+            setCanLogin((cookie===user));
+
             if(canLogin)
             {
                 //logged in, so get auth from backend to update the data template
+                
             }
         }
     },[])

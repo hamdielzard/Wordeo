@@ -1,7 +1,7 @@
 //the page for signing in or signing up
 
 import React from 'react';
-import { useLayoutEffect } from 'react';
+import { useLayoutEffect, useState } from 'react';
 import WordeoLogo from '../Images/WordeoLogo.png';
 import '../Styles/SignIn.css';
 import '../Styles/General.css'
@@ -9,9 +9,47 @@ import Button from '../Components/Button';
 
 const SignInPage = () => {
 
+    const [reply,setReply] = useState({})
+    const APIPath = 'http://localhost:8080'
+
     useLayoutEffect(()=>{
         document.body.style.backgroundColor = "#FFF";
     })
+
+    function callAPIGet(path)
+    {
+        fetch(APIPath+path)
+        .then(
+            (res)=>(res.json())
+        )
+        .then(
+            (data)=>setReply(data)
+        )
+        .catch(
+            error => {
+                console.error('There was an Error',error)
+            }
+        )
+    }
+
+    function callAPIRegister(name,pass)
+    {
+        const reqJson = 
+        {
+            userName: name,
+            password: pass
+        }
+        const reqOptions =
+        {
+            method:'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(reqJson)
+        }
+
+        fetch(APIPath+'/api/register/', reqOptions)
+        .then(response => response.json())
+        .then(data => setReply(data));
+    }
 
     function validateSignUp()
     {
@@ -24,10 +62,12 @@ const SignInPage = () => {
         if(!error)
         {
             //backend calls go here
-
-            //if validated add cookie
+            setReply('not changed')
+            callAPIRegister(name,password)
+            console.log(reply)
+            //if validated or in test mode add cookie
             document.cookie = "user="+name+";domain=;path=/";
-            window.location = '/account/'+name;
+          //  window.location = '/account/'+name;
             //otherwise update warning message
         }
     }
@@ -44,7 +84,7 @@ const SignInPage = () => {
         {
             //backend calls go here
 
-            //if validated add cookie
+            //if validated or in test mode add cookie
             document.cookie = "user="+name+";domain=;path=/";
             window.location = '/';
             //otherwise update warning message
