@@ -3,7 +3,7 @@ const router = express.Router();
 
 // load models
 const { Score, Modes } = require('../models/scores');
-const { Account } = require("../models/accounts"); // TODO: match the updated acount (or user) model
+const User  = require("../models/user"); // TODO: match the updated acount (or user) model
 
 // endpoints
 
@@ -15,7 +15,7 @@ router.post("/", async (req, res) => {
 
     try {
         if (Object.values(Modes).includes(req.body.gameMode)) {
-            const user = await Account.exists({ _id: userID });
+            const user = await User.exists({ _id: userID });
             const newScore = new Score({
                 score: score,
                 user: userID,

@@ -1,6 +1,6 @@
 const server = require("../server");
 const { Score, Modes } = require("../models/scores");
-const { Account } = require("../models/accounts");
+const User = require("../models/user");
 const supertest = require("supertest");
 const mongoose = require("mongoose");
 require("dotenv").config();
@@ -13,7 +13,7 @@ beforeEach(async () => {
     await mongoose.connect(address);
 
     // seed some fake data
-    const testAccount = new Account({ user_id: 'user1', user_name: 'test1', password: 'pass' });
+    const testAccount = new User({ user_id: 'user1', userName: 'test1', password: 'pass' });
     const accountDoc = await testAccount.save();
     testAccountID = accountDoc._id;
     const testScore = new Score({ score: 999, user: testAccountID, gameMode: Modes.Solo });
@@ -24,7 +24,7 @@ afterEach(async () => {
     if (mongoose.connection.readyState) {
         // delete all populated data
         await Score.deleteMany({});
-        await Account.deleteMany({});
+        await User.deleteMany({});
         await mongoose.connection.close();
     }
 });
@@ -52,8 +52,8 @@ describe('POST /scores', () => {
     });
 
     it('on no user matched, should return an http status 404', async () => {
-        // delete the existing account
-        await Account.deleteOne({ _id:  testAccountID});
+        // delete the existing User
+        await User.deleteOne({ _id:  testAccountID});
         const payload = { score: 999, userID: testAccountID, gameMode: Modes.Solo  };
         const res = await supertest(server)
             .post('/scores')
@@ -63,7 +63,7 @@ describe('POST /scores', () => {
     });
 
     it('on an invalid game mode, should return an http status 400', async () => {
-        // delete the existing account
+        // delete the existing User
         const payload = { score: 999, userID: testAccountID, gameMode: 'yolo'  };
         const res = await supertest(server)
             .post('/scores')
@@ -86,7 +86,7 @@ describe('GET /scores', () => {
 
     it('should filter by the user id when given a query parameter', async () => {
         // add a new score with a different user
-        const testAccount2 = new Account({ user_id: 'user2', user_name: 'test2', password: 'pass' });
+        const testAccount2 = new User({ user_id: 'user2', userName: 'test2', password: 'pass' });
         const accountDoc = await testAccount2.save();
         const newScore = new Score({ score: 111, user: accountDoc._id, gameMode: Modes.Solo });
         await newScore.save();
