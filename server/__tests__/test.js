@@ -1,4 +1,4 @@
-const server = require("../server");
+const server = require("../server")
 const supertest = require("supertest");
 const mongoose = require("mongoose");
 require("dotenv").config();
