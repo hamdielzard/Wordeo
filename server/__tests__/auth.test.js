@@ -5,7 +5,6 @@ const {
 const server = require("../server")
 const supertest = require("supertest");
 const mongoose = require("mongoose");
-const User = require('../models/User')
 require("dotenv").config();
 
 const address = process.env.MONGODB_URL_TEST || `mongodb://localhost:27017/test?directConnection=true&serverSelectionTimeoutMS=2000`;
