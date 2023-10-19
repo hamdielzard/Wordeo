@@ -2,6 +2,12 @@
 ## Wordeo Server
 
 Backend server for Wordeo.
+Find the API documentation [here](/server/documents/api.md).
+
+## Table of Contents
+1. [Built With](#built-with)
+2. [Getting Started](#getting-started)
+3. [Additional Resources](#additional-resources)
 
 ### Built With
 
