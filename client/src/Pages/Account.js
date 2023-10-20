@@ -25,23 +25,29 @@ const AccountPage = () => {
 
     const baseUrl = "http://localhost:8080";
 
-    //stub data
     const [userData, setUserData] = useState({
         username: user,
-        highscore: 100,
-        played: 200,
-        description: 'This is template information to be overwritten outside tests',
-        achievements: [
-            {
-                title: "Stub Title",
-                desc: "This should not be visible outside testing."
-            },
-            {
-                title: "Other Stub Title",
-                desc: "This is a template that is overwritten by database"
-            }
-        ]
+        highscore: 0,
+        played: 0,
+        description: "",
+        achievements: []
     })
+
+    //check for cookie to set canLogin (stub for now)
+    let loggedInUser = "Guest";
+    let userId = "";
+
+    const cookiePairs = document.cookie.split(';');
+
+    // Iterate through the cookie pairs to find the 'user' and 'userID' values
+    for (const pair of cookiePairs) {
+        const [key, value] = pair.trim().split('=');
+        if (key === 'user') {
+            loggedInUser = value;
+        } else if (key === 'userid') {
+            userId = value;
+        }
+    }
 
     useLayoutEffect(() => {
         document.body.style.backgroundColor = "#393939";
@@ -49,15 +55,17 @@ const AccountPage = () => {
 
     useEffect(() => {
         const fetchScoreData = async (userId) => {
-            let highScore;
-            let numGames;
+            let highScore = 0;
+            let numGames = 0;
             try {
                 const res = await fetch(`${baseUrl}/scores?userID=${userId}`);
                 const data = await res.json();
-                highScore = parseInt(data[0].score);
-                numGames = parseInt(data.length);
-            } catch (error) {
-                console.log(error);
+                if (data.length) {
+                    highScore = parseInt(data[0].score);
+                    numGames = parseInt(data.length);
+                }
+            } catch (err) {
+                console.log(err);
             }
 
             // set state with the result
@@ -69,56 +77,40 @@ const AccountPage = () => {
         }
 
         const callAPIAccountOld = async (userId) => {
-            const reqJson =
-            {
-                userID: userId
+            let desc = `${user}'s bio!`;
+            try {
+                const reqJson =
+                {
+                    userID: userId
+                }
+    
+                const res = await fetch(baseUrl + '/user/show', {
+                    method: 'POST',
+                    headers: {
+                        "Content-type": "application/json"
+                    },
+                    body: JSON.stringify(reqJson)
+                });
+    
+                const data = await res.json();
+                if (data.response.description !== "") {
+                    desc = data.response.description;
+                }
+
+            } catch (err) {
+                console.log(err);
             }
-
-            const res = await fetch(baseUrl + '/user/show', {
-                method: 'POST',
-                headers: {
-                    "Content-type": "application/json"
-                },
-                body: JSON.stringify(reqJson)
-            });
-
-            const data = await res.json()
-
-            if (data) {
-                setReply(data)
-            }
-            else {
-                setReply("An error occured")
-                console.log('error')
-            }
-
-            console.log(data)
-
+            
             // set state with the result
             setUserData(prev => ({
-                ...prev
+                ...prev,
+                description: desc
             }));
         }
 
         //if not test mode check cookie and update the data
         //the tests will only use the template
         if ((process.env.JEST_WORKER_ID === undefined || process.env.NODE_ENV !== 'test')) {
-            //check for cookie to set canLogin (stub for now)
-            let loggedInUser = "Guest";
-            let userId = "";
-
-            const cookiePairs = document.cookie.split(';');
-
-            // Iterate through the cookie pairs to find the 'user' and 'userID' values
-            for (const pair of cookiePairs) {
-                const [key, value] = pair.trim().split('=');
-                if (key === 'user') {
-                    loggedInUser = value;
-                } else if (key === 'userid') {
-                    userId = value;
-                }
-            }
-
             setCanLogin(loggedInUser == user);
             if (loggedInUser == user) {
                 //logged in, so get auth from backend to update the data template
@@ -160,9 +152,11 @@ const AccountPage = () => {
             )
 
             //send updates to backend if not testing
-            if ((process.env.JEST_WORKER_ID === undefined || process.env.NODE_ENV !== 'test'))
-                callAPIEdit({ user })
-
+            if ((process.env.JEST_WORKER_ID === undefined || process.env.NODE_ENV !== 'test')){
+                callAPIEdit(userId, desc);
+            }
+            
+                
             setEditing(!editing);
         }
         catch (error) {
@@ -170,12 +164,12 @@ const AccountPage = () => {
         }
     }
 
-    async function callAPIEdit(name) {
+    async function callAPIEdit(userId, description) {
         const reqJson =
         {
-            userID: name,
-            userName: name,
-            highscore: userData.highscore
+            userID: userId,
+            userName: loggedInUser,
+            description: description
         }
 
         const res = await fetch(baseUrl + '/user/update', {
@@ -183,7 +177,7 @@ const AccountPage = () => {
             headers: {
                 "Content-type": "application/json"
             },
-            body: (reqJson)
+            body: JSON.stringify(reqJson)
         });
 
         const data = await res.json()

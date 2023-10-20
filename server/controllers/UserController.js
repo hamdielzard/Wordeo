@@ -63,7 +63,7 @@ const update = (req, res, next) => {
 
     let updateData = {
         userName: req.body.userName,
-        highscore: req.body.highscore
+        description: req.body.description
     }
 
     User.findByIdAndUpdate(userID, { $set: updateData })
