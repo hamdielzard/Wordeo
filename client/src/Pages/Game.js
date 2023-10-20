@@ -25,18 +25,19 @@ const GamePage = () =>
         score: 0,
         currWord: data[0],
         gameEnd: false,
-        roundTime: 3
+        roundTime: 30,
+        wordGuessed: false
     })
 
+    // Called by Timer.js
     function roundEnd(scoreEarned) {
-        console.log("SD")
         if (gameStatus.round+1 <= data.length) {
             updateGameStatus(prev =>({
-                ...prev,
                 round: prev.round + 1,
                 score: prev.score + scoreEarned,
                 currWord: data[prev.round],
-                roundTime: 3
+                roundTime: 30,
+                wordGuessed: false
             }))
         }
         else {
@@ -49,19 +50,25 @@ const GamePage = () =>
         }
     }
 
-    function timerEnd() {
-        roundEnd(0)
+    // Called by CoreGame.js
+    function wordGuessed() {
+        updateGameStatus(prev => ({
+            ...prev,
+            wordGuessed: true
+        }))
     }
 
     function restartGame() {
         // OPTION TO SELECT NEW GAME DATA GOES HERE
 
-        updateGameStatus({
+        updateGameStatus(prev => ({
             round: 1,
             score: 0,
             currWord: data[0],
-            gameEnd: false
-        })
+            gameEnd: false,
+            roundTime: 30,
+            wordGuessed: false
+        }))
     }
 
     return(
@@ -81,14 +88,15 @@ const GamePage = () =>
             />
             :        
             <div className='gameContainer'>    
-            <Timer 
-                initialTime = {gameStatus.roundTime}
-                onEnd = {timerEnd}
-            />
-            <CoreGame 
-                wordData = {gameStatus.currWord}
-                roundEnd = {roundEnd}
-            /></div>
+                <Timer 
+                    initialTime = {gameStatus.roundTime}
+                    wordGuessed = {gameStatus.wordGuessed}
+                    onEnd = {roundEnd}
+                />
+                <CoreGame 
+                    wordData = {gameStatus.currWord}
+                    roundEnd = {wordGuessed}
+                /></div>
             }
         </div>
     )

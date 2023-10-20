@@ -3,19 +3,20 @@ import { useState, useEffect } from "react";
 
 import "../../Styles/Timer.css"
 
-const Timer = ({ initialTime, onEnd }) => {
+const Timer = ({ initialTime, wordGuessed, onEnd }) => {
     const [time, setTime] = useState(initialTime);
     const [isActive, setIsActive] = useState(true)
 
     useEffect(() => {
+
         let intervalId;
-        if (isActive && time > 0) {
+        if (!wordGuessed && isActive && time > 0) {
             intervalId = setInterval(() => {
                 setTime((prevTime) => prevTime - 1);
             }, 1000);
         } 
         // time ends
-        else if (isActive && time === 0) {    
+        else if (!wordGuessed && isActive && time === 0) {    
             onEnd()
             // Deactivate timer so that it is not immediately used upon re render
             setIsActive(false); 
@@ -25,13 +26,14 @@ const Timer = ({ initialTime, onEnd }) => {
             setTime(initialTime)
             setIsActive(true)
         }
+        // Word was guessed correctly
+        else if (wordGuessed) {
+            let scoreEarned = (initialTime * 10) * (time / initialTime)
+            onEnd(scoreEarned)
+            setIsActive(false)
+        }
         return () => clearInterval(intervalId);
     }, [isActive, time, onEnd]);
-
-    const handleReset = () => {
-        setIsActive(false);
-        setTime(initialTime);
-    };
 
     return (
         <div className="timer">
