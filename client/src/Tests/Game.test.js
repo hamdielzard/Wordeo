@@ -70,7 +70,7 @@ describe('The Game Page', () => {
         expect(box6Style.getPropertyValue('background-color')).toBe('rgb(171, 255, 104)');
         });
     
-    test('letter boxes should contain the correct letter', () => { 
+    test('All letter boxes should contain each letter of the word', () => { 
         const { container } = render(<CoreGame wordData = {testWord} />);
 
         expect(container.getElementsByClassName('letter')[0].textContent).toBe('D')
@@ -85,7 +85,7 @@ describe('The Game Page', () => {
     test('incorrect letter boxes should contain the correct letter', () => { 
         const { container } = render(<CoreGame wordData = {testWord} initialIncorrectLetters = {['a']}/>);
 
-        expect(container.getElementsByClassName('incorrectLetter')[0].textContent).toBe('A')
+        expect(container.getElementsByClassName('incorrectLetter')[0].textContent).toBe('a')
     })
 
     test('unguessed letter boxes should be white and invisible', () => { 
