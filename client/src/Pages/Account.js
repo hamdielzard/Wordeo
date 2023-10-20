@@ -6,6 +6,7 @@
 import React, { useEffect } from 'react'
 import { useState,useLayoutEffect } from 'react';
 import { useParams, Navigate } from 'react-router-dom'
+import { Async } from 'react-async'
 //styles
 import '../Styles/Account.css'
 import '../Styles/General.css'
@@ -14,6 +15,7 @@ import WordeoLogo from '../Images/WordeoLogo.png';
 import Achievement from '../Components/Achievement';
 import Button from '../Components/Button';
 
+
 const AccountPage = () =>
 {
     const {user}=useParams();
@@ -21,6 +23,9 @@ const AccountPage = () =>
     const [canLogin,setCanLogin] = useState(true);
     const [editing,setEditing] = useState(false);
     const [wantDelete,setDelete] = useState(false);
+
+    const [reply,setReply] = useState({})
+    const APIPath = 'http://localhost:8080'
 
     //stub data
     const [userData,setUserData] = useState({
@@ -45,23 +50,68 @@ const AccountPage = () =>
     })
 
     useEffect(()=>{
-        //if not test mode check cookie
+        //if not test mode check cookie and update the data
+        //the tests will only use the template
         if((process.env.JEST_WORKER_ID === undefined || process.env.NODE_ENV !== 'test'))
         {
             //check for cookie to set canLogin (stub for now)
             const cookie = ('; '+document.cookie).split(`; user=`).pop().split(';')[0];
 
-            setCanLogin(false);
-            if(cookie===user)
-            {
-                setCanLogin(true);
-            }
-            if(canLogin)
+            setCanLogin(cookie==user);
+            if(cookie==user)
             {
                 //logged in, so get auth from backend to update the data template
+                const accData = callAPIAccount(cookie)
+                console.log(accData)
+
+                //once the data is got put it in userData (update the template)
+                //or maybe do that in the async one idk
             }
         }
     },[])
+
+    const callAPIAccount = async (name) => {
+        console.log(name)
+        const res = await fetch(APIPath+`/api/show`, {
+            method: 'POST',
+            headers: {
+                "Content-type": "application/json"
+            },
+            body: {
+                userID: name
+            }
+        })
+        if (!res.ok) throw new Error(res.statusText)
+        return await res.json()
+    }
+
+    async function callAPIAccountOld(name)
+    {
+        const reqJson = 
+        {
+            userID: name
+        }
+
+        const res = await fetch(APIPath+'/api/show', {
+            method: 'POST',
+            headers: {
+                "Content-type": "application/json"
+            },
+            body: (reqJson)
+        });
+
+        const data = await res.json()
+
+        if(data)
+            setReply(data)
+        else
+            {
+                setReply("An error occured")
+                console.log('error')
+            }
+
+        console.log(reply)
+    }
 
     //login check with backend is skipped if in test mode
     //  (test renders with the template info)
@@ -86,7 +136,6 @@ const AccountPage = () =>
 
     function handleEditApply()
     {
-        //would send updates to backend here
         try
         {
             let desc = document.getElementById('descInput').value;
@@ -100,12 +149,44 @@ const AccountPage = () =>
                 }
             )
 
+            //send updates to backend if not testing
+            if((process.env.JEST_WORKER_ID === undefined || process.env.NODE_ENV !== 'test'))
+                callAPIEdit({user})
+
             setEditing(!editing);
         }
         catch (error) 
         {
             alert('There was a problem applying the changes.' + error)
         }
+    }
+
+    async function callAPIEdit(name)
+    {
+        const reqJson = 
+        {
+            userID: name,
+            userName: name,
+            highscore: userData.highscore
+        }
+
+        const res = await fetch(APIPath+'/api/update', {
+            method: 'POST',
+            headers: {
+                "Content-type": "application/json"
+            },
+            body: (reqJson)
+        });
+
+        const data = await res.json()
+
+        if(data)
+            setReply(data)
+        else
+            {
+                setReply("An error occured")
+                console.log('error')
+            }
     }
 
     function handleLogout()
@@ -125,8 +206,40 @@ const AccountPage = () =>
     {
         //backend deletion go here
         //remove cookie
+        if((process.env.JEST_WORKER_ID === undefined || process.env.NODE_ENV !== 'test'))
+            callAPIDelete({user})
+
         document.cookie = "user=;path=/;expires=Thu, 01 Jan 1970 00:00:00 GMT"
         toHome();
+    }
+
+    async function callAPIDelete(name)
+    {
+        console.log('delete account '+name)
+        const reqJson = 
+        {
+            userID: name
+        }
+
+        const res = await fetch(APIPath+'/api/delete', {
+            method: 'POST',
+            headers: {
+                "Content-type": "application/json"
+            },
+            body: (reqJson)
+        });
+
+        const data = await res.json()
+
+        if(data)
+            setReply(data)
+        else
+        {
+                setReply("An error occured")
+                console.log('error')
+        }
+
+        console.log(reply)
     }
 
     function toHome()
