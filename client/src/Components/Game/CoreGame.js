@@ -77,29 +77,31 @@ const CoreGame = ({wordData, roundEnd, incorrectLetterGuessed, initialCorrectLet
         let newCorrectLetters = roundStatus.correctLetters
         let newIncorrectLetters = roundStatus.incorrectLetters
 
+        let letterGuessed = e.key.toLowerCase()
+
         // Only do logic if this letter has not been guessed yet
         // and that it is a letter
-        if (!roundStatus.wordsGuessed.includes(e.key.toLowerCase()) && e.key.length == 1 && (e.key.toLowerCase() != e.key.toUpperCase()))
+        if (!roundStatus.wordsGuessed.includes(letterGuessed) && letterGuessed.length == 1 && (letterGuessed.toLowerCase() != letterGuessed.toUpperCase()))
         {  
             let isCorrect = false
 
             // Find the letter in the word
             for (let i = 0; i < word.length && !isCorrect; i++) {
                 // If it matches, create a new LetterBox that is green and displays a letter
-                if (word.charAt(i).toLowerCase() == e.key.toLowerCase()) {
+                if (word.charAt(i).toLowerCase() == letterGuessed) {
                     isCorrect = true
                 }
             }
 
             // If correct letter was found, update the letter boxes
             if (isCorrect) {
-                newCorrectLetters.push(e.key)
+                newCorrectLetters.push(letterGuessed)
                 updateLetters(createLetterBoxes(roundStatus.correctLetters))
             }
             // Letter was not correct
             else if (!isCorrect) {
                 // Update round status to reflect the new incorrect word
-                newIncorrectLetters.push(e.key)
+                newIncorrectLetters.push(letterGuessed)
 
                 // Inform Game that an incorrect letter was guessed
                 incorrectLetterGuessed()
@@ -107,7 +109,7 @@ const CoreGame = ({wordData, roundEnd, incorrectLetterGuessed, initialCorrectLet
                 // Fill and create incorrect letter boxes with the new data
                 updateIncorrectLetters(createIncorrectLetterBoxes(roundStatus.incorrectLetters))                
             }
-            newWordsGuessed.push(e.key)
+            newWordsGuessed.push(letterGuessed)
 
             updateRoundStatus({
                 wordsGuessed: newWordsGuessed,
