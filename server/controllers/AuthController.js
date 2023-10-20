@@ -82,7 +82,8 @@ const login = (req, res, next) => {
                         logger.info(`[200] AuthController - Login successful: ${userName}`)
                         return res.status(200).json({
                             message: 'Login successful!',
-                            token
+                            token,
+                            userId: user._id // Include the user ID
                         })
                     }
                     else {
