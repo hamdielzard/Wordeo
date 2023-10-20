@@ -31,7 +31,7 @@ const GamePage = ({initialState = false}) =>
         round: 1,
         score: 0,
         currWord: data[0],
-        gameEnd: false,
+        gameEnd: initialState,
         roundTime: 10 + data[0].difficulty * 5,
         wordGuessed: false
     })
