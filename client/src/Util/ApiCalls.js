@@ -14,18 +14,6 @@ async function fetchWords(count) {
     return words;
 }
 
-async function fetchHighScore(userId) {
-    var highscore;
-    try {
-        const response = await fetch(`scores?userID=${userId}&count=1`);
-        const result = await response.json();
-        highscore = parseInt(result[0].score);
-    } catch (error) {
-        console.log(error);
-    }
-    return highscore;
-}
-
 async function postScore(userId, score) {
     const payload = {
         score: score,
