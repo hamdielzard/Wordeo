@@ -42,6 +42,16 @@ function SignInPage() {
     }
 
     async function handleSignUp(name, password) {
+        if (!name) {
+            setReply("Username required.");
+            return;
+        }
+
+        if (!password) {
+            setReply("Password required.")
+            return;
+        }
+
         const data = await callAPIRegister(name, password);
 
         if (data.message) {
@@ -67,6 +77,16 @@ function SignInPage() {
     }
 
     async function handleSignIn(name, password) {
+        if (!name) {
+            setReply("Username required.");
+            return;
+        }
+
+        if (!password) {
+            setReply("Password required.")
+            return;
+        }
+        
         const data = await callAPILogin(name, password);
 
         if (data.message) {

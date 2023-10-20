@@ -23,7 +23,7 @@ test('Check if sign in renders sign up box', () => {
   );
   const upText = screen.getAllByText(/Sign Up/i);
   expect(upText[0]).toBeInTheDocument();
-  const upButton = screen.getAllByText(/Create Account/i);
+  const upButton = screen.getAllByText(/Sign Up/i);
   expect(upButton[0]).toBeInTheDocument();
 });
 
@@ -45,7 +45,7 @@ test('Check if sign in renders sign in box', () => {
   );
   const upText = screen.getAllByText(/Sign In/i);
   expect(upText[0]).toBeInTheDocument();
-  const upButton = screen.getAllByText(/Login/i);
+  const upButton = screen.getAllByText(/Sign In/i);
   expect(upButton[0]).toBeInTheDocument();
 });
 
@@ -65,31 +65,33 @@ test('check create account warning update',()=>{
     </MemoryRouter>
   );
 
-  const signupButton = screen.getByText(/Create Account/i);
-  const username = screen.getAllByPlaceholderText(/username/i)
+  const signupButton = Array.from(document.querySelectorAll('button'))
+    .find(element => element.textContent === 'Sign Up');
+  const username = document.querySelector('#username');
 
   fireEvent.click(signupButton);
   expect(screen.getByText(/Username required./i)).toBeInTheDocument();
   const value = 'test'
-  fireEvent.change(username[0], {target:{value}})
+  fireEvent.change(username, {target:{value}})
   fireEvent.click(signupButton);
   expect(screen.getByText(/Password required./i)).toBeInTheDocument();
 })
 
 test('check login warning update',()=>{
-  render(
+  const { container } = render(
     <MemoryRouter initialEntries={[path]}>
       <SignIn />
     </MemoryRouter>
   );
 
-  const signinButton = screen.getByText(/Login/i);
-  const username = screen.getAllByPlaceholderText(/username/i)
+  const signinButton = Array.from(document.querySelectorAll('button'))
+    .find(element => element.textContent === 'Sign In');
+  const username = document.querySelector('#signInUser');
 
   fireEvent.click(signinButton);
   expect(screen.getByText(/Username required./i)).toBeInTheDocument();
-  const value = 'test'
-  fireEvent.change(username[1], {target:{value}})
+  const value = 'test';
+  fireEvent.change(username, {target:{value}});
   fireEvent.click(signinButton);
   expect(screen.getByText(/Password required./i)).toBeInTheDocument();
 })
