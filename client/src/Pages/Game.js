@@ -130,7 +130,6 @@ const GamePage = ({
                 gameStatus.gameEnd &&
                 <GameOver 
                 score = {gameStatus.score}
-                coins = {gameStatus.score/2}
                 restartGame = {restartGame}
                 />
             }
