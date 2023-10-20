@@ -3,20 +3,23 @@ import { useState, useEffect } from "react";
 
 import "../../Styles/Timer.css"
 
-const Timer = ({ initialTime, wordGuessed, onEnd }) => {
-    const [time, setTime] = useState(initialTime);
-    const [isActive, setIsActive] = useState(true)
+let currTime = 0
 
+const Timer = ({ initialTime, wordGuessed, onEnd, timePenalty, incorrectLettersGuessed }) => {
+    const [time, setTime] = useState(initialTime)
+    const [isActive, setIsActive] = useState(true)
+    
     useEffect(() => {
 
         let intervalId;
         if (!wordGuessed && isActive && time > 0) {
             intervalId = setInterval(() => {
+                currTime = time - 1
                 setTime((prevTime) => prevTime - 1);
             }, 1000);
         } 
         // time ends
-        else if (!wordGuessed && isActive && time === 0) {    
+        else if (!wordGuessed && isActive && time <= 0) {    
             onEnd(0)
             // Deactivate timer so that it is not immediately used upon re render
             setIsActive(false); 
@@ -34,6 +37,13 @@ const Timer = ({ initialTime, wordGuessed, onEnd }) => {
         }
         return () => clearInterval(intervalId);
     }, [isActive, time, onEnd]);
+
+    useEffect(() => {
+        // Only apply penalties when there are wrong letters
+        if (!incorrectLettersGuessed == 0) {
+            setTime(prev => prev - timePenalty)
+        }
+    }, [incorrectLettersGuessed])
 
     return (
         <div className="timer">

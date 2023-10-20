@@ -16,7 +16,7 @@ import data from '../TEMPDB/data';
 // Coin calculation
 //
 
-console.log("DSADA")
+let timeLost = 0
 
 const GamePage = () =>
 {
@@ -29,14 +29,18 @@ const GamePage = () =>
         wordGuessed: false
     })
 
-    // Called by Timer.js
+    const [roundStatus, updateRoundStatus] = React.useState({
+        incorrectLettersGuessed: 0
+    })
+
+    // Called by Timer.js to update game status
     function roundEnd(scoreEarned) {
         if (gameStatus.round+1 <= data.length) {
             updateGameStatus(prev =>({
+                ...prev,
                 round: prev.round + 1,
                 score: prev.score + scoreEarned,
                 currWord: data[prev.round],
-                roundTime: 30,
                 wordGuessed: false
             }))
         }
@@ -50,7 +54,7 @@ const GamePage = () =>
         }
     }
 
-    // Called by CoreGame.js
+    // Called by CoreGame.js to update game status
     function wordGuessed() {
         updateGameStatus(prev => ({
             ...prev,
@@ -58,9 +62,14 @@ const GamePage = () =>
         }))
     }
 
-    function restartGame() {
-        // OPTION TO SELECT NEW GAME DATA GOES HERE
+    // Called by CoreGame.js to update round status
+    function incorrectLetterGuessed() {
+        updateRoundStatus(prev => ({
+            incorrectLettersGuessed: prev.incorrectLettersGuessed + 1
+        }))
+    }
 
+    function restartGame() {
         updateGameStatus(prev => ({
             round: 1,
             score: 0,
@@ -92,10 +101,13 @@ const GamePage = () =>
                     initialTime = {gameStatus.roundTime}
                     wordGuessed = {gameStatus.wordGuessed}
                     onEnd = {roundEnd}
+                    timePenalty = {5}
+                    incorrectLettersGuessed = {roundStatus.incorrectLettersGuessed}
                 />
                 <CoreGame 
                     wordData = {gameStatus.currWord}
                     roundEnd = {wordGuessed}
+                    incorrectLetterGuessed = {incorrectLetterGuessed}
                 /></div>
             }
         </div>

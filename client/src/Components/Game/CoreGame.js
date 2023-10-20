@@ -14,6 +14,8 @@ const CoreGame = (props) => {
         incorrectLetters: []
     })
 
+    console.log(roundStatus)
+
     const [time, updateTime] = React.useState({
         timeRemaining: 0
     })
@@ -102,6 +104,9 @@ const CoreGame = (props) => {
                 // Update round status to reflect the new incorrect word
                 newIncorrectLetters.push(e.key)
 
+                // Inform Game that an incorrect letter was guessed
+                props.incorrectLetterGuessed()
+
                 // Fill and create incorrect letter boxes with the new data
                 updateIncorrectLetters(() => {
                     let incorrectLetterBoxes = newIncorrectLetters.map(incorrectLetter => {
@@ -155,10 +160,17 @@ const CoreGame = (props) => {
     // When props has changed, the parent component of this component has passed it a new word
     // Create a new round with this new word
     useEffect(() => {
+        // Reset round status
+        updateRoundStatus({
+            wordsGuessed: [],
+            correctLetters: [],
+            incorrectLetters: [],
+        })
+
         // Reset letter boxes
         updateLetters(initializeLetterBoxes())
         updateIncorrectLetters([])
-    }, [props])
+    }, [props.wordData])
 
     return(
         <div className="coreGame">
