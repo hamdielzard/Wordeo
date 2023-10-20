@@ -3,16 +3,18 @@ import { useEffect } from "react";
 
 import Timer from './Timer';
 import LetterBox from "./LetterBox";
-import IncorrectLetterBox from "./InocrrectLetterBox";
+import IncorrectLetterBox from "./IncorrectLetterBox";
 
 const CoreGame = (props) => {
-    let word = props.wordData.word
+    let word = props.wordData.word;
 
     const [roundStatus, updateRoundStatus] = React.useState({
         wordsGuessed: [],
         correctLetters: [],
         incorrectLetters: []
     })
+
+    console.log(roundStatus)
 
     const [time, updateTime] = React.useState({
         timeRemaining: 0
@@ -26,15 +28,17 @@ const CoreGame = (props) => {
     function initializeLetterBoxes() {
         var initialLetters = []
 
-        for (let i = 0; i < word.length; i++) {
-            initialLetters.push(
-                <div className="letterbox" style={{background: '#FFF'}} key = {i}>
-                    <LetterBox 
-                        letter = {word.charAt(i)}
-                        visibility = 'hidden'
-                    />
-                </div>
-            )
+        if (word) {
+            for (let i = 0; i < word.length; i++) {
+                initialLetters.push(
+                    <div className="letterbox" style={{background: '#FFF'}} key = {i}>
+                        <LetterBox 
+                            letter = {word.charAt(i)}
+                            visibility = 'hidden'
+                        />
+                    </div>
+                )
+            }
         }
 
         return initialLetters
@@ -52,11 +56,9 @@ const CoreGame = (props) => {
         let newCorrectLetters = roundStatus.correctLetters
         let newIncorrectLetters = roundStatus.incorrectLetters
 
-        console.log("RAN")
-        console.log(roundStatus)
-
         // Only do logic if this letter has not been guessed yet
-        if (!roundStatus.wordsGuessed.includes(e.key))
+        // and that it is a letter
+        if (!roundStatus.wordsGuessed.includes(e.key) && e.key.length == 1 && (e.key.toLowerCase() != e.key.toUpperCase()))
         {  
             let isCorrect = false
 
@@ -105,6 +107,9 @@ const CoreGame = (props) => {
                 // Update round status to reflect the new incorrect word
                 newIncorrectLetters.push(e.key)
 
+                // Inform Game that an incorrect letter was guessed
+                props.incorrectLetterGuessed()
+
                 // Fill and create incorrect letter boxes with the new data
                 updateIncorrectLetters(() => {
                     let incorrectLetterBoxes = newIncorrectLetters.map(incorrectLetter => {
@@ -135,39 +140,48 @@ const CoreGame = (props) => {
     useEffect(() => {
         let allWordsGuessed = true
 
-        // Check if all letters in the word is in correctLetters
-        for (let i = 0; i < word.length && allWordsGuessed; i++) {
-            if (!roundStatus.correctLetters.includes(word.charAt(i).toLowerCase())) {
-                allWordsGuessed = false;
+        if (word) {
+            // Check if all letters in the word is in correctLetters
+            for (let i = 0; i < word.length && allWordsGuessed; i++) {
+                if (!roundStatus.correctLetters.includes(word.charAt(i).toLowerCase())) {
+                    allWordsGuessed = false;
+                }
+            }
+
+            if (allWordsGuessed) {
+                // Reset round status
+                updateRoundStatus({
+                    wordsGuessed: [],
+                    correctLetters: [],
+                    incorrectLetters: [],
+                })
+    
+                // Reset round status for next round
+                props.roundEnd(100)
             }
         }
-
-        if (allWordsGuessed) {
-            // Reset round status
-            updateRoundStatus({
-                wordsGuessed: [],
-                correctLetters: [],
-                incorrectLetters: [],
-            })
-
-            // Reset round status for next round
-            props.roundEnd(100)
-        }
+        
     }, [roundStatus])
 
     // When props has changed, the parent component of this component has passed it a new word
     // Create a new round with this new word
     useEffect(() => {
+        // Reset round status
+        updateRoundStatus({
+            wordsGuessed: [],
+            correctLetters: [],
+            incorrectLetters: [],
+        })
+
         // Reset letter boxes
         updateLetters(initializeLetterBoxes())
         updateIncorrectLetters([])
-    }, [props])
+    }, [props.wordData])
 
     return(
         <div className="coreGame">
-            <Timer />
             <div className="hint">
-                {props.wordData.hints[0]}
+                {props.wordData.hints ? props.wordData?.hints[0]: ""}
             </div>
             <div className="lettergrid">
                 {letters}
@@ -181,3 +195,7 @@ const CoreGame = (props) => {
 
 export default CoreGame
 
+// create a loading state
+// when done fetching
+// useEffect to check for data state
+// when datastate changes, set loading true

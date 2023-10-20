@@ -34,14 +34,14 @@
     padding: 12px;
 }
 
-.coreGame, .gameOver {
+.coreGame, .gameOver, .gameContainer {
     position: relative;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     margin: 0 auto;
-    top: 45%;
+    top: 40%;
 }
 
 .hint {
