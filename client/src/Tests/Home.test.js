@@ -3,7 +3,7 @@ import Home from '../Pages/Home';
 
 test('Check if Home page renders tip', () => {
   render(<Home />);
-  const tipText = screen.getByText(/Login to save your progress and earn coins!/i);
+  const tipText = screen.getByText(/Login to save your progress!/i);
   expect(tipText).toBeInTheDocument();
 });
 
@@ -20,6 +20,5 @@ test('Check if Home page renders Sign In button', () => {
 });
 
 // Potential tests:
-// Sign in Button after signing in should be updated to say "Account"
 // PLAY button should redirect to game page
 // Sign in button should redirect to sign in page

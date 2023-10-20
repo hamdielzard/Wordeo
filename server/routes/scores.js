@@ -2,9 +2,70 @@ const express = require('express');
 const router = express.Router();
 
 // load models
-const Score = require('../models/scores'); 
+const { Score, Modes } = require('../models/scores');
+const User  = require("../models/user"); // TODO: match the updated acount (or user) model
 
 // endpoints
 
+// create a new record of a score
+router.post("/", async (req, res) => {
+    const score = req.body.score;
+    const userID = req.body.userID;
+    const mode = req.body.gameMode;
+
+    try {
+        if (!Object.values(Modes).includes(req.body.gameMode)) {
+            // client provided non existing game mode
+            res.status(400).json({ message: `the provided game mode: ${mode} was invalid` });
+        } else if (parseInt(score) < 0) {
+            // client provided a negative score
+            res.status(400).json({ message: `negative scores are not allowed` });
+        } else {
+            const user = await User.exists({ _id: userID });
+            const newScore = new Score({
+                score: score,
+                user: userID,
+                gameMode: mode
+            });
+
+            if (user) {
+                const result = await newScore.save();
+                res.status(200).json(result);
+            } else {
+                res.status(404).json({ message: `no user with given id: ${userID} was found` });
+            }
+        }
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+// get all scores
+router.get("/", async (req, res) => {
+    var filter = {};
+
+    // filter by user
+    if (req.query.userID) {
+        filter.user = req.query.userID;
+    }
+
+    if (req.query.gameMode) {
+        filter.gameMode = req.query.gameMode;
+    }
+
+    try {
+        var result;
+
+        // return a list of scores in a descending order
+        if (req.query.count) {
+            result = await Score.find(filter).sort({ score: 'desc' }).limit(parseInt(req.query.count));
+        } else {
+            result = await Score.find(filter).sort({ score: 'desc' });
+        }
+        res.status(200).json(result);
+    } catch (err) {
+        res.status(500).json({ message: err.message })
+    }
+});
 // export
 module.exports = router;

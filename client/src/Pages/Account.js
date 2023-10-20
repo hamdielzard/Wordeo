@@ -3,7 +3,7 @@
 //currently any name can be given via localhost:300/account/username-go-here
 //but later will reroute to sign in page if no login cookie (which is got after sign in confirms valid user with backend)
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState,useLayoutEffect } from 'react';
 import { useParams, Navigate } from 'react-router-dom'
 //styles
@@ -21,24 +21,61 @@ const AccountPage = () =>
     const [canLogin,setCanLogin] = useState(true);
     const [editing,setEditing] = useState(false);
     const [wantDelete,setDelete] = useState(false);
-    var highscore = 0;
-    var played = 0;
-    var [description,setDescription] = useState('');
+
+    //stub data
+    const [userData,setUserData] = useState({
+        username:user,
+        highscore:100,
+        guessed:200,
+        description:'This is template information to be overwritten outside tests',
+        achievements:[
+            {
+                    title:"Stub Title",
+                    desc:"This should not be visible outside testing."
+            },
+            {
+                    title:"Other Stub Title",
+                    desc:"This is a template that is overwritten by database"
+            }
+        ]
+    })
 
     useLayoutEffect(()=>{
         document.body.style.backgroundColor = "#393939";
     })
 
-    //backend call to get account information (if has cookie, otherwise reroute to signin)
-    function checkLogin()
-    {
-        //canLogin to be set by cookie here
+    useEffect(()=>{
+        //if not test mode check cookie
+        if((process.env.JEST_WORKER_ID === undefined || process.env.NODE_ENV !== 'test'))
+        {
+            //check for cookie to set canLogin (stub for now)
+            const cookie = ('; '+document.cookie).split(`; user=`).pop().split(';')[0];
 
-        if(canLogin)
-            //logged in, so get auth from backend then give to page function
-            return page()
-        else
-            //if not logged in auto-redirect to sign in
+            setCanLogin(false);
+            if(cookie===user)
+            {
+                setCanLogin(true);
+            }
+            if(canLogin)
+            {
+                //logged in, so get auth from backend to update the data template
+            }
+        }
+    },[])
+
+    //login check with backend is skipped if in test mode
+    //  (test renders with the template info)
+    if(canLogin || (!(process.env.JEST_WORKER_ID === undefined || process.env.NODE_ENV !== 'test')))
+    {
+        return(
+        <div>
+            {page()}
+        </div>
+        )
+    }
+    else
+    {
+            //if not logged in or testing auto-redirect to sign in
             return <Navigate to='/account/signin'/>
     }
 
@@ -53,7 +90,15 @@ const AccountPage = () =>
         try
         {
             let desc = document.getElementById('descInput').value;
-            setDescription(desc)
+            setUserData(
+                {
+                    username:userData.username,
+                    highscore:userData.highscore,
+                    guessed:userData.guessed,
+                    description:desc,
+                    achievements:userData.achievements
+                }
+            )
 
             setEditing(!editing);
         }
@@ -66,6 +111,7 @@ const AccountPage = () =>
     function handleLogout()
     {
         //remove login cookie here
+        document.cookie = "user=;path=/;expires=Thu, 01 Jan 1970 00:00:00 GMT"
         toHome();
     }
 
@@ -78,7 +124,8 @@ const AccountPage = () =>
     function doDelete()
     {
         //backend deletion go here
-        //also remove cookie
+        //remove cookie
+        document.cookie = "user=;path=/;expires=Thu, 01 Jan 1970 00:00:00 GMT"
         toHome();
     }
 
@@ -114,14 +161,14 @@ const AccountPage = () =>
                 <div>
                     <div className='accountColoumn' style={{display:'inline-block',position:'absolute',top:'35%',left:'0%',right:'30%'}}>
                         <h1 color='#FCFCFC'>Highest Score</h1>
-                        <h1 id='highscore'>{highscore}</h1>
+                        <h1 id='highscore'>{userData.highscore}</h1>
 
-                        <h1>Games Played</h1>
-                        <h1 id='played'>{played}</h1>
+                        <h1>Words Guessed</h1>
+                        <h1 id='played'>{userData.guessed}</h1>
                     </div>
                     <div className='accountColoumn' style={{display:'inline-block', position:'absolute',top:'15%',left:'30%'}}>
                         <div id='desc' style={{marginBtoom:10,wordWrap:'break-word',maxWidth:'960px'}}>
-                            {description}
+                            {userData.description}
                         </div>
                         <div style={{background:'white',minWidth:'960px'}} className='dividerH'/>
                         <h1>Achievements</h1>
@@ -137,7 +184,7 @@ const AccountPage = () =>
                         <h1>Edit Profile</h1>
                         <div style={{background:'white'}} className='dividerH'/>
                         <h2>Description</h2>
-                        <textarea id='descInput' defaultValue={description} className='editDescBox' rows='6'></textarea>
+                        <textarea id='descInput' defaultValue={userData.description} className='editDescBox' rows='6'></textarea>
                     </div>
                 </div>
             )
@@ -194,23 +241,20 @@ const AccountPage = () =>
 
     function getAchievements()
     {
-        //get the elements from the account
-
-        //stub return
-        return(
-            <div style={{maxWidth:'10px'}}>
-                <Achievement name='Test' description='the description goes here and shows up under the title'/>
-                <Achievement name='Next is example' description='descriptions for achievements are short and describe how it was got'/>
-                <Achievement name='Down to the Wire' description='Solve a puzzle with 3 or fewer seconds left.'/>
-            </div>
-        )
+        if(userData.achievements.length>0)
+            return(
+                userData.achievements.map(({title,desc})=>{
+                return (
+                    <Achievement key={(title,desc)} name={title} description={desc}/>
+                )})
+            )
+        else
+            return(
+                <h2 style={{color:"white"}}>
+                    No achievements yet.
+                </h2>
+            )
     }
-
-    return(
-        <div>
-            {checkLogin()}
-        </div>
-    )
 }
 
 export default AccountPage
