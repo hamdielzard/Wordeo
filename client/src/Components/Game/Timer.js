@@ -41,6 +41,7 @@ const Timer = ({ initialTime, wordGuessed, onEnd, timePenalty, incorrectLettersG
     useEffect(() => {
         // Only apply penalties when there are wrong letters
         if (!incorrectLettersGuessed == 0) {
+            console.log("Ds")
             setTime(prev => prev - timePenalty)
         }
     }, [incorrectLettersGuessed])

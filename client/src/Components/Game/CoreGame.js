@@ -14,8 +14,6 @@ const CoreGame = (props) => {
         incorrectLetters: []
     })
 
-    console.log(roundStatus)
-
     const [time, updateTime] = React.useState({
         timeRemaining: 0
     })

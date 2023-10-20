@@ -41,6 +41,7 @@ const GamePage = ({initialState = false}) =>
     })
 
     // Called by Timer.js to update game status
+    // Called when timer runs out, so round is over
     function roundEnd(scoreEarned) {
         if (gameStatus.round+1 <= data.length) {
             updateGameStatus(prev =>({
@@ -60,14 +61,19 @@ const GamePage = ({initialState = false}) =>
                 roundTime: 0
             }))
         }
+        
+        restartRound()
     }
 
     // Called by CoreGame.js to update game status
+    // Called whenever a word was guessed, so round is over
     function wordGuessed() {
         updateGameStatus(prev => ({
             ...prev,
             wordGuessed: true
         }))
+
+        restartRound()
     }
 
     // Called by CoreGame.js to update round status
@@ -86,6 +92,12 @@ const GamePage = ({initialState = false}) =>
             roundTime: 10 + data[0].difficulty * 5,
             wordGuessed: false
         }))
+    }
+
+    function restartRound() {
+        updateRoundStatus({
+            incorrectLettersGuessed: 0
+        })
     }
 
     return(
