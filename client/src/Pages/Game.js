@@ -11,8 +11,10 @@ import '../Styles/Game.css';
 let timeLost = 0
 
 const GamePage = ({
+    initialLoad = true,
     initialState = false,
-    numRounds = 10
+    data = [],
+    numRounds = data.length ? data.length : 10,
 }) => {
     let user = "Guest";
     let userId = "";
@@ -29,14 +31,14 @@ const GamePage = ({
         }
     }
 
-    const [loading, setLoading] = React.useState(true)
+    const [loading, setLoading] = React.useState(initialLoad)
 
-    const [gameData, setGameData] = React.useState([])
+    const [gameData, setGameData] = React.useState(data)
 
     const [gameStatus, updateGameStatus] = React.useState({
         round: 1,
         score: 0,
-        currWord: null,
+        currWord: data.length ? data[0] : null,
         gameEnd: initialState,
         roundTime: null,
         wordGuessed: false
