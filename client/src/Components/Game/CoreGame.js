@@ -55,7 +55,8 @@ const CoreGame = (props) => {
         let newIncorrectLetters = roundStatus.incorrectLetters
 
         // Only do logic if this letter has not been guessed yet
-        if (!roundStatus.wordsGuessed.includes(e.key))
+        // and that it is a letter
+        if (!roundStatus.wordsGuessed.includes(e.key) && e.key.length == 1 && (e.key.toLowerCase() != e.key.toUpperCase()))
         {  
             let isCorrect = false
 

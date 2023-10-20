@@ -25,7 +25,7 @@ const GamePage = () =>
         score: 0,
         currWord: data[0],
         gameEnd: false,
-        roundTime: 30,
+        roundTime: 10 + data[0].difficulty * 5,
         wordGuessed: false
     })
 
@@ -41,6 +41,7 @@ const GamePage = () =>
                 round: prev.round + 1,
                 score: prev.score + scoreEarned,
                 currWord: data[prev.round],
+                roundTime: 10 + data[prev.round].difficulty * 5,
                 wordGuessed: false
             }))
         }
@@ -75,7 +76,7 @@ const GamePage = () =>
             score: 0,
             currWord: data[0],
             gameEnd: false,
-            roundTime: 30,
+            roundTime: 10 + data[0].difficulty * 5,
             wordGuessed: false
         }))
     }
