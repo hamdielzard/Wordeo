@@ -57,7 +57,7 @@ describe('Test Registration', () => {
 
         expect(res.status).toEqual(200);
         expect(res.body.message).toEqual("User Added Successfully!");
-        expect(res2.status).toEqual(200);
+        expect(res2.status).toEqual(409);
         expect(res2.body.message).toEqual("User already exists!");
     });
 });
@@ -112,7 +112,7 @@ describe('Test Login', () => {
             .send(loginPayload);
 
         expect(registrationResponse.status).toEqual(200);
-        expect(loginResponse.status).toEqual(200);
+        expect(loginResponse.status).toEqual(400);
         expect(loginResponse.body.message).toEqual("Password does not match!");
     });
 });
