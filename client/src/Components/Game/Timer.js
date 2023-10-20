@@ -17,7 +17,7 @@ const Timer = ({ initialTime, wordGuessed, onEnd }) => {
         } 
         // time ends
         else if (!wordGuessed && isActive && time === 0) {    
-            onEnd()
+            onEnd(0)
             // Deactivate timer so that it is not immediately used upon re render
             setIsActive(false); 
         } 
