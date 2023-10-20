@@ -31,7 +31,7 @@ const Timer = ({ initialTime, wordGuessed, onEnd, timePenalty, incorrectLettersG
         }
         // Word was guessed correctly
         else if (wordGuessed) {
-            let scoreEarned = (initialTime * 10) * (time / initialTime)
+            let scoreEarned = Math.round((initialTime * 10) * (time / initialTime))
             onEnd(scoreEarned)
             setIsActive(false)
         }
