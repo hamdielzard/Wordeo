@@ -20,6 +20,10 @@ function SignInPage() {
         });
         const data = await res.json();
 
+        if (!res.ok) {
+            throw new Error(data.message);
+        }
+
         return data;
     }
 
@@ -36,7 +40,12 @@ function SignInPage() {
             },
             body: JSON.stringify(reqJson),
         });
+
         const data = await res.json();
+
+        if (!res.ok) {
+            throw new Error(data.message);
+        }
 
         return data;
     }
@@ -52,25 +61,31 @@ function SignInPage() {
             return;
         }
 
-        const data = await callAPIRegister(name, password);
+        let data;
 
-        if (data.message) {
+        try {
+            data = await callAPIRegister(name, password);
 
-            const userId = data.userId;
+            if (data.message) {
+                const userId = data.userId;
 
-            if (data.message === 'User Added Successfully!') {
-                document.cookie = `user=${name}; domain=; path=/`;
-                document.cookie = `userid=${userId || ""}; domain=; path=/`;
-                window.location.pathname = '/';
-            }
-            else {
+                if (data.message === 'User Added Successfully!') {
+                    document.cookie = `user=${name}; domain=; path=/`;
+                    document.cookie = `userid=${userId || ""}; domain=; path=/`;
+                    window.location.pathname = '/';
+                }
+                else {
+                    console.log(data.message)
+                    setReply(data.message);
+                }
+
+            } else {
                 console.log(data.message)
-                setReply(data.message);
+                setReply('An error occurred');
             }
-
-        } else {
-            console.log(data.message)
-            setReply('An error occurred');
+        } catch (err) {
+            console.log(err.message);
+            setReply(err.message);
         }
 
         return data;
@@ -86,25 +101,34 @@ function SignInPage() {
             setReply("Password required.")
             return;
         }
-        
-        const data = await callAPILogin(name, password);
 
-        if (data.message) {
+        let data;
 
-            const userId = data.userId;
+        try {
+            data = await callAPILogin(name, password);
 
-            if (data.message === 'Password does not match!') {
+            if (data.message) {
+                const userId = data.userId;
+
+                if (data.status == 404) {
+                    console.log(data.message)
+                    setReply(data.message);
+                } else if (data.status === '') {
+
+                }
+                else {
+                    document.cookie = `user=${name}; domain=; path=/`;
+                    document.cookie = `userid=${userId || ""}; domain=; path=/`;
+                    window.location.pathname = '/';
+                }
+            } else {
                 console.log(data.message)
-                setReply(data.message);
+                setReply('An error occurred');
+
             }
-            else {
-                document.cookie = `user=${name}; domain=; path=/`;
-                document.cookie = `userid=${userId || ""}; domain=; path=/`;
-                window.location.pathname = '/';
-            }
-        } else {
-            console.log(data.message)
-            setReply('An error occurred');
+        } catch (err) {
+            console.log(err.message);
+            setReply(err.message);
         }
 
         return data;
