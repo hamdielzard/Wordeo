@@ -46,8 +46,11 @@ function SignInPage() {
 
         if (data.message) {
 
+            const userId = data.userId;
+
             if (data.message === 'User Added Successfully!') {
-                document.cookie = "user=" + name + ";domain=;path=/";
+                document.cookie = `user=${name}; domain=; path=/`;
+                document.cookie = `userid=${userId || ""}; domain=; path=/`;
                 window.location.pathname = '/';
             }
             else {
@@ -68,12 +71,15 @@ function SignInPage() {
 
         if (data.message) {
 
+            const userId = data.userId;
+
             if (data.message === 'Password does not match!') {
                 console.log(data.message)
                 setReply(data.message);
             }
             else {
-                document.cookie = "user=" + name + ";domain=;path=/";
+                document.cookie = `user=${name}; domain=; path=/`;
+                document.cookie = `userid=${userId || ""}; domain=; path=/`;
                 window.location.pathname = '/';
             }
         } else {

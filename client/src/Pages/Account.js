@@ -6,7 +6,6 @@
 import React, { useEffect } from 'react'
 import { useState,useLayoutEffect } from 'react';
 import { useParams, Navigate } from 'react-router-dom'
-import { Async } from 'react-async'
 //styles
 import '../Styles/Account.css'
 import '../Styles/General.css'

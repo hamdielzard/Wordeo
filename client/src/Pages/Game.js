@@ -5,7 +5,7 @@ import GameHeader from '../Components/Game/GameHeader'
 import GameOver from '../Components/Game/GameOver'
 import Timer from '../Components/Game/Timer'
 import CoreGame from '../Components/Game/CoreGame'
-import fetchWords from '../Components/Game/FetchWords'
+import { fetchWords, postScore } from '../Util/ApiCalls'
 import '../Styles/Game.css';
 
 let timeLost = 0
@@ -14,12 +14,20 @@ const GamePage = ({
     initialState = false,
     numRounds = 10
 }) => {
-    const cookie = ('; ' + document.cookie).split(`; user=`).pop().split(';')[0];
-    var user;
-    if (cookie.length > 0)
-        user = cookie;
-    else
-        user = 'Guest';
+    let user = "Guest";
+    let userId = "";
+    
+    const cookiePairs = document.cookie.split(';');
+    
+    // Iterate through the cookie pairs to find the 'user' and 'userID' values
+    for (const pair of cookiePairs) {
+        const [key, value] = pair.trim().split('=');
+        if (key === 'user') {
+            user = value;
+        } else if (key === 'userid') {
+            userId = value;
+        }
+    }
 
     const [loading, setLoading] = React.useState(true)
 
@@ -29,7 +37,7 @@ const GamePage = ({
         round: 1,
         score: 0,
         currWord: null,
-        gameEnd: false,
+        gameEnd: initialState,
         roundTime: null,
         wordGuessed: false
     })
@@ -64,12 +72,18 @@ const GamePage = ({
             }))
         }
         else {
+            // game ended
             updateGameStatus(prev =>({
                 ...prev,
                 score: prev.score + scoreEarned,
                 gameEnd: true,
                 roundTime: 0
             }))
+
+            // submit score
+            if (user !== "Guest") {
+                postScore(userId, gameStatus.score);
+            }
         }
     }
 

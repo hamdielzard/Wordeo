@@ -174,7 +174,7 @@ request.post('/scores', payload);
 
 ---
 #### Get scores
-`POST /scores`
+`GET /scores`
 
 Creates a score in the database
 

@@ -38,7 +38,8 @@ const register = (req, res, next) => {
                         .then(user => {
                             logger.info(`[200] AuthController - Sign up successful: ${userName}`)
                             return res.status(200).json({
-                                message: 'User Added Successfully!'
+                                message: 'User Added Successfully!',
+                                userId: user._id // Include the user ID
                             })
                         })
                     
