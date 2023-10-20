@@ -11,17 +11,17 @@ const register = (req, res, next) => {
     User.findOne({ userName: userName })
         .then(user => {
             if (user) {
+                logger.error(`[409] AuthController - Sign up error occurred: ${userName} already exists`)
                 return res.status(409).json({
                     message: "User already exists!"
                 })
-                logger.error(`[409] AuthController - Sign up error occurred: ${userName} already exists`)
             } else {
                 bcrypt.hash(req.body.password, 10, function (err, hashedPass) {
                     if (err) {
+                        logger.error(`[400] AuthController - Sign up error occurred: ${err}`)
                         return res.error(400).json({
                             error: err
                         })
-                        logger.error(`[400] AuthController - Sign up error occurred: ${err}`)
                     }
 
                     let user = new User({
