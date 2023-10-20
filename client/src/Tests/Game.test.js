@@ -1,6 +1,15 @@
 import React from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen} from '@testing-library/react';
 import Game from '../Pages/Game';
+import CoreGame from '../Components/Game/CoreGame';
+import Timer from '../Components/Game/Timer'
+
+const testWord = {
+    "word": "DISCORD",
+    "hints": ["Communication Platform", "Gamer-Friendly"],
+    "category": "Applications",
+    "difficulty": 1
+}
 
 describe('The Game Page', () => {
     test('should render the header', () => {
@@ -36,6 +45,60 @@ describe('The Game Page', () => {
         const { container } = render(<Game initialState={true}/>);
 
         expect(container.getElementsByClassName('gameOver').length).toBe(1);
-      });
+    });
+
+    // NEW ONES
+
+    test('number of word boxes should be the same as length of words given', () => { 
+    const { container } = render(<CoreGame wordData = {testWord}/>);
+
+    expect(container.getElementsByClassName('letterbox').length).toBe(testWord.word.length);
+    });
+
+    test('Correct letters should update the letter boxes. Boxes hosting correct letters should turn green and have visible letters', async () => { 
+        const { container } = render(<CoreGame wordData = {testWord} initialCorrectLetters = {'d'}/>);
+
+        // Affected word boxes should be the first and last box
+        const letter0Style = window.getComputedStyle(container.getElementsByClassName('letter')[0]);
+        const box0Style = window.getComputedStyle(container.getElementsByClassName('letterbox')[0]);
+        const letter6Style = window.getComputedStyle(container.getElementsByClassName('letter')[6]);
+        const box6Style = window.getComputedStyle(container.getElementsByClassName('letterbox')[6]);
+
+        expect(letter0Style.getPropertyValue('visibility')).toBe('visible');
+        expect(box0Style.getPropertyValue('background-color')).toBe('rgb(171, 255, 104)');
+        expect(letter6Style.getPropertyValue('visibility')).toBe('visible');
+        expect(box6Style.getPropertyValue('background-color')).toBe('rgb(171, 255, 104)');
+        });
+    
+    test('unguessed letter boxes should be white and invisible', () => { 
+        const { container } = render(<CoreGame wordData = {testWord} initialCorrectLetters= {['d', 's', 'c', 'r']} />);
+
+        console.log(container.getElementsByClassName('lettergrid')[0].innerHTML)
+        
+        const letter1Style = window.getComputedStyle(container.getElementsByClassName('letter')[1]);
+        const box1Style = window.getComputedStyle(container.getElementsByClassName('letterbox')[1]);
+
+        expect(letter1Style.getPropertyValue('visibility')).toBe('hidden');
+        expect(box1Style.getPropertyValue('background-color')).toBe('rgb(255, 255, 255)');
+    });
+
+    test('Number of incorrect boxes should match number of incorrect letters', () => { 
+        const { container } = render(<CoreGame wordData = {testWord} initialIncorrectLetters= {['s', 'q']} />);
+        
+        expect(container.getElementsByClassName('incorrectLetterBox').length).toBe(2);
+    });
+    
+    test('Timer should match time given', () => { 
+        const { container } = render(<Timer initialTime = {30} wordGuessed = {false} />);
+
+        expect(container.getElementsByClassName('timer-text')[0].textContent).toBe('30');
+    });
+
+    test('When timer ends it should call a function for round end', () => { 
+        const onEnd = jest.fn()
+        const { container } = render(<Timer initialTime = {0} onEnd = {onEnd} />);
+
+        expect(onEnd).toHaveBeenCalledTimes(1);
+    });
 });
 
