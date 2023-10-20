@@ -6,6 +6,7 @@ import WordeoLogo from '../Images/WordeoLogo.png';
 import '../Styles/SignIn.css';
 import '../Styles/General.css'
 import Button from '../Components/Button';
+import {Async} from 'react-async'
 
 const SignInPage = () => {
 
