@@ -1,4 +1,5 @@
 require('dotenv').config();
+const logger = require('./logger');
 const app = require("./server");
 const mongoose = require('mongoose');
 const port = process.env.PORT || 8080;
@@ -8,6 +9,6 @@ const port = process.env.PORT || 8080;
 // return errors if unsuccessful
 mongoose.connect(process.env.MONGODB_URL)
     .then((result) => app.listen(port, () => {
-        console.log(`server running on port ${port}`);
+        logger.info(`Server listening on port ${port}`);
     }))
-    .catch((err) => console.log(err));
+    .catch((err) => logger.error(err));
