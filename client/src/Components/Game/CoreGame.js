@@ -3,7 +3,7 @@ import { useEffect } from "react";
 
 import Timer from './Timer';
 import LetterBox from "./LetterBox";
-import IncorrectLetterBox from "./InocrrectLetterBox";
+import IncorrectLetterBox from "./IncorrectLetterBox";
 
 const CoreGame = (props) => {
     let word = props.wordData.word
@@ -13,6 +13,8 @@ const CoreGame = (props) => {
         correctLetters: [],
         incorrectLetters: []
     })
+
+    console.log(roundStatus)
 
     const [time, updateTime] = React.useState({
         timeRemaining: 0
@@ -52,11 +54,9 @@ const CoreGame = (props) => {
         let newCorrectLetters = roundStatus.correctLetters
         let newIncorrectLetters = roundStatus.incorrectLetters
 
-        console.log("RAN")
-        console.log(roundStatus)
-
         // Only do logic if this letter has not been guessed yet
-        if (!roundStatus.wordsGuessed.includes(e.key))
+        // and that it is a letter
+        if (!roundStatus.wordsGuessed.includes(e.key) && e.key.length == 1 && (e.key.toLowerCase() != e.key.toUpperCase()))
         {  
             let isCorrect = false
 
@@ -104,6 +104,9 @@ const CoreGame = (props) => {
             else if (!isCorrect) {
                 // Update round status to reflect the new incorrect word
                 newIncorrectLetters.push(e.key)
+
+                // Inform Game that an incorrect letter was guessed
+                props.incorrectLetterGuessed()
 
                 // Fill and create incorrect letter boxes with the new data
                 updateIncorrectLetters(() => {
@@ -158,14 +161,20 @@ const CoreGame = (props) => {
     // When props has changed, the parent component of this component has passed it a new word
     // Create a new round with this new word
     useEffect(() => {
+        // Reset round status
+        updateRoundStatus({
+            wordsGuessed: [],
+            correctLetters: [],
+            incorrectLetters: [],
+        })
+
         // Reset letter boxes
         updateLetters(initializeLetterBoxes())
         updateIncorrectLetters([])
-    }, [props])
+    }, [props.wordData])
 
     return(
         <div className="coreGame">
-            <Timer />
             <div className="hint">
                 {props.wordData.hints[0]}
             </div>
