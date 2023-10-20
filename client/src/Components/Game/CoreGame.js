@@ -16,16 +16,16 @@ const CoreGame = ({wordData, roundEnd, incorrectLetterGuessed, initialCorrectLet
     })
 
     // For every letter in a word, create a letter box for it
-    const [letters, updateLetters] = React.useState(createLetterBoxes())
+    const [letters, updateLetters] = React.useState(createLetterBoxes(initialCorrectLetters))
     const [incorrectLetterBoxes, updateIncorrectLetters] = React.useState(createIncorrectLetterBoxes(roundStatus.incorrectLetters))
 
-    function createLetterBoxes() {
+    function createLetterBoxes(correctLetters) {
         var initialLetters = []
 
         // Create a box for every letter
         for (let i = 0; i < word.length; i++) {
             // If current word matches, create a visible green box for it 
-            if (roundStatus.correctLetters.includes(word.charAt(i).toLowerCase())) {
+            if (correctLetters.includes(word.charAt(i).toLowerCase())) {
                 initialLetters.push(
                     <div className="letterbox" style={{background: '#ABFF68'}} key = {i}>
                         <LetterBox 
@@ -79,7 +79,7 @@ const CoreGame = ({wordData, roundEnd, incorrectLetterGuessed, initialCorrectLet
 
         // Only do logic if this letter has not been guessed yet
         // and that it is a letter
-        if (!roundStatus.wordsGuessed.includes(e.key) && e.key.length == 1 && (e.key.toLowerCase() != e.key.toUpperCase()))
+        if (!roundStatus.wordsGuessed.includes(e.key.toLowerCase()) && e.key.length == 1 && (e.key.toLowerCase() != e.key.toUpperCase()))
         {  
             let isCorrect = false
 
@@ -94,7 +94,7 @@ const CoreGame = ({wordData, roundEnd, incorrectLetterGuessed, initialCorrectLet
             // If correct letter was found, update the letter boxes
             if (isCorrect) {
                 newCorrectLetters.push(e.key)
-                updateLetters(createLetterBoxes)
+                updateLetters(createLetterBoxes(roundStatus.correctLetters))
             }
             // Letter was not correct
             else if (!isCorrect) {
@@ -155,7 +155,7 @@ const CoreGame = ({wordData, roundEnd, incorrectLetterGuessed, initialCorrectLet
         })
 
         // Reset letter boxes
-        updateLetters(createLetterBoxes())
+        updateLetters(createLetterBoxes(initialCorrectLetters))
         updateIncorrectLetters(createIncorrectLetterBoxes(initialIncorrectLetters))
     }, [wordData])
 

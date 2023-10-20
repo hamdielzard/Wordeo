@@ -55,7 +55,7 @@ describe('The Game Page', () => {
     expect(container.getElementsByClassName('letterbox').length).toBe(testWord.word.length);
     });
 
-    test('Correct letters should update the letter boxes. Boxes hosting correct letters should turn green and have visible letters', async () => { 
+    test('Correct letters should update the letter boxes. Boxes hosting correct letters should turn green and have visible letters', () => { 
         const { container } = render(<CoreGame wordData = {testWord} initialCorrectLetters = {'d'}/>);
 
         // Affected word boxes should be the first and last box
@@ -70,6 +70,24 @@ describe('The Game Page', () => {
         expect(box6Style.getPropertyValue('background-color')).toBe('rgb(171, 255, 104)');
         });
     
+    test('letter boxes should contain the correct letter', () => { 
+        const { container } = render(<CoreGame wordData = {testWord} />);
+
+        expect(container.getElementsByClassName('letter')[0].textContent).toBe('D')
+        expect(container.getElementsByClassName('letter')[1].textContent).toBe('I')
+        expect(container.getElementsByClassName('letter')[2].textContent).toBe('S')
+        expect(container.getElementsByClassName('letter')[3].textContent).toBe('C')
+        expect(container.getElementsByClassName('letter')[4].textContent).toBe('O')
+        expect(container.getElementsByClassName('letter')[5].textContent).toBe('R')
+        expect(container.getElementsByClassName('letter')[6].textContent).toBe('D')
+    })
+
+    test('incorrect letter boxes should contain the correct letter', () => { 
+        const { container } = render(<CoreGame wordData = {testWord} initialIncorrectLetters = {['a']}/>);
+
+        expect(container.getElementsByClassName('incorrectLetter')[0].textContent).toBe('A')
+    })
+
     test('unguessed letter boxes should be white and invisible', () => { 
         const { container } = render(<CoreGame wordData = {testWord} initialCorrectLetters= {['d', 's', 'c', 'r']} />);
 
@@ -80,6 +98,18 @@ describe('The Game Page', () => {
 
         expect(letter1Style.getPropertyValue('visibility')).toBe('hidden');
         expect(box1Style.getPropertyValue('background-color')).toBe('rgb(255, 255, 255)');
+    });
+
+    test('When all correct words have been guessed it should call a function for game end', () => { 
+        const roundEnd = jest.fn()
+        const { container } = render(
+            <CoreGame 
+                wordData = {testWord} 
+                initialCorrectLetters= {['d', 'i', 's', 'c', 'o', 'r']}
+                roundEnd = {roundEnd}
+            />)
+
+        expect(roundEnd).toHaveBeenCalledTimes(1);
     });
 
     test('Number of incorrect boxes should match number of incorrect letters', () => { 
