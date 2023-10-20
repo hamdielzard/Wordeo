@@ -61,7 +61,7 @@ const AccountPage = () =>
             if(cookie==user)
             {
                 //logged in, so get auth from backend to update the data template
-                const accData = callAPIAccount(cookie)
+                const accData = callAPIAccountOld(cookie)
                 console.log(accData)
 
                 //once the data is got put it in userData (update the template)
@@ -323,7 +323,7 @@ const AccountPage = () =>
                         <div>
                             <img src={WordeoLogo} alt='Wordeo' style={{height:64,cursor:'pointer',marginLeft:20}} onClick={toHome}/>
                         </div>
-                        <div style={{marginTop:20,textAlign:'center'}}>
+                        <div style={{marginTop:20,textAlign:'center',fontSize:'24px'}}>
                             {user}'s Account Dashboard
                         </div>
                         <div>

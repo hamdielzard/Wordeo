@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const AccountSchema = new Schema ({
+const AccountSchema = new Schema({
     user_id: {
         type: String
     },
@@ -13,8 +13,20 @@ const AccountSchema = new Schema ({
     },
     highscore: {
         type: Number
-    }
-}, {timestamps: true}) // creates 'createdAt' & 'updatedAt' timestamps automatically
+    },
+    gamesPlayed: {
+        type: Number
+    },
+    gamesWon: {
+        type: Number
+    },
+    description: {
+        type: String
+    },
+    wordsGuessed: {
+        type: Number
+    },
+}, { timestamps: true }) // creates 'createdAt' & 'updatedAt' timestamps automatically
 
 const User = mongoose.model('User', AccountSchema)
 

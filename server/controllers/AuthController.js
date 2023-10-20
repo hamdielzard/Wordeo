@@ -26,7 +26,12 @@ const register = (req, res, next) => {
 
                     let user = new User({
                         userName: req.body.userName,
-                        password: hashedPass
+                        password: hashedPass,
+                        highscore: 0,
+                        gamesPlayed: 0,
+                        gamesWon: 0,
+                        description: "",
+                        wordsGuessed: 0
                     })
 
                     user.save()
