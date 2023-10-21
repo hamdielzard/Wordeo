@@ -2,87 +2,166 @@
 
 import React from 'react'
 import GameHeader from '../Components/Game/GameHeader'
-import CoreGame from '../Components/Game/CoreGame'
 import GameOver from '../Components/Game/GameOver'
+import Timer from '../Components/Game/Timer'
+import CoreGame from '../Components/Game/CoreGame'
+import { fetchWords, postScore } from '../Util/ApiCalls'
 import '../Styles/Game.css';
 
-// TEMP GAME DATA
-import data from '../TEMPDB/data';
+let timeLost = 0
 
-// TO DO
-// Round time calculation
-// Score calculation
-// Coin calculation
-// 
+const GamePage = ({
+    initialLoad = true,
+    initialState = false,
+    data = [],
+    numRounds = data.length ? data.length : 10,
+}) => {
+    let user = "Guest";
+    let userId = "";
+    
+    const cookiePairs = document.cookie.split(';');
+    
+    // Iterate through the cookie pairs to find the 'user' and 'userID' values
+    for (const pair of cookiePairs) {
+        const [key, value] = pair.trim().split('=');
+        if (key === 'user') {
+            user = value;
+        } else if (key === 'userid') {
+            userId = value;
+        }
+    }
 
-const GamePage = ({initialState = false}) =>
-{
-    const cookie = ('; '+document.cookie).split(`; user=`).pop().split(';')[0];
-    var user;
-    if(cookie.length>0)
-        user=cookie;
-    else
-        user='Guest';
+    const [loading, setLoading] = React.useState(initialLoad)
+
+    const [gameData, setGameData] = React.useState(data)
 
     const [gameStatus, updateGameStatus] = React.useState({
         round: 1,
         score: 0,
-        currWord: data[0],
+        currWord: data.length ? data[0] : null,
         gameEnd: initialState,
-        roundTime: 0
+        roundTime: null,
+        wordGuessed: false
     })
 
-    function roundEnd(scoreEarned) {
-        console.log(scoreEarned)
+    const [roundStatus, updateRoundStatus] = React.useState({
+        incorrectLettersGuessed: 0
+    })
 
-        if (gameStatus.round+1 <= data.length) {
+    React.useEffect(()=> {
+        fetchWords(numRounds)
+            .then((data) => {
+                setGameData(data);
+                updateGameStatus(prev => ({
+                    ...prev,
+                    currWord: data[0],
+                    roundTime: 10 + data[0].difficulty * 5
+                }));
+                setLoading(false);
+            })
+    }, [gameStatus.gameEnd]);
+
+    // Called by Timer.js to update game status
+    // Called when timer runs out, so round is over
+    function roundEnd(scoreEarned) {
+        if (gameStatus.round+1 <= gameData.length) {
             updateGameStatus(prev =>({
                 ...prev,
                 round: prev.round + 1,
                 score: prev.score + scoreEarned,
-                currWord: data[prev.round],
-                roundTime: 0
+                currWord: gameData[prev.round],
+                roundTime: 10 + gameData[prev.round].difficulty * 5,
+                wordGuessed: false
             }))
         }
         else {
+            // game ended
             updateGameStatus(prev =>({
                 ...prev,
                 score: prev.score + scoreEarned,
-                gameEnd: true
+                gameEnd: true,
+                roundTime: 0
             }))
+
+            // submit score
+            if (user !== "Guest") {
+                postScore(userId, gameStatus.score);
+            }
         }
+        
+        restartRound()
+    }
+
+    // Called by CoreGame.js to update game status
+    // Called whenever a word was guessed, so round is over
+    function wordGuessed() {
+        updateGameStatus(prev => ({
+            ...prev,
+            wordGuessed: true
+        }))
+
+        restartRound()
+    }
+
+    // Called by CoreGame.js to update round status
+    function incorrectLetterGuessed() {
+        updateRoundStatus(prev => ({
+            incorrectLettersGuessed: prev.incorrectLettersGuessed + 1
+        }))
     }
 
     function restartGame() {
-        // OPTION TO SELECT NEW GAME DATA GOES HERE
-
-        updateGameStatus({
+        updateGameStatus(prev => ({
             round: 1,
             score: 0,
-            currWord: data[0],
-            gameEnd: false
+            currWord: gameData[0],
+            gameEnd: false,
+            roundTime: 10 + gameData[0].difficulty * 5,
+            wordGuessed: false
+        }))
+    }
+
+    function restartRound() {
+        updateRoundStatus({
+            incorrectLettersGuessed: 0
         })
     }
 
     return(
         <div className='game'>
-            <GameHeader 
+            { !loading &&
+                <GameHeader 
                 score = {gameStatus.score}
                 round = {gameStatus.round}
-                maxRound = {data.length}
+                maxRound = {numRounds}
                 name = {user}
-            />
-            {gameStatus.gameEnd ? 
-            <GameOver 
+                />
+            }
+            {
+                !loading && 
+                gameStatus.gameEnd &&
+                <GameOver 
                 score = {gameStatus.score}
-                coins = {gameStatus.score/2}
                 restartGame = {restartGame}
-            />
-            :
-            <CoreGame 
-                wordData = {gameStatus.currWord}
-                roundEnd = {roundEnd}
-            />}
+                />
+            }
+            {   !loading && 
+                !gameStatus.gameEnd &&
+                <div className='gameContainer'>    
+                <Timer 
+                    initialTime = {gameStatus.roundTime}
+                    wordGuessed = {gameStatus.wordGuessed}
+                    onEnd = {roundEnd}
+                    timePenalty = {2}
+                    incorrectLettersGuessed = {roundStatus.incorrectLettersGuessed}
+                />
+                <CoreGame 
+                    wordData = {gameStatus.currWord}
+                    roundEnd = {wordGuessed}
+                    incorrectLetterGuessed = {incorrectLetterGuessed}
+                    roundNum = {gameStatus.round}
+                /></div>
+            }
         </div>
     )
 }

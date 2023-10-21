@@ -47,9 +47,4 @@ function loginButton()
     }
 }
 
-function Play() {
-    // Redirect to game page
-    return -1;
-}
-
 export default Home;

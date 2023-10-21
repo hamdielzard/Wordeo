@@ -3,6 +3,7 @@ const router = express.Router();
 
 // load models
 const Word = require('../models/words');
+const logger = require('../logger');
 
 // endpoints
 
@@ -24,8 +25,10 @@ router.post("/word", async (req, res) => {
     try {
         const result = await newWord.save();
         res.status(200).json(result);
+        logger.info(`[200] POST /words - Add word successful: ${word}`);
     } catch (err) {
         res.status(400).json({ message: err.message });
+        logger.error(`[400] POST /words - Add word error occurred: ${err}`);
     }
 });
 
@@ -38,8 +41,10 @@ router.get("/word", async (req, res) => {
     try {
         const result = await Word.find({ word: word });
         res.status(200).json(result);
+        logger.info(`[200] GET /words - Get word successful: ${word}`);
     } catch (err) {
         res.status(500).json({ message: err.message });
+        logger.error(`[500] GET /words - Get word error occurred: ${err}`);
     }
 });
 
@@ -55,8 +60,10 @@ router.patch("/word", async (req, res) => {
     try {
         const result = await Word.updateOne({ word: word, hints: hint }, { hints: newHints });
         res.status(200).json(result);
+        logger.info(`[200] PATCH /words - Update word successful: ${word}`);
     } catch (err) {
         res.status(500).json({ message: err.message });
+        logger.error(`[500] PATCH /words - Update word error occurred: ${err}`);
     }
 });
 
@@ -70,8 +77,10 @@ router.delete("/word", async (req, res) => {
     try {
         const result = await Word.deleteOne({ word: word, hints: hint });
         res.status(200).json(result);
+        logger.info(`[200] DELETE /words - Delete word successful: ${word}`);
     } catch (err) {
         res.status(500).json({ message: err.message });
+        logger.error(`[500] DELETE /words - Delete word error occurred: ${err}`);
     }
 });
 
@@ -83,8 +92,10 @@ router.post("/", async (req, res) => {
     try {
         const result = await Word.insertMany(words);
         res.status(200).json(result);
+        logger.info(`[200] POST /words / - Add multiple words successful`);
     } catch (err) {
         res.status(400).json({ message: err.message });
+        logger.error(`[400] POST /words / - Add multiple words error occurred: ${err}`);
     }
 });
 
@@ -116,8 +127,10 @@ router.get("/", async (req, res) => {
             result = await Word.find(filter);
         }
         res.status(200).json(result);
+        logger.info(`[200] GET /words / - Get all words successful`);
     } catch (err) {
         res.status(500).json({ message: err.message });
+        logger.error(`[500] GET /words / - Get all words error occurred: ${err}`);
     }
 });
 

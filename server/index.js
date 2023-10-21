@@ -1,6 +1,10 @@
 require('dotenv').config();
+const logger = require('./logger');
 const app = require("./server");
 const mongoose = require('mongoose');
+const data = require('../data/words.json');
+const Word = require('./models/words');
+
 const port = process.env.PORT || 8080;
 
 // connect to the database
@@ -8,6 +12,11 @@ const port = process.env.PORT || 8080;
 // return errors if unsuccessful
 mongoose.connect(process.env.MONGODB_URL)
     .then((result) => app.listen(port, () => {
-        console.log(`server running on port ${port}`);
+        logger.info(`Server listening on port ${port}`);
     }))
-    .catch((err) => console.log(err));
+    .then(async () => {
+        // clear & insert the word data to the database
+        await Word.deleteMany({});
+        const res = await Word.insertMany(data.words);
+    })
+    .catch((err) => logger.error(err));

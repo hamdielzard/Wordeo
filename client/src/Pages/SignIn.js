@@ -1,116 +1,187 @@
-//the page for signing in or signing up
-
-import React from 'react';
-import { useLayoutEffect } from 'react';
-import WordeoLogo from '../Images/WordeoLogo.png';
+import { useState } from 'react';
 import '../Styles/SignIn.css';
-import '../Styles/General.css'
-import Button from '../Components/Button';
+import WordeoLogo from '../Images/WordeoLogo.png';
 
-const SignInPage = () => {
+function SignInPage() {
+    const [reply, setReply] = useState('');
 
-    useLayoutEffect(()=>{
-        document.body.style.backgroundColor = "#FFF";
-    })
+    async function callAPIRegister(name, pass) {
+        const reqJson = {
+            userName: name,
+            password: pass,
+        };
 
-    function validateSignUp()
-    {
-        const name = document.getElementById('upUser').value;
-        const password = document.getElementById('upPass').value;
-        const warning = document.getElementById('upWarning');
+        const res = await fetch('http://localhost:8080/api/register/', {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json',
+            },
+            body: JSON.stringify(reqJson),
+        });
+        const data = await res.json();
 
-        const error = frontEndChecks(name,password,warning);
-
-        if(!error)
-        {
-            //backend calls go here
-
-            //if validated add cookie
-            document.cookie = "user="+name+";domain=;path=/";
-            window.location = '/account/'+name;
-            //otherwise update warning message
+        if (!res.ok) {
+            throw new Error(data.message);
         }
+
+        return data;
     }
 
-    function validateSignIn()
-    {
-        const name = document.getElementById('inUser').value.trim();
-        const password = document.getElementById('inPass').value.trim();
-        const warning = document.getElementById('inWarning');
+    async function callAPILogin(name, pass) {
+        const reqJson = {
+            userName: name,
+            password: pass,
+        };
 
-        const error = frontEndChecks(name,password,warning);
+        const res = await fetch('http://localhost:8080/api/login/', {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json',
+            },
+            body: JSON.stringify(reqJson),
+        });
 
-        if(!error)
-        {
-            //backend calls go here
+        const data = await res.json();
 
-            //if validated add cookie
-            document.cookie = "user="+name+";domain=;path=/";
-            window.location = '/';
-            //otherwise update warning message
+        if (!res.ok) {
+            throw new Error(data.message);
         }
+
+        return data;
     }
 
-    //checks input before sending to backend
-    function frontEndChecks(name,password,warning)
-    {
-        var error = false;
-
-        if(name.length<1)
-        {
-            error=true;    
-            warning.innerHTML='Username required.';
-        }
-        else if (password.length<1)
-        {
-            error=true;
-            warning.innerHTML='Password required.';
+    async function handleSignUp(name, password) {
+        if (!name) {
+            setReply("Username required.");
+            return;
         }
 
-        if(name.toLowerCase()==='signin')
-        {
-            error=true;
-            warning.innerHTML='Invalid Username.';
+        if (!password) {
+            setReply("Password required.")
+            return;
         }
 
-        return error;
+        let data;
+
+        try {
+            data = await callAPIRegister(name, password);
+
+            if (data.message) {
+                const userId = data.userId;
+                const displayName = data.displayName;
+
+                if (data.message === 'User Added Successfully!') {
+                    document.cookie = `user=${displayName}; domain=; path=/`;
+                    document.cookie = `userid=${userId || ""}; domain=; path=/`;
+                    window.location.pathname = '/';
+                }
+                else {
+                    console.log(data.message)
+                    setReply(data.message);
+                }
+
+            } else {
+                console.log(data.message)
+                setReply('An error occurred');
+            }
+        } catch (err) {
+            console.log(err.message);
+            setReply(err.message);
+        }
+
+        return data;
+    }
+
+    async function handleSignIn(name, password) {
+        if (!name) {
+            setReply("Username required.");
+            return;
+        }
+
+        if (!password) {
+            setReply("Password required.")
+            return;
+        }
+
+        let data;
+
+        try {
+            data = await callAPILogin(name, password);
+
+            if (data.message) {
+                const userId = data.userId;
+                const displayName = data.displayName;
+
+                if (data.status == 404) {
+                    console.log(data.message)
+                    setReply(data.message);
+                } else if (data.status === '') {
+
+                }
+                else {
+                    document.cookie = `user=${displayName}; domain=; path=/`;
+                    document.cookie = `userid=${userId || ""}; domain=; path=/`;
+                    window.location.pathname = '/';
+                }
+            } else {
+                console.log(data.message)
+                setReply('An error occurred');
+
+            }
+        } catch (err) {
+            console.log(err.message);
+            setReply(err.message);
+        }
+
+        return data;
+    }
+
+    async function handleSubmit(event) {
+        event.preventDefault();
+
+        const name = event.target.elements.username.value.trim();
+        const password = event.target.elements.password.value.trim();
+
+        if (event.target.name === 'signup') {
+            await handleSignUp(name, password);
+        } else if (event.target.name === 'signin') {
+            await handleSignIn(name, password);
+        }
     }
 
     return (
-        <div className='signin'>
-            <div style={{justifyContent:'center',paddingBottom:'5%'}}>
-                <img src={WordeoLogo} alt='Wordeo' onClick={() => {window.location = "/"}} style={{cursor:'pointer'}}/>
-            </div>
+        <div className="signInMain">
+            <img src={WordeoLogo} alt='Wordeo Logo' onClick={() => { window.location.pathname = '/' }} style={{ cursor: 'pointer' }} />
+            <div className="signinContainer">
+                <div className="signBox">
+                    <form onSubmit={handleSubmit} name="signin">
+                        <div className="inputHolder">
+                            <h1 className='signHeader'>Sign In</h1>
+                            <input className="inputField" type="text" id="signInUser" name="username" placeholder='Username' />
+                            <input className="inputField" type="password" id="signInPass" name="password" placeholder='Password' />
+                            <button className="signButton" type="submit">Sign In</button>
+                        </div>
+                    </form>
+                </div>
+                <h2 className="ORText">OR</h2>
+                <div className="signBox">
+                    <form onSubmit={handleSubmit} name="signup">
+                        <div className="inputHolder">
+                            <h1 className='signHeader'>Sign Up</h1>
+                            <input className="inputField" type="text" id="username" name="username" placeholder='Username' />
+                            <input className="inputField" type="password" id="signUpPass" name="password" placeholder='Password' />
+                            <button className="signButton" type="submit">Sign Up</button>
 
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gridGap: 40,justifyContent:'center' }}>
-                <div>
-                    <div style={{color:'#FFF'}} className='inputHolder'>
-                        <h1>Sign Up</h1>
-                        <p id='upWarning' style={{color:'white'}}></p>
-                        <input id='upUser' type='text' placeholder='username' maxLength='16' className='inputField'></input>
-                        <input id='upPass' type='password' placeholder='password' maxLength='16' className='inputField'></input>
-                        <Button label="Create Account" onClick={validateSignUp} type="secondary" size="medium"/>
-                    </div>
-                </div>
-                <div>
-                    <h1 style={{textAlign:'center',color:'white',fontSize:'64px',marginTop:'128px'}} className='outlinetext'>OR</h1>
-                </div>
-                <div>
-                <div style={{color:'#FFF'}} className='inputHolder'>
-                        <h1>Sign In</h1>
-                        <p id='inWarning' style={{color:'white'}}></p>
-                        <input id='inUser' type='text' placeholder='username' maxLength='16' className='inputField'></input>
-                        <input id='inPass' type='password' placeholder='password' maxLength='16' className='inputField'></input>
-                        <Button label="Login" onClick={validateSignIn} type="secondary" size="medium"/>
-                    </div>
+                        </div>
+                    </form>
                 </div>
             </div>
+            {reply && <p className="warningFooter">{reply}</p>}
             <div className='signinFooter'>
                 Creating an account saves your progress and allows you to earn achievements!
             </div>
-
         </div>
-    )
+    );
 }
 
-export default SignInPage
+export default SignInPage;
