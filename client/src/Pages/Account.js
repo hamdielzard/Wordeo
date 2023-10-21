@@ -83,7 +83,7 @@ const AccountPage = () => {
                 {
                     userID: userId
                 }
-    
+
                 const res = await fetch(baseUrl + '/user/show', {
                     method: 'POST',
                     headers: {
@@ -91,7 +91,7 @@ const AccountPage = () => {
                     },
                     body: JSON.stringify(reqJson)
                 });
-    
+
                 const data = await res.json();
                 if (data.response.description !== "") {
                     desc = data.response.description;
@@ -100,7 +100,7 @@ const AccountPage = () => {
             } catch (err) {
                 console.log(err);
             }
-            
+
             // set state with the result
             setUserData(prev => ({
                 ...prev,
@@ -152,11 +152,11 @@ const AccountPage = () => {
             )
 
             //send updates to backend if not testing
-            if ((process.env.JEST_WORKER_ID === undefined || process.env.NODE_ENV !== 'test')){
+            if ((process.env.JEST_WORKER_ID === undefined || process.env.NODE_ENV !== 'test')) {
                 callAPIEdit(userId, desc);
             }
-            
-                
+
+
             setEditing(!editing);
         }
         catch (error) {
@@ -289,6 +289,8 @@ const AccountPage = () => {
                         <div style={{ width: '1240px' }} className='accountColoumn'>
                             <h1>Edit Profile</h1>
                             <div style={{ background: 'white' }} className='dividerH' />
+                            <h2>Username</h2>
+                            <textarea id='usernameInput' defaultValue={userData.username} className='editDescBox' rows='1'></textarea>
                             <h2>Description</h2>
                             <textarea id='descInput' defaultValue={userData.description} className='editDescBox' rows='6'></textarea>
                         </div>
