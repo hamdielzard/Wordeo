@@ -68,9 +68,10 @@ function SignInPage() {
 
             if (data.message) {
                 const userId = data.userId;
+                const displayName = data.displayName;
 
                 if (data.message === 'User Added Successfully!') {
-                    document.cookie = `user=${name}; domain=; path=/`;
+                    document.cookie = `user=${displayName}; domain=; path=/`;
                     document.cookie = `userid=${userId || ""}; domain=; path=/`;
                     window.location.pathname = '/';
                 }
@@ -109,6 +110,7 @@ function SignInPage() {
 
             if (data.message) {
                 const userId = data.userId;
+                const displayName = data.displayName;
 
                 if (data.status == 404) {
                     console.log(data.message)
@@ -117,7 +119,7 @@ function SignInPage() {
 
                 }
                 else {
-                    document.cookie = `user=${name}; domain=; path=/`;
+                    document.cookie = `user=${displayName}; domain=; path=/`;
                     document.cookie = `userid=${userId || ""}; domain=; path=/`;
                     window.location.pathname = '/';
                 }

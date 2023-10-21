@@ -62,7 +62,7 @@ const update = (req, res, next) => {
     let userID = req.body.userID
 
     let updateData = {
-        userName: req.body.userName,
+        displayName: req.body.displayName,
         description: req.body.description
     }
 

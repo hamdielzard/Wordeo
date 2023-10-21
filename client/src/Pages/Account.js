@@ -26,7 +26,7 @@ const AccountPage = () => {
     const baseUrl = "http://localhost:8080";
 
     const [userData, setUserData] = useState({
-        username: user,
+        displayName: user,
         highscore: 0,
         played: 0,
         description: "",
@@ -78,6 +78,7 @@ const AccountPage = () => {
 
         const callAPIAccountOld = async (userId) => {
             let desc = `${user}'s bio!`;
+            let displayName = loggedInUser;
             try {
                 const reqJson =
                 {
@@ -95,6 +96,7 @@ const AccountPage = () => {
                 const data = await res.json();
                 if (data.response.description !== "") {
                     desc = data.response.description;
+                    displayName = data.response.displayName;
                 }
 
             } catch (err) {
@@ -104,7 +106,8 @@ const AccountPage = () => {
             // set state with the result
             setUserData(prev => ({
                 ...prev,
-                description: desc
+                description: desc,
+                displayName: displayName
             }));
         }
 
@@ -141,9 +144,10 @@ const AccountPage = () => {
     function handleEditApply() {
         try {
             let desc = document.getElementById('descInput').value;
+            let displayName = document.getElementById('displayNameInput').value;
             setUserData(
                 {
-                    username: userData.username,
+                    displayName: displayName,
                     highscore: userData.highscore,
                     played: userData.played,
                     description: desc,
@@ -151,11 +155,14 @@ const AccountPage = () => {
                 }
             )
 
+            // set new cookies
+            document.cookie = `user=${displayName}; domain=; path=/`;
+            loggedInUser = displayName;
+
             //send updates to backend if not testing
             if ((process.env.JEST_WORKER_ID === undefined || process.env.NODE_ENV !== 'test')) {
-                callAPIEdit(userId, desc);
+                callAPIEdit(userId, displayName, desc);
             }
-
 
             setEditing(!editing);
         }
@@ -164,11 +171,11 @@ const AccountPage = () => {
         }
     }
 
-    async function callAPIEdit(userId, description) {
+    async function callAPIEdit(userId, displayName, description) {
         const reqJson =
         {
             userID: userId,
-            userName: loggedInUser,
+            displayName: displayName,
             description: description
         }
 
@@ -289,8 +296,8 @@ const AccountPage = () => {
                         <div style={{ width: '1240px' }} className='accountColoumn'>
                             <h1>Edit Profile</h1>
                             <div style={{ background: 'white' }} className='dividerH' />
-                            <h2>Username</h2>
-                            <textarea id='usernameInput' defaultValue={userData.username} className='editDescBox' rows='1'></textarea>
+                            <h2>Display Name</h2>
+                            <textarea id='displayNameInput' defaultValue={userData.displayName} className='editDescBox' rows='1'></textarea>
                             <h2>Description</h2>
                             <textarea id='descInput' defaultValue={userData.description} className='editDescBox' rows='6'></textarea>
                         </div>
@@ -318,7 +325,7 @@ const AccountPage = () => {
                         <img src={WordeoLogo} alt='Wordeo' style={{ height: 64, cursor: 'pointer', marginLeft: 20 }} onClick={toHome} />
                     </div>
                     <div style={{ marginTop: 20, textAlign: 'center', fontSize: '24px' }}>
-                        {user}'s Account Dashboard
+                        {loggedInUser}'s Account Dashboard
                     </div>
                     <div>
                         {topButtons()}
