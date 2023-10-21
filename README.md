@@ -10,6 +10,7 @@
 6. [Design](/images/design/DESIGN.md)
 7. [Meetings](https://github.com/hamdielzard/Wordeo/wiki/Meetings)
 8. [Wiki Homepage](https://github.com/hamdielzard/Wordeo/wiki)
+9. [Test Plan](Wordeo%20Test%20Plan.pdf)
 
 # Puzzlers Team
 Dani Youn
