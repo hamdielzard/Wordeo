@@ -62,6 +62,7 @@ const GamePage = ({
     }, [gameStatus.gameEnd]);
 
     // Called by Timer.js to update game status
+    // Called when timer runs out, so round is over
     function roundEnd(scoreEarned) {
         if (gameStatus.round+1 <= gameData.length) {
             updateGameStatus(prev =>({
@@ -87,14 +88,19 @@ const GamePage = ({
                 postScore(userId, gameStatus.score);
             }
         }
+        
+        restartRound()
     }
 
     // Called by CoreGame.js to update game status
+    // Called whenever a word was guessed, so round is over
     function wordGuessed() {
         updateGameStatus(prev => ({
             ...prev,
             wordGuessed: true
         }))
+
+        restartRound()
     }
 
     // Called by CoreGame.js to update round status
@@ -115,7 +121,13 @@ const GamePage = ({
         }))
     }
 
-    return (
+    function restartRound() {
+        updateRoundStatus({
+            incorrectLettersGuessed: 0
+        })
+    }
+
+    return(
         <div className='game'>
             { !loading &&
                 <GameHeader 
@@ -140,13 +152,14 @@ const GamePage = ({
                     initialTime = {gameStatus.roundTime}
                     wordGuessed = {gameStatus.wordGuessed}
                     onEnd = {roundEnd}
-                    timePenalty = {5}
+                    timePenalty = {2}
                     incorrectLettersGuessed = {roundStatus.incorrectLettersGuessed}
                 />
                 <CoreGame 
                     wordData = {gameStatus.currWord}
                     roundEnd = {wordGuessed}
                     incorrectLetterGuessed = {incorrectLetterGuessed}
+                    roundNum = {gameStatus.round}
                 /></div>
             }
         </div>
