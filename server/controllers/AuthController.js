@@ -25,6 +25,7 @@ const register = (req, res, next) => {
                     }
 
                     let user = new User({
+                        displayName: req.body.userName,
                         userName: req.body.userName,
                         password: hashedPass,
                         highscore: 0,
