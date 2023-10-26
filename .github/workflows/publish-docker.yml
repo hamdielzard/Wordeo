@@ -21,10 +21,8 @@ jobs:
           password: ${{ secrets.DHUB_PASS }}
       
       # github.ref_name returns the branch or tag name that triggered the job
-      - name: Build docker compose
+      - name: Build and push docker compose
         run: |
           export RELEASE_TAG=${{ github.ref_name }}
           docker-compose build --build-arg RELEASE_TAG
-      
-      - name: Publish docker compose
-        run: docker-compose push
+          docker-compose push
