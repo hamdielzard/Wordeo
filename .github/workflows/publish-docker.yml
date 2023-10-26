@@ -22,10 +22,12 @@ jobs:
 
         # github.ref_name returns the branch or tag name that triggered the job
       - name: Set release name
-        run: export RELEASE_TAG=${{ github.ref_name }}
+        run: 
       
       - name: Build docker compose
-        run: docker-compose build --build-arg RELEASE_TAG
+        run: |
+          export RELEASE_TAG=${{ github.ref_name }}
+          docker-compose build --build-arg RELEASE_TAG
       
       - name: Publish docker compose
         run: docker-compose push
