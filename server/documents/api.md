@@ -194,3 +194,20 @@ request.get('/scores?count=10');         // gets top 10 scores from the database
 ```
 
 ---
+#### Get leaderboard
+`GET /scores/leaderboard`
+
+Get the leaderboard for a given game mode.
+
+##### Request Parameters
+- `gameMode` (string): The game mode to get the highscores from. When non provided, highscores from `gameMode=solo` is returned.
+
+##### Returns
+Returns a list of highscores with usernames & userIDs
+
+##### Example
+```
+request.get('/scores/leaderboard?gameMode=solo');   // gets leaderboard for "solo" mode
+```
+
+---
