@@ -13,7 +13,8 @@ beforeEach(async () => {
     await mongoose.connect(address);
 
     // seed some fake data
-    const testAccount = new User({ user_id: 'user1', userName: 'test1', password: 'pass' });
+    await User.deleteMany({});
+    const testAccount = new User({ user_id: 'user1', userName: 'test123', password: 'pass' });
     const accountDoc = await testAccount.save();
     testAccountID = accountDoc._id;
     const testScore = new Score({ score: 999, user: testAccountID, gameMode: Modes.Solo });
@@ -131,6 +132,26 @@ describe('GET /scores', () => {
         await mongoose.connection.close();
         const res = await supertest(server)
             .get('/scores');
+        expect(res.status).toEqual(500);
+    });
+});
+
+describe('GET /scores/leaderboard', () => {
+    it('should return the list of highscores for a given game mode', async () => {
+        // add a new score
+        const newScore = new Score({ score: 111, user: testAccountID, gameMode: Modes.Solo });
+        await newScore.save();
+        const res = await supertest(server)
+            .get(`/scores/leaderboard?gameMode=${Modes.Solo}`);
+        expect(res.status).toEqual(200);
+        expect(res.body).toHaveLength(1); // should only return the highest score
+    });
+
+    it('on failure due to a database error, should return an http status 500', async () => {
+        // close db connection to test bad path
+        await mongoose.connection.close();
+        const res = await supertest(server)
+            .get('/scores/leaderboard');
         expect(res.status).toEqual(500);
     });
 });
