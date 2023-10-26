@@ -1,0 +1,41 @@
+body {
+    font-family: Inter, Arial, Helvetica, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0px;
+    padding: 0px;
+    height: 100vh;
+    width: 100%;
+    color:white;
+    overflow: hidden;
+}
+
+.scoreRow{
+    background-color: #303030;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding:10px;
+    margin:10px;
+    border-radius:20px;
+}
+
+.searchBar{
+    background-color: white;
+    justify-content: center;
+    text-align: center;
+    padding:5px;
+    margin:5px;
+    border-radius:20px;
+    font-size: large;
+    width:210px;
+}
+
+.searchButton{
+    border: 4px solid #248C28;
+    background: #4CAF50;
+    border-radius: 10px;
+    padding:"15px";
+    border-radius:"10px";
+}
