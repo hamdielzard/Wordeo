@@ -17,16 +17,13 @@ jobs:
         with:
           username: ${{ secrets.DHUB_USER }}
           password: ${{ secrets.DHUB_PASS }}
-      
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v5.0.0
-        with:
-          images: hamdielzard/wordeo
+
+        # github.ref_name returns the branch or tag name that triggered the job
+      - name: Set release name
+        run: export RELEASE_TAG=${{ github.ref_name }}
       
       - name: Build docker compose
-        run: docker-compose build
+        run: docker-compose build --build-arg RELEASE_TAG
       
-      # github.ref_name returns the branch or tag name that triggered the job
-      - name: Publish docker compose with tag
-        run: docker-compose push hamdielzard/wordeo:${{ github.ref_name }}
+      - name: Publish docker compose
+        run: docker-compose push
