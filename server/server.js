@@ -6,8 +6,8 @@ const jsonParser = bodyParser.json();
 const urlencodedParser = bodyParser.urlencoded({ extended : false });
 
 // load router modules: https://expressjs.com/en/guide/routing.html
-const words = require('./routes/words');
-const scores = require('./routes/scores');
+const WordRoute = require('./routes/words');
+const ScoreRoute = require('./routes/scores');
 const AuthRoute = require('./routes/auth');
 const UserRoute = require('./routes/user');
 
@@ -17,8 +17,8 @@ const app = express();
 app.use(cors());
 app.use(jsonParser);
 app.use(urlencodedParser);
-app.use('/words', words);
-app.use('/scores', scores);
+app.use('/words', WordRoute);
+app.use('/scores', ScoreRoute);
 app.use('/api', AuthRoute);
 app.use('/user', UserRoute);
 
