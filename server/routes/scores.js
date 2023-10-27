@@ -78,13 +78,13 @@ router.get("/", async (req, res) => {
 
 // get highscores for leaderboard
 router.get("/leaderboard", async (req, res) => {
-    var gameMode = req.query.gameMode;
+    var gameMode = req.query.gameMode || Modes.Solo; // if nothing matched, get solo mode leaderboard
 
     try {
       const leaderboard = await Score.aggregate([
         {
           $match: {
-            gameMode: gameMode || Modes.Solo // if nothing matched, get solo mode leaderboard
+            gameMode: gameMode 
           }
         },
         {
