@@ -1,105 +1,166 @@
 const logger = require('../logger')
 const User = require('../models/user')
 
-// Show the list of Users
+// GET /user/
 const index = (req, res, next) => {
-    User.find() // Mongoose querry that returns all users from database
-        .then(response => {
-            res.status(200).json({
-                response
+    // All users are returned if no body is given.
+    if (req.body.userName == null || req.body.userName == undefined || req.body.userName == "") {
+        User.find() // Get all users
+            .then(response => {
+                res.status(200).json({
+                    response
+                })
+                logger.info(`[200] GET /user - UserController: Get ALL users successful`)
             })
-            logger.info(`[200] UserController - Get all users successful`)
-        })
-        .catch(error => {
-            res.status(500).json({
-                message: 'An error Occured!'
+            .catch(error => {
+                res.status(500).json({
+                    message: 'Failed to get all users!'
+                })
+                logger.error(`[500] GET /user - UserController: Get ALL users error occurred`)
+                logger.cont(`Details: ${error}`)
             })
-            logger.error(`[500] UserController - Get all users error occurred: ${error}`)
-        })
+    }
+    else {
+        let userName = req.body.userName;
+        User.findOne({ userName: userName })
+            .then(response => {
+                if (!response) {
+                    // User not found (404)
+                    res.status(404).json({
+                        message: `User ${userName} not found!`
+                    })
+                    logger.warn(`[404] GET /user userName: ${userName} - UserController: User not found`)
+                    return
+                }
+                res.status(200).json({
+                    response
+                })
+                logger.info(`[200] GET /user userName: ${userName} - UserController: Get single user successful`)
+            })
+            .catch(error => {
+                res.status(500).json({
+                    message: 'Failed to get user!'
+                })
+                logger.error(`[500] GET /user userName: ${userName} - UserController: Get user error occurred`)
+                logger.cont(`Details: ${error}`)
+            })
+    }
 }
 
-// Show single user
-const show = (req, res, next) => {
-    let userID = req.body.userID
-    User.findById(userID)
-        .then(response => {
-            res.status(200).json({
-                response
-            })
-            logger.info(`[200] UserController - Get user successful: ${userID}`)
-        })
-        .catch(error => {
-            res.status(500).json({
-                message: 'An error Occured!'
-            })
-            logger.error(`[500] UserController - Get user error occurred: ${error}`)
-        })
-}
-
-// Add new user
-const store = (req, res, next) => {
-    let user = new User({
-        userName: req.body.userName,
-        highscore: req.body.highscore   // Initialize to 0 if required
-    })
-    user.save()
-        .then(response => {
-            res.status(200).json({
-                message: 'User added successfully!'
-            })
-            logger.info(`[200] UserController - Add user successful: ${user.userName}`)
-        })
-        .catch(error => {
-            res.status(500).json({
-                message: 'An error Occured!'
-            })
-            logger.error(`[500] UserController - Add user error occurred: ${error}`)
-        })
-}
-
-// Update user
+// PATCH /user/
 const update = (req, res, next) => {
-    let userID = req.body.userID
+    let userName = req.body.userName;
 
     let updateData = {
         displayName: req.body.displayName,
         description: req.body.description
-    }
+    };
 
-    User.findByIdAndUpdate(userID, { $set: updateData })
-        .then(() => {
-            res.status(200).json({
-                message: 'User updated successfully!'
-            })
-            logger.info(`[200] UserController - Update user successful: ${userID}`)
+    if (updateData.description == null || updateData.description == undefined || updateData.description == "") {
+        updateData.description = "";
+    }
+    if (userName == null || userName == undefined || userName == "") {
+        // Missing userName (400)
+        res.status(400).json({
+            message: 'Bad request! userName is required!'
         })
-        .catch(error => {
-            res.status(500).json({
-                message: 'An error Occured!'
-            })
-            logger.error(`[500] UserController - Update user error occurred: ${error}`)
+        logger.warn(`[400] PATCH /user userName: ${userName} - UserController: Bad request! Missing userName`)
+        return
+    }
+    if (updateData.displayName == null || updateData.displayName == undefined || updateData.displayName == "") {
+        // Missing displayName (400)
+        res.status(400).json({
+            message: 'Bad request! displayName is required!'
         })
+        logger.warn(`[400] PATCH /user userName: ${userName} - UserController: Bad request! Missing displayName`)
+        return
+    }
+    else {
+        User.findOne({ "userName": userName })
+            .then(user => {
+                if (!user) {
+                    // User not found (404)
+                    res.status(404).json({
+                        message: `User ${userName} not found!`
+                    })
+                    logger.warn(`[404] PATCH /user userName: ${userName} - UserController: User not found`)
+                    return
+                }
+                User.findOneAndUpdate({ "userName": userName }, updateData)
+                    .then(response => {
+                        // Success (200)
+                        res.status(200).json({
+                            message: `User ${userName} updated successfully!`,
+                            displayName: updateData.displayName,
+                            description: updateData.description
+                        })
+                        logger.info(`[200] PATCH /user userName: ${userName} - UserController: Update user successful`)
+                        logger.cont(`displayName: ${updateData.displayName}`)
+                        logger.cont(`description: ${updateData.description}`)
+                    })
+                    .catch(error => {
+                        // Error (500)
+                        res.status(500).json({
+                            message: 'Failed to update user!'
+                        })
+                        logger.info(`[500] PATCH /user userName: ${userName} - UserController: Failed to update user!`)
+                        logger.cont(`displayName: ${updateData.displayName}`)
+                        logger.cont(`description: ${updateData.description}`)
+                        logger.cont(`Details: ${error}`)
+                    })
+            })
+    }
 }
 
-// Delete user
+// DELETE /user/
 const destroy = (req, res, next) => {
-    let userID = req.body.userID
+    let userName = req.body.userName;
 
-    User.findByIdAndRemove(userID)
-        .then(() => {
-            res.status(200).json({
-                message: 'User deleted successfully!'
-            })
-            logger.info(`[200] UserController - Delete user successful: ${userID}`)
+    if (userName == null || userName == undefined || userName == "") {
+        // Missing userName (400)
+        res.status(400).json({
+            message: 'Bad request! userName is required!'
+        })
+        logger.warn(`[400] DELETE /user userName: ${userName} - UserController: Bad request! Missing userName`)
+        return
+    }
+
+    User.findOne({ "userName": userName })
+        .then(user => {
+            if (!user) {
+                // User not found (404)
+                res.status(404).json({
+                    message: `User ${userName} not found!`
+                })
+                logger.warn(`[404] DELETE /user userName: ${userName} - UserController: User not found`)
+                return
+            }
+
+            User.findOneAndDelete({ "userName": userName })
+                .then(response => {
+                    res.status(200).json({
+                        message: `User ${response.userName} was deleted successfully!`,
+                        response
+                    })
+                    logger.info(`[200] DELETE /user userName: ${userName} - UserController: Delete user successful`)
+                })
+                .catch(error => {
+                    res.status(500).json({
+                        message: 'Failed to delete user!'
+                    })
+                    logger.info(`[500] DELETE /user userName: ${userName} - UserController: Failed to delete user!`)
+                    logger.cont(`Details: ${error}`)
+                })
         })
         .catch(error => {
             res.status(500).json({
-                message: 'An error Occured!'
+                message: 'Failed to find user!'
             })
-            logger.error(`[500] UserController - Delete user error occurred: ${error}`)
+            logger.info(`[500] DELETE /user userName: ${userName} - UserController: Failed to find user!`)
+            logger.cont(`Details: ${error}`)
         })
 }
 
 module.exports = {
-    index, show, store, update, destroy
+    index, update, destroy
 }

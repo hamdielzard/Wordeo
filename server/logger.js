@@ -37,6 +37,14 @@ const logger = {
         }
         exportLogs();
     },
+    cont: (message) => {
+        console.log("  ↳  " + message);
+        logs.push(message);
+        if (logs.length > MAX_LOGS) {
+            logs.shift();
+        }
+        exportLogs();
+    }
 };
 
 function exportLogs() {
