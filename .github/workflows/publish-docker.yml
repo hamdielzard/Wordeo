@@ -3,6 +3,8 @@ name: Publish Docker image
 on:
   release:
     types: [published]
+  workflow_dispatch:
+    # no input provided
 
 jobs:
   push_to_registry:
@@ -18,15 +20,9 @@ jobs:
           username: ${{ secrets.DHUB_USER }}
           password: ${{ secrets.DHUB_PASS }}
       
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v5.0.0
-        with:
-          images: hamdielzard/wordeo
-      
-      - name: Build docker compose
-        run: docker-compose build
-      
       # github.ref_name returns the branch or tag name that triggered the job
-      - name: Publish docker compose with tag
-        run: docker-compose push hamdielzard/wordeo:${{ github.ref_name }}
+      - name: Build and push docker compose
+        run: |
+          export RELEASE_TAG=${{ github.ref_name }}
+          docker-compose build --build-arg RELEASE_TAG
+          docker-compose push
