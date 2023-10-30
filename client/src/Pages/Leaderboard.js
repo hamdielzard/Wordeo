@@ -69,13 +69,14 @@ const Leaderboard = () => {
             let index=0;
             return (
                 scores.map(({ highestScore,userName,displayName,_id}) => {
+                    let place = index+1;
                     if(_id!==username)
                     return (
-                        <BoardEntry key={index++} user={userName} display={displayName} score={highestScore} col="white"/>
+                        <BoardEntry key={index++} user={userName} display={displayName} score={highestScore} rank={place} col="white"/>
                     )
                     else
                     return (
-                        <BoardEntry key={index++} user={userName} display={displayName} score={highestScore} col="#4285F4    "/>
+                        <BoardEntry key={index++} user={userName} display={displayName} score={highestScore} rank={place} col="#4285F4    "/>
                     )
                 })
             )
@@ -129,7 +130,8 @@ const Leaderboard = () => {
             <table style={{justifyContent:"center",textAlign:"center",tableLayout:"fixed",width:"600px",borderCollapse:"separate"}}>
                 <tbody>
                     <tr className="scoreRow">
-                        <th style={{paddingRight:"180px",width:"100px",fontWeight:"bold"}}>Player</th>
+                        <td style={{paddingRight:"120px",minwidth:"100px",fontWeight:"bold"}}>Rank</td>
+                        <th style={{paddingRight:"120px",width:"100px",fontWeight:"bold"}}>Player</th>
                         <th style={{width:"100px",fontWeight:"bold"}}>Score</th>
                     </tr>
                     {showScores()}
