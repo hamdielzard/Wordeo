@@ -338,12 +338,12 @@ request.get('/words?count=1');         // gets 1 random word from the database
 {
    "userName": "name",
    "score": 100,
-   "mode": "multi"
+   "gameMode": "multi"
 }
 ```
 - `score` (number): The user's score
 - `userName` (string): userName to filter by
-- `mode` (string, enum): The game mode this score was obtained from `["multi", "solo"]`
+- `gameMode` (string, enum): The game mode this score was obtained from `["multi", "solo"]`
 
 **Response Body**
 > **200** | Success
