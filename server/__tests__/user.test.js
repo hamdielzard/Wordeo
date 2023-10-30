@@ -60,8 +60,7 @@ describe('GET /user', () => {
 
     it('Get single user', async () => {
         const res = await supertest(server)
-            .get('/user')
-            .send({ userName: testUser });
+            .get(`/user?userName=${testUser}`)
 
         expect(res.status).toEqual(200);
         expect(res.body.response.userName).toEqual(testUser);
@@ -75,8 +74,7 @@ describe('GET /user', () => {
         }
         
         const res = await supertest(server)
-            .get('/user')
-            .send(payload);
+            .get(`/user?userName=${payload.userName}`)
 
         expect(res.status).toEqual(404);
         expect(res.body.message).toEqual(`User ${payload.userName} not found!`);
@@ -168,8 +166,7 @@ describe('PATCH /user', () => {
         }
         
         const res2 = await supertest(server)
-            .get('/user')
-            .send(getPayload);
+            .get(`/user?userName=${getPayload.userName}`)
 
         expect(res2.status).toEqual(200);
         expect(res2.body.response.userName).toEqual(testUser);

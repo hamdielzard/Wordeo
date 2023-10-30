@@ -4,7 +4,7 @@ const User = require('../models/user')
 // GET /user/
 const index = (req, res, next) => {
     // All users are returned if no body is given.
-    if (req.body.userName == null || req.body.userName == undefined || req.body.userName == "") {
+    if (req.query.userName == null || req.query.userName == undefined || req.query.userName == "") {
         User.find() // Get all users
             .then(response => {
                 res.status(200).json({
@@ -21,7 +21,7 @@ const index = (req, res, next) => {
             })
     }
     else {
-        let userName = req.body.userName;
+        let userName = req.query.userName;
         User.findOne({ userName: userName })
             .then(response => {
                 if (!response) {

@@ -169,8 +169,7 @@ describe('GET /scores', () => {
         await new Score({ score: 170, userName: testAccountName, gameMode: Modes.Solo }).save();
         await new Score({ score: 1420, userName: testAccountName, gameMode: Modes.Solo }).save();
         const res = await supertest(server)
-            .get('/scores')
-            .send({ count: 5 });
+            .get(`/scores?count=5`)
         expect(res.status).toEqual(200);
         expect(res.body.response).toHaveLength(5);
     });
@@ -206,14 +205,12 @@ describe('GET /scores', () => {
         await new Score({ score: 170, userName: testAccountName, gameMode: Modes.Solo }).save();
         await new Score({ score: 1420, userName: testAccountName, gameMode: Modes.Solo }).save();
         const res = await supertest(server)
-            .get('/scores')
-            .send({ gameMode: "multi" });
+            .get(`/scores?gameMode=${Modes.Multi}`)
         expect(res.status).toEqual(200);
         expect(res.body.response).toHaveLength(3);
 
         const resA = await supertest(server)
-            .get('/scores')
-            .send({ gameMode: "solo" });
+            .get(`/scores?gameMode=${Modes.Solo}`)
         expect(resA.status).toEqual(200);
         expect(resA.body.response).toHaveLength(7);
     });
@@ -230,14 +227,12 @@ describe('GET /scores', () => {
         await new Score({ score: 170, userName: testAccountName, gameMode: Modes.Solo }).save();
         await new Score({ score: 1420, userName: testAccountName, gameMode: Modes.Solo }).save();
         const res = await supertest(server)
-            .get('/scores')
-            .send({ userName: testAccountName });
+            .get(`/scores?userName=${testAccountName}`)
         expect(res.status).toEqual(200);
         expect(res.body.response).toHaveLength(6);
-
+        
         const resA = await supertest(server)
-            .get('/scores')
-            .send({ userName: anotherTestAccountName });
+            .get(`/scores?userName=${anotherTestAccountName}`)
         expect(resA.status).toEqual(200);
         expect(resA.body.response).toHaveLength(4);
     });
@@ -254,8 +249,8 @@ describe('GET /scores', () => {
         await new Score({ score: 170, userName: testAccountName, gameMode: Modes.Solo }).save();
         await new Score({ score: 1420, userName: testAccountName, gameMode: Modes.Solo }).save();
         const res = await supertest(server)
-            .get('/scores')
-            .send({ userName: testAccountName });
+            .get(`/scores?userName=${testAccountName}`)
+        
         expect(res.status).toEqual(200);
         for (let i = 0; i < res.body.response.length; i++) {
             const element = res.body.response[i];

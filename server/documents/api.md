@@ -8,7 +8,8 @@
   - [`GET /user` - Get user(s) info](#get-user---get-users-info)
   - [`PATCH /user` - Update user details](#patch-user---update-user-details)
   - [`DELETE /user/` - Delete user](#delete-user---delete-user)
-- [Words](#words)
+- [Words (v1)](#words-v1)
+  - [Note](#note)
   - [`POST /words/word` - Create a word](#post-wordsword---create-a-word)
   - [`GET /words/word` - Get a word](#get-wordsword---get-a-word)
   - [`PATCH /words/word` - Update a word](#patch-wordsword---update-a-word)
@@ -18,6 +19,7 @@
 - [Scores](#scores)
   - [`POST /scores` - Create a score](#post-scores---create-a-score)
   - [`GET /scores` - Get scores](#get-scores---get-scores)
+
 
 # Authentication
 ## `POST /auth/regiser` - Register new account
@@ -114,11 +116,11 @@
 ## `GET /user` - Get user(s) info 
 *Get all users or single user information.*
 
-**Request Body**
-```json
-{
-   "userName": "name"
-}
+**Request Query**
+```ts
+   userName: hello,
+   
+   // URL: /user?userName=hello
 ```
 - `userName` (string) (**optional**): The userName assigned to the user.
 
@@ -144,6 +146,14 @@
 >   "message": "Failed to get user!"
 >}
 >```
+
+**Example**
+```ts
+// Fetch the user hello
+fetch("/user?userName=hello")
+// Fetch all users
+fetch("/user")
+```
 
 ## `PATCH /user` - Update user details
 *Updates display name and bio of the user.*
@@ -216,7 +226,9 @@
 
 ----
 
-# Words
+# Words (v1)
+## Note
+This backend endpoint has not been updated yet.
 ## `POST /words/word` - Create a word
 *Creates a single word in the database*
 
@@ -313,7 +325,7 @@ request.post('/words', payload);
 ## `GET /words` - Get words
 *Gets a list of words or all words in the database*
 
-**Request Body** Parameters
+**Request Query**
 - `category` (string): The category of the words to get
 - `difficulty` (number): The difficulty of the words to get
 - `count` (number): Number of words to get (note that when specifying the count, the list will be randomized)
@@ -392,13 +404,13 @@ const res = await fetch(apiURL + '/scores', {
 ## `GET /scores` - Get scores
 *Gets scores from the database, and can be filtered by count, userName, and gameMode*
 
-**Request Body**
-```json
-{
-   "userName": "hello",
-   "gameMode": "solo",
-   "count": 80
-}
+**Request Query**
+```ts
+   userName: hello,
+   gameMode: solo,
+   count: 80
+   
+   // URL: /scores?userName=hello&gameMode=solo&count=80
 ```
 - `userName` (string) (**optional**): Filters scores by `userName`
 - `gameMode` (string, enum) (**optional**): Filters scores by `gameMode` between `["solo","multi"]`
@@ -437,12 +449,10 @@ const res = await fetch(apiURL + '/scores', {
 
 **Example**
 ```ts
-const res = await fetch(apiURL + '/scores', {
-            method: 'GET',
-            body: {
-               "userName": "player", // Can be omitted
-               "count": 50, // Can be omitted
-               "gameMode": "multi" // Can be omitted
-            }
-         });
+// Fetch hello's score in Solo play, by top 80.
+fetch("/scores?userName=hello&gameMode=solo&count=80")
+// Fetch hello's score in Multiplayer, by top 10
+fetch("/scores?userName=hello&gameMode=multi")
+// Fetch all scores
+fetch("/scores")
 ```

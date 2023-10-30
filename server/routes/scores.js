@@ -79,9 +79,9 @@ router.post("/", async (req, res) => {
 router.get("/", async (req, res) => {
 
     let filter = {};
-    let count = req.body.count;
-    let userName = req.body.userName;
-    let gameMode = req.body.gameMode;
+    let count = req.query.count;
+    let userName = req.query.userName;
+    let gameMode = req.query.gameMode;
 
     // If all 3 fields are empty, return all scores
     if (gameMode == null && gameMode == undefined && gameMode == "" &&
