@@ -19,6 +19,12 @@ test('Check if Home page renders Sign In button', () => {
   expect(signInButton).toBeInTheDocument();
 });
 
+test('Check if Home page renders LEADERBOARD button', () => {
+  render(<Home />);
+  const boardButton = screen.getAllByText(/LEADERBOARD/i);
+  expect(boardButton[0]).toBeInTheDocument();
+});
+
 // Potential tests:
 // PLAY button should redirect to game page
 // Sign in button should redirect to sign in page

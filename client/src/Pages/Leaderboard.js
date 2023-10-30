@@ -11,6 +11,13 @@ const Leaderboard = () => {
     const [scores,setScores] = useState([])
     const [username,setUsername] = useState("")
 
+    //stub data for running tests - not visible normally
+    const testData = [
+        {displayName:"stub",highestScore:600,userName:"stubUser",_id:"653af6dec943c85e1dda9d68"},
+        {displayName:"test",highestScore:8000,userName:"testData",_id:"6531a1afc7f225a59f167478"},
+        {displayName:"multi",highestScore:8000,userName:"multimode",_id:"6931a1bcc7f225a59f257478"}
+    ]
+
     useLayoutEffect(() => {
         document.body.style.backgroundColor = "#393939"
     })
@@ -19,11 +26,6 @@ const Leaderboard = () => {
 
         if((document.cookie.split(";").some((item) => item.trim().startsWith("userid="))))
         {
-
-            //currently compares with display name and will not match the placeholder userid
-            //wait for backend to be done to correct
-            //you can change your account display name to match an entry name to test highlighting
-
             const cookie = ('; '+document.cookie).split(`; userid=`).pop().split(';')[0];
             if(cookie)
                 setUsername(cookie);
@@ -35,12 +37,21 @@ const Leaderboard = () => {
     const fetchScoreData = async (mode) => {
         let scoreData = []
         try {
-            const res = await fetch(`${baseUrl}/scores/leaderboard?gamemode=${mode}`);
-            const data = await res.json();
-            if (data.length) {
-                scoreData=data
-                console.log(data)
+            if ((process.env.JEST_WORKER_ID === undefined || process.env.NODE_ENV !== 'test'))
+            {
+                const res = await fetch(`${baseUrl}/scores/leaderboard?gamemode=${mode}`);
+                const data = await res.json();
+                if (data.length) {
+                    scoreData=data
+                    console.log(data)
+                }
             }
+            else
+                //use stub data when testing
+                if(mode=='solo')
+                    scoreData=[testData[0],testData[1]];
+                else
+                    scoreData=[testData[2]]
         } catch (err) {
             console.log(err);
         }
@@ -112,6 +123,8 @@ const Leaderboard = () => {
                     <option value="multi">Multiplayer</option>
                 </select>
             </div>
+
+            <p style={{fontSize:12}}>(Clear search by searching when search bar is empty.)</p>
 
             <table style={{justifyContent:"center",textAlign:"center",tableLayout:"fixed",width:"600px",borderCollapse:"separate"}}>
                 <tbody>
