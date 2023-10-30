@@ -49,6 +49,14 @@ const GamePage = ({
     })
 
     React.useEffect(()=> {
+        if (gameStatus.gameEnd == true) {
+            // submit score
+            if (user !== "Guest") {
+                console.log("final score: " + gameStatus.score)
+                postScore(userId, gameStatus.score);
+            }
+        }
+
         fetchWords(numRounds)
             .then((data) => {
                 setGameData(data);
@@ -82,11 +90,6 @@ const GamePage = ({
                 gameEnd: true,
                 roundTime: 0
             }))
-
-            // submit score
-            if (user !== "Guest") {
-                postScore(userId, gameStatus.score);
-            }
         }
         
         restartRound()
