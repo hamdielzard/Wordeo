@@ -55,9 +55,8 @@ const GamePage = ({
                 console.log("final score: " + gameStatus.score)
                 postScore(userId, gameStatus.score);
             }
-        }
-
-        fetchWords(numRounds)
+        } else {
+            fetchWords(numRounds)
             .then((data) => {
                 setGameData(data);
                 updateGameStatus(prev => ({
@@ -67,6 +66,8 @@ const GamePage = ({
                 }));
                 setLoading(false);
             })
+        }
+        
     }, [gameStatus.gameEnd]);
 
     // Called by Timer.js to update game status
