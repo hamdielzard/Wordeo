@@ -12,8 +12,8 @@ const ScoreSchema = new Schema({
         type: Number,
         required: true
     },
-    user: {
-        type: mongoose.Schema.Types.ObjectId,
+    userName: {
+        type: String,
         required: true
     },
     gameMode: {

@@ -2,6 +2,15 @@ import { useState } from 'react';
 import '../Styles/SignIn.css';
 import WordeoLogo from '../Images/WordeoLogo.png';
 
+/**
+ * **This sign in/up page allows users to sign in or sign up to Wordeo.**
+ * 
+ * Upon logging in or registering, a cookie for userName and displayName is set.
+ * 
+ * *Backend*: `V2`
+ * @returns React page for signing in or signing up
+ */
+
 function SignInPage() {
     const [reply, setReply] = useState('');
 
@@ -67,12 +76,12 @@ function SignInPage() {
             data = await callAPIRegister(name, password);
 
             if (data.message) {
-                const userId = data.userId;
+                const userName = data.userName;
                 const displayName = data.displayName;
 
-                if (data.message === 'User Added Successfully!') {
-                    document.cookie = `user=${displayName}; domain=; path=/`;
-                    document.cookie = `userid=${userId || ""}; domain=; path=/`;
+                if (data.message === 'User registered successfully!') {
+                    document.cookie = `userName=${userName}; domain=; path=/`;
+                    document.cookie = `displayName=${displayName || userName}; domain=; path=/`;
                     window.location.pathname = '/';
                 }
                 else {
@@ -109,23 +118,23 @@ function SignInPage() {
             data = await callAPILogin(name, password);
 
             if (data.message) {
-                const userId = data.userId;
+                const userName = data.userName;
                 const displayName = data.displayName;
 
-                if (data.status == 404) {
+                if (data.status === 404) {
                     console.log(data.message)
                     setReply(data.message);
                 } else if (data.status === '') {
 
                 }
                 else {
-                    document.cookie = `user=${displayName}; domain=; path=/`;
-                    document.cookie = `userid=${userId || ""}; domain=; path=/`;
+                    document.cookie = `userName=${userName}; domain=; path=/`;
+                    document.cookie = `displayName=${displayName || userName}; domain=; path=/`;
                     window.location.pathname = '/';
                 }
             } else {
                 console.log(data.message)
-                setReply('An error occurred');
+                setReply('An error occurred.');
 
             }
         } catch (err) {

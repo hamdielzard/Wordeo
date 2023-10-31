@@ -13,10 +13,10 @@ afterEach(async () => {
     await mongoose.connection.close();
 });
 
-describe('test version', () => {
-    it('should return the version information', async () => {
+describe('Test main endpoint', () => {
+    it('API Version', async () => {
         const res = await supertest(server).get('/');
         expect(res.status).toEqual(200);
-        expect(res.body).toEqual({ "version": "V1" });
+        expect(res.body).toEqual({ "version": "V2" });
     });
 });

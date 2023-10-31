@@ -6,42 +6,43 @@ import Account from '../Pages/Account';
 const user = 'testname'
 const path = '/account/'+user
 
-test('check if wordeo logo renders',()=>{
+test('Check if Wordeo logo appears correctly',()=>{
   render(
     <MemoryRouter initialEntries={[path]}>
       <Account/>
     </MemoryRouter>
   )
 
-  const logo = screen.getByAltText(/Wordeo/)
+  const logo = screen.getByAltText(/Wordeo Logo/)
   expect(logo).toBeInTheDocument()
 })
 
-test('check buttons',()=>{
+test('Check buttons appear',()=>{
   render(
     <MemoryRouter initialEntries={[path]}>
       <Account/>
     </MemoryRouter>
   )
 
-  const edit = screen.getByText(/Edit/)
-  const logout = screen.getByText(/Logout/)
+  const edit = screen.getByText(/Edit.../)
+  const logout = screen.getByText(/Sign Out/)
   expect(edit).toBeInTheDocument()
   expect(logout).toBeInTheDocument()
 })
 
-test ('check headers render',()=>{
+test ('Check all text renders',()=>{
   render(
     <MemoryRouter initialEntries={[path]}>
       <Account/>
     </MemoryRouter>
   )
   expect(screen.getByText(/Highest Score/)).toBeInTheDocument()
+  expect(screen.getByText(/Words Guessed/)).toBeInTheDocument()
   expect(screen.getByText(/Games Played/)).toBeInTheDocument()
   expect(screen.getByText(/Achievements/)).toBeInTheDocument()
 })
 
-test('check edit mode',()=>{
+test('Check edit mode',()=>{
   render(
     <MemoryRouter initialEntries={[path]}>
       <Account/>
@@ -51,12 +52,12 @@ test('check edit mode',()=>{
   const edit = screen.getByText(/Edit/)
   fireEvent.click(edit)
 
-  waitFor (()=> expect(screen.getByText(/Apply/)).toBeInTheDocument())
+  waitFor (()=> expect(screen.getByText(/Apply Changes/)).toBeInTheDocument())
   waitFor (()=> expect(screen.getByText(/Delete Account/)).toBeInTheDocument())
-  waitFor (()=> expect(screen.getByText(/Description/)).toBeInTheDocument())
+  waitFor(() => expect(screen.getByText(/Description/)).toBeInTheDocument())
 })
 
-test ('check confirm delete',()=>{
+test ('Check delete mode',()=>{
   render(
     <MemoryRouter initialEntries={[path]}>
       <Account/>
@@ -68,13 +69,14 @@ test ('check confirm delete',()=>{
   waitFor (()=>{
     const del = screen.getByText(/Delete Account/)
     fireEvent.click(del)
-    waitFor (()=> expect(screen.getByText(/Cancel/)).toBeInTheDocument())
-    waitFor (()=> expect(screen.getByText(/Delete/)).toBeInTheDocument())
-    waitFor (()=> expect(screen.getByText(/Are you sure you want to delete your account?/)).toBeInTheDocument())
+    waitFor (()=> expect(screen.getByText(/This action is irreversible and will delete all your progress!/)).toBeInTheDocument())
+    waitFor (()=> expect(screen.getByText(/Yes I am sure./)).toBeInTheDocument())
+    waitFor (()=> expect(screen.getByText(/No - I'd like to play more Wordeo!/)).toBeInTheDocument())
+    waitFor (()=> expect(screen.getByText(/Deleting account, are you sure?/)).toBeInTheDocument())
   })
 })
 
-test ('check update description',()=>{
+test ('Check update description',()=>{
   render(
     <MemoryRouter initialEntries={[path]}>
       <Account/>
@@ -85,8 +87,8 @@ test ('check update description',()=>{
   fireEvent.click(edit)
   const value = 'words go like this'
   waitFor (()=>{
-    const input = document.getElementById('descInput')
-    const apply = document.getByText(/Apply/)
+    const input = document.getElementById('descriptionEditBox')
+    const apply = document.getByText(/Apply Changes/)
     fireEvent.change(input,{target:value})
     fireEvent.click(apply)
     waitFor (()=> expect(screen.getByText(value)).toBeInTheDocument())

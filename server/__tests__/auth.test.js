@@ -15,11 +15,12 @@ beforeEach(async () => {
 });
 
 afterEach(async () => {
+    await User.deleteMany({});
     await mongoose.connection.close();
 });
 
-describe('Test Registration', () => {
-    it('Should register a new user', async () => {
+describe('POST /auth/register', () => {
+    it('Register new user', async () => {
         const userName = uuidv4(); // Generate a unique userName
         const payload = {
             "userName": userName,
@@ -33,7 +34,41 @@ describe('Test Registration', () => {
             .send(payload);
 
         expect(res.status).toEqual(200);
-        expect(res.body.message).toEqual("User Added Successfully!");
+        expect(res.body.message).toEqual("User registered successfully!");
+    });
+    
+    it('Register with blank username', async () => {
+        const userName = uuidv4(); // Generate a unique userName
+        const payload = {
+            "userName": undefined,
+            "password": "undefined"
+        }
+
+        const res = await supertest(server)
+            .post('/api/register')
+            .set('Content-Type', 'application/json')
+            .set('Accept', '*/*')
+            .send(payload);
+
+        expect(res.status).toEqual(400);
+        expect(res.body.message).toEqual("Invalid username!");
+    });
+    
+    it('Register with blank password', async () => {
+        const userName = uuidv4(); // Generate a unique userName
+        const payload = {
+            "userName": "undefined",
+            "password": undefined
+        }
+
+        const res = await supertest(server)
+            .post('/api/register')
+            .set('Content-Type', 'application/json')
+            .set('Accept', '*/*')
+            .send(payload);
+
+        expect(res.status).toEqual(400);
+        expect(res.body.message).toEqual("Invalid password!");
     });
 
     it('Registration should fail for a duplicate user', async () => {
@@ -56,14 +91,65 @@ describe('Test Registration', () => {
             .send(payload);
 
         expect(res.status).toEqual(200);
-        expect(res.body.message).toEqual("User Added Successfully!");
+        expect(res.body.message).toEqual("User registered successfully!");
         expect(res2.status).toEqual(409);
         expect(res2.body.message).toEqual("User already exists!");
     });
 });
 
-describe('Test Login', () => {
-    it('Should login using a proper authentication', async () => {
+describe('POST /auth/login', () => {
+    it('Login with blank username', async () => {
+        const userName = uuidv4(); // Generate a unique userName
+        const payload = {
+            "userName": undefined,
+            "password": "Test@123"
+        }
+
+        const loginResponse = await supertest(server)
+            .post('/api/login')
+            .set('Content-Type', 'application/json')
+            .set('Accept', '*/*')
+            .send(payload);
+
+        expect(loginResponse.status).toEqual(404);
+        expect(loginResponse.body.message).toEqual("No such user found!");
+    });
+    
+    it('Login with blank password', async () => {
+        const userName = uuidv4(); // Generate a unique userName
+        const payload = {
+            "userName": userName,
+            "password": undefined
+        }
+
+        const loginResponse = await supertest(server)
+            .post('/api/login')
+            .set('Content-Type', 'application/json')
+            .set('Accept', '*/*')
+            .send(payload);
+
+        expect(loginResponse.status).toEqual(404);
+        expect(loginResponse.body.message).toEqual("No such user found!");
+    });
+    
+    it('Login with blanks', async () => {
+        const userName = uuidv4(); // Generate a unique userName
+        const payload = {
+            "userName": undefined,
+            "password": undefined
+        }
+
+        const loginResponse = await supertest(server)
+            .post('/api/login')
+            .set('Content-Type', 'application/json')
+            .set('Accept', '*/*')
+            .send(payload);
+
+        expect(loginResponse.status).toEqual(404);
+        expect(loginResponse.body.message).toEqual("No such user found!");
+    });
+    
+    it('Login correctly', async () => {
         const userName = uuidv4(); // Generate a unique userName
         const payload = {
             "userName": userName,
@@ -87,7 +173,7 @@ describe('Test Login', () => {
         expect(loginResponse.body.message).toEqual("Login successful!");
     });
 
-    it('Login should fail with improper password', async () => {
+    it('Incorrect password', async () => {
         const userName = uuidv4(); // Generate a unique userName
         const registrationPayload = {
             "userName": userName,

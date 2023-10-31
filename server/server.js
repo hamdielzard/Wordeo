@@ -24,7 +24,7 @@ app.use('/user', UserRoute);
 
 // test endpoint
 app.get("/", (req, res) => {
-    res.json({"version": "V1"});
+    res.json({"version": "V2"});
 });
 
 // export
