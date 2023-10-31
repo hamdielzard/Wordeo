@@ -9,6 +9,41 @@ import Achievement from '../Components/Achievement';
 // API URL
 const API_URL = 'http://localhost:8080';
 
+// Change this to true to test achievements
+let testingAchievements = false;
+let testingAchievementsData = [
+    {
+        name: "Achievement 1",
+        description: "This is an achievement",
+        locked: false
+    },
+    {
+        name: "Achievement 2",
+        description: "This is a locked achievement",
+        locked: true
+    },
+    {
+        name: "Achievement 1",
+        description: "This is an achievement",
+        locked: false
+    },
+    {
+        name: "Achievement 2",
+        description: "This is a locked achievement",
+        locked: true
+    },
+    {
+        name: "Achievement 1",
+        description: "This is an achievement",
+        locked: false
+    },
+    {
+        name: "Achievement 2",
+        description: "This is a locked achievement",
+        locked: true
+    },
+]
+
 
 /**
  * **Account page for a user on Wordeo**
@@ -27,6 +62,7 @@ const API_URL = 'http://localhost:8080';
  */
 const AccountPage = () => {
 
+
     // STATE
 
     const [accountInformation, setAccountInformation] = React.useState({
@@ -36,11 +72,7 @@ const AccountPage = () => {
         gamesPlayed: 0,
         wordsGuessed: 0,
         accountDescription: "",
-        achievements: [{
-            "name": "Achievement Name",
-            "description": "Achievement Description",
-            "locked": true
-        }]
+        achievements: testingAchievements ? testingAchievementsData : []
     });
 
     const [editing, setEditing] = React.useState(false);

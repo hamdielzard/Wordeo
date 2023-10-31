@@ -19,7 +19,14 @@ const Achievement = ({ name, description, locked }) => {
 
 
     return (
-        <div className='achievementHolder' style={{ backgroundColor: backgroundColor, borderRadius: 20, textColor: textColor, opacity: opacity }}>
+        <div className='achievementHolder' style={{
+            backgroundColor: backgroundColor,
+            borderRadius: 20,
+            textColor: textColor,
+            opacity: opacity,
+            margin: 10,
+            border: '2px solid #F0F0F0',
+        }}>
             <img src={trophy} alt='trophy' style={{ height: 64, marginLeft: 15, marginRight: 15, borderRadius: 20 }} />
             <div style={{ display: 'inline-block' }}>
                 <h2>{name}</h2>
