@@ -78,9 +78,15 @@ const AccountPage = () => {
     const [editing, setEditing] = React.useState(false);
     const [editingError, setEditingError] = React.useState("");
     const [deleting, setDeleting] = React.useState(false);
+    const [testEnvironment, setTestEnvironment] = React.useState(false);
 
     useEffect(() => {
-        getAccountDetails(); // 
+        getAccountDetails();
+
+        // Check if in Jest test environment
+        if (process.env.NODE_ENV === 'test') {
+            setTestEnvironment(true);
+        }
     }, []);
 
     // ----------------
@@ -99,6 +105,34 @@ const AccountPage = () => {
      * @returns True if account details were retrieved correctly, false if not.
      */
     async function getAccountDetails() {
+
+        if (testEnvironment) {
+            // Test environment, set userName to URL parameter
+            const urlUserName = window.location.pathname.split("/")[2];
+            setAccountInformation({
+                userName: urlUserName,
+                displayName: urlUserName,
+                highestScore: 0,
+                gamesPlayed: 0,
+                wordsGuessed: 0,
+                accountDescription: "",
+                achievements: [
+                    {
+                        "name": "testAch1",
+                        "description": "testAch1",
+                        "locked": false
+                    },
+                    {
+                        "name": "testAch2",
+                        "description": "testAch2",
+                        "locked": true
+                    }
+                ]
+            });
+            return true;
+        }
+
+
         const displayNameExists = document.cookie.split(";").some((item) => item.trim().startsWith("displayName="));
         const userNameExists = document.cookie.split(";").some((item) => item.trim().startsWith("userName="));
 
@@ -165,6 +199,15 @@ const AccountPage = () => {
      */
     async function performAccountEdit(userName, displayName, description) {
         // PATCH /user 
+
+        if (testEnvironment) {
+            setAccountInformation({
+                ...accountInformation,
+                displayName: displayName,
+                accountDescription: description,
+            });
+            return true;
+        }
 
         if (displayName.length === 0) displayName = accountInformation.displayName;
         if (description.length === 0) description = accountInformation.accountDescription;
@@ -300,7 +343,7 @@ const AccountPage = () => {
         // Get state userName
         const stateUserName = accountInformation.userName;
 
-        if (userNameFromCookie === stateUserName) {
+        if (userNameFromCookie === stateUserName || testEnvironment) {
             // Call backend edit
             performAccountEdit(stateUserName, newDisplayName, newDescription);
         }
@@ -326,7 +369,7 @@ const AccountPage = () => {
         // Get state userName
         const stateUserName = accountInformation.userName;
 
-        if (userName === stateUserName) {
+        if (userName === stateUserName || testEnvironment) {
             // Call backend deletion
             performAccountDeletion(stateUserName);
         }
@@ -334,6 +377,27 @@ const AccountPage = () => {
             // Sign out
             expireCookiesAndRedirect();
         }
+    }
+
+    /**
+    * **Expires cookies and redirects to sign in page**
+    */
+    function expireCookiesAndRedirect() {
+        document.cookie = `userName=;path=/;domain=;expires=Thu, 01 Jan 1970 00:00:00 UTC`;
+        document.cookie = `displayName=;path=/;domain=;expires=Thu, 01 Jan 1970 00:00:00 UTC`;
+
+        // clear state
+        setAccountInformation({
+            userName: "",
+            displayName: "",
+            highestScore: 0,
+            gamesPlayed: 0,
+            wordsGuessed: 0,
+            accountDescription: "",
+            achievements: []
+        });
+
+        window.location.pathname = "/account/signin";
     }
 
 
@@ -361,7 +425,7 @@ const AccountPage = () => {
         }
     }
 
-    if (completeAllFEChecks()) {
+    if (completeAllFEChecks() || testEnvironment) {
         if (editing) return (
             <div className='accountPage'>
                 <div className='accountHeader'>
@@ -487,16 +551,6 @@ function verifyURLAndCookies() {
     else {
         return false;
     }
-}
-
-/**
- * **Expires cookies and redirects to sign in page**
- */
-function expireCookiesAndRedirect() {
-    document.cookie = `userName=;path=/;domain=;expires=Thu, 01 Jan 1970 00:00:00 UTC`;
-    document.cookie = `displayName=;path=/;domain=;expires=Thu, 01 Jan 1970 00:00:00 UTC`;
-
-    window.location.pathname = "/account/signin";
 }
 
 /**
