@@ -1,102 +1,203 @@
-body {
-    background: #393939;
+html {
+    height: 100%;
+}
+
+/* Main page */
+.accountPage {
+    background: #F0F0F0;
     font-family: Inter, Arial, Helvetica, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
     margin: 0px;
     padding: 0px;
-    height: 100vh;
+    height: 100%;
     width: 100%;
 }
 
-.topbar{
+/* Header stuff */
+.accountLogo {
+    scale: 0.5;
+    padding-right: 20px;
+    cursor: pointer;
+}
+
+.accountHeaderText {
+    color: #003366;
+    font-size: 36px;
+}
+
+.accountLogoAndText {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 10vh;
+}
+
+.accountButtons {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    padding-right: 20px;
+    height: 100%;
+}
+
+.accountButton {
+    border-radius: 20px;
+    border: 5px solid #5B42F4;
+    background: #4285F4;
+    color: #FFF;
+    text-align: center;
+    font-family: Inter, Arial, Helvetica, sans-serif;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    margin-right: 20px;
+    width: 200px;
+    height: 50px;
+    cursor: pointer;
+}
+
+.accountHeader {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 10vh;
+}
+
+/* Body stuff */
+.accountBody {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    height: 90vh;
+    background-color: #393939;
+    color: #F0F0F0;
+}
+
+.accountBodyRight {
+    padding-left: 25px;
+    padding-right: 100px;
+    display: flex;
+    flex-direction: column;
+    width: 50cqw;
+}
+
+.accountBodyLeft {
+    padding-right: 25px;
+    width: 60cqw;
+}
+
+.accountDisplayName {
+    margin: 0px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-size: 128px;
+    font-weight: 500;
+    padding-bottom: 10px;
+    opacity: 0.5;
+}
+
+.largeLabel {
+    margin: 0px;
+    opacity: 0.75;
+    font-size: 64px;
+    font-variant: small-caps;
+}
+
+.largeNumber {
+    margin: 0px;
+    opacity: 0.90;
+    font-size: 64px;
+    font-family: 'Menlo', 'Courier New', Courier, monospace;
+    text-align: right;
+}
+
+.accountDescription {
+    margin: 0px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-size: 24px;
+    font-weight: 500;
+    padding-bottom: 10px;
+    opacity: 0.5;
+}
+
+.accountAchievements {
+    overflow: auto;
+    max-height: 500px;
+}
+
+
+.editingForm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.accountEditInput {
+    border-radius: 20px;
+    border: 2px solid #ccc;
     background-color: #F0F0F0;
-    position:absolute;
-    justify-content: center;
-    text-align: left;
-    font-size: large;
-    color:#5B42F4;
-    top:0px;
-    left:0px;
-    height: 64px;
-    width:100%;
-    padding: 16px;
-}
-
-.button-out {
-    border-radius: 20px;
-    border: 5px solid #FF6767;
-    background: #F44242;
-    color: #FFF;
-    text-align: center;
-    font-family: Inter, Arial, Helvetica, sans-serif;
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 500;
-    line-height: normal;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    flex-shrink: 0;
+    font-size: 24px;
     padding: 10px;
-    cursor: pointer;
-    min-width: 128px;
-    width:fit-content;
+    width: 50cqw;
+    height: 5vh;
 }
 
-.button-edit {
+.accountEditInputDescription {
     border-radius: 20px;
-    border: 5px solid #248C28;
-    background: #4CAF50;
-    color: #FFF;
-    text-align: center;
-    font-family: Inter, Arial, Helvetica, sans-serif;
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 500;
-    line-height: normal;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    flex-shrink: 0;
+    border: 2px solid #ccc;
+    background-color: #F0F0F0;
+    font-size: 18px;
     padding: 10px;
-    cursor: pointer;
-    min-width: 128px;
-    width:fit-content;
+    width: 50cqw;
+    height: 10vh;
 }
 
-.accountColoumn{
-    color: #FFF;
-    font-size: large;
-    padding: 20px;
-    margin-left: 5%;
-    margin-right:5%;
+.warningNote:empty {
+    display: none;
 }
-
-.achievementHolder{
-    background-color: #A9A9A9;
+.warningNote {
+    font-size: 18px;
+    font-weight: 600;
+    color: #FF0000;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background-color: #F8D7DA;
     border-radius: 20px;
-    color:#000;
-    padding:5px;
-    margin:5px;
-    display: inline-block;
-    height:fit-content;
-    min-width: 840px;
+    padding: 10px;
+}
+
+/* Scroll Bar */
+
+
+/* width */
+.accountAchievements::-webkit-scrollbar {
+    width: 10px;
+    border-radius: 5px;
+}
+
+/* Track */
+.accountAchievements::-webkit-scrollbar-track {
+    background: #656565;
+    border-radius: 5px;
     
 }
 
-.editDescBox{
-    background-color: #A9A9A9;
-    justify-content: left;
-    justify-content: top;
-    border-radius: 20px;
-    color:#000;
-    font-family: Inter, Arial, Helvetica, sans-serif;
-    font-size: large;
-    padding: 15px;
-    margin:5px;
-    width: 95%;
+/* Handle */
+.accountAchievements::-webkit-scrollbar-thumb {
+    background: #959595;
+    border-radius: 5px;
 }
+
+/* Handle on hover */
+.accountAchievements::-webkit-scrollbar-thumb:hover {
+    background: #fe8700;
+    border-radius: 5px;
+}
+

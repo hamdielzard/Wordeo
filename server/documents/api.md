@@ -5,11 +5,12 @@
   - [`POST /auth/regiser` - Register new account](#post-authregiser---register-new-account)
   - [`POST /auth/login` - Login to existing account](#post-authlogin---login-to-existing-account)
 - [User Management](#user-management)
+  - [`INFO` - Achievements for Users](#info---achievements-for-users)
   - [`GET /user` - Get user(s) info](#get-user---get-users-info)
   - [`PATCH /user` - Update user details](#patch-user---update-user-details)
   - [`DELETE /user/` - Delete user](#delete-user---delete-user)
 - [Words (v1)](#words-v1)
-  - [Note](#note)
+  - [`WARNING` - Endpoint at v1](#warning---endpoint-at-v1)
   - [`POST /words/word` - Create a word](#post-wordsword---create-a-word)
   - [`GET /words/word` - Get a word](#get-wordsword---get-a-word)
   - [`PATCH /words/word` - Update a word](#patch-wordsword---update-a-word)
@@ -113,6 +114,27 @@
 >```
 
 # User Management
+## `INFO` - Achievements for Users
+Currently, client-side expects the achievements section of the user to be populated with an array of objects.
+```ts
+User = {
+   // .. other user information
+   "achievements": [
+      {
+         "name": "Puzzler Junior",
+         "description": "Solve 10 puzzles"
+         "locked": true
+      },
+      {
+         "name": "Typist",
+         "description": "Give your account a description!"
+         "locked": false
+      }
+   ]
+}
+```
+The array is populated with all achievements available in Wordeo, and therefore is shown to the user. Locked ones appear transparent, while unlocked ones appear solid and complete. It is important that `name`, `description`, and `locked` are all available. `description` is best to be limited to a short sentence.
+
 ## `GET /user` - Get user(s) info 
 *Get all users or single user information.*
 
@@ -227,7 +249,7 @@ fetch("/user")
 ----
 
 # Words (v1)
-## Note
+## `WARNING` - Endpoint at v1 
 This backend endpoint has not been updated yet.
 ## `POST /words/word` - Create a word
 *Creates a single word in the database*

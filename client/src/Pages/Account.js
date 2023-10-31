@@ -1,373 +1,487 @@
-//account page for a logged in user
-
-//currently any name can be given via localhost:300/account/username-go-here
-//but later will reroute to sign in page if no login cookie (which is got after sign in confirms valid user with backend)
-
 import React, { useEffect } from 'react';
-import { useState, useLayoutEffect } from 'react';
-import { useParams, Navigate } from 'react-router-dom';
-//styles
+
+// Styles
 import '../Styles/Account.css'
-import '../Styles/General.css'
-//resources
-import WordeoLogo from '../Images/WordeoLogo.png';
+// Components and Resources
+import WordeoLogo from '../Images/WordeoLogo.png'
 import Achievement from '../Components/Achievement';
-import Button from '../Components/Button';
 
+// API URL
+const API_URL = 'http://localhost:8080';
+
+
+/**
+ * **Account page for a user on Wordeo**
+ * 
+ * The account page should be accessible with: `/account/:userName`
+ * NOT `displayName`!
+ * 
+ * `displayName` is shown in the account page and on the button in the home page.
+ * As well as across the game, however, URLs and communicating with the backend
+ * should only use the `userName`.
+ * 
+ * This page was rewritten.
+ * 
+ * *Backend*: `V2`
+ * @returns React page for the account page
+ */
 const AccountPage = () => {
-    const { user } = useParams();
 
-    const [canLogin, setCanLogin] = useState(true);
-    const [editing, setEditing] = useState(false);
-    const [wantDelete, setDelete] = useState(false);
+    // STATE
 
-    const [reply, setReply] = useState({});
+    const [accountInformation, setAccountInformation] = React.useState({
+        userName: "",
+        displayName: "",
+        highestScore: 0,
+        gamesPlayed: 0,
+        wordsGuessed: 0,
+        accountDescription: "",
+        achievements: [{
+            "name": "Achievement Name",
+            "description": "Achievement Description",
+            "locked": true
+        }]
+    });
 
-    const baseUrl = "http://localhost:8080";
+    const [editing, setEditing] = React.useState(false);
+    const [editingError, setEditingError] = React.useState("");
+    const [deleting, setDeleting] = React.useState(false);
 
-    const [userData, setUserData] = useState({
-        displayName: user,
-        highscore: 0,
-        played: 0,
-        description: "",
-        achievements: []
-    })
+    useEffect(() => {
+        getAccountDetails(); // 
+    }, []);
 
-    //check for cookie to set canLogin (stub for now)
-    let loggedInUser = "Guest";
-    let userId = "";
+    // ----------------
 
-    const cookiePairs = document.cookie.split(';');
 
-    // Iterate through the cookie pairs to find the 'user' and 'userID' values
-    for (const pair of cookiePairs) {
-        const [key, value] = pair.trim().split('=');
-        if (key === 'user') {
-            loggedInUser = value;
-        } else if (key === 'userid') {
-            userId = value;
+    // BACK END CALLS
+
+    /**
+     * **Gets account details from backend**
+     * 
+     * This function will be called on page load.
+     * 
+     * If false is returned, it is presumed the user is not signed in.
+     * 
+     * *Backend*: `V2`
+     * @returns True if account details were retrieved correctly, false if not.
+     */
+    async function getAccountDetails() {
+        const displayNameExists = document.cookie.split(";").some((item) => item.trim().startsWith("displayName="));
+        const userNameExists = document.cookie.split(";").some((item) => item.trim().startsWith("userName="));
+
+        if (displayNameExists && userNameExists) {
+            const userName = ('; ' + document.cookie).split(`; userName=`).pop().split(';')[0];
+            // Can now connect to backend
+            const response = await fetch(`${API_URL}/user?userName=${userName}`);
+            const data = await response.json();
+
+            if (!response.ok) {
+                console.log("An error occurred while trying to get your account details. You have been signed out.")
+                return expireCookiesAndRedirect();
+            }
+            else {
+                if (data.response === null) {
+                    // Check for a server message
+                    if (data.message) {
+                        console.log(data.message);
+                        return expireCookiesAndRedirect();
+                    }
+                    else {
+                        // No message, wrong call?
+                        console.log("An error occurred while trying to get your account details. You have been signed out.")
+                        return expireCookiesAndRedirect();
+                    }
+                }
+                // Potential check: review all these fields are present
+                setAccountInformation({
+                    userName: data.response.userName,
+                    displayName: data.response.displayName,
+                    highestScore: data.response.highscore,
+                    gamesPlayed: data.response.gamesPlayed,
+                    wordsGuessed: data.response.wordsGuessed,
+                    accountDescription: data.response.description,
+                    achievements: accountInformation.achievements // TODO: Add achievements
+                });
+
+                // Update cookies to match backend on path '/'
+                document.cookie = `userName=${data.response.userName};path=/;domain=`;
+                document.cookie = `displayName=${data.response.displayName};path=/;domain=`;
+
+                // Account info retrieved
+                return true;
+            }
+        }
+        else {
+            // Cannot connect to backend, sign in again, remove cookies if exist
+            return expireCookiesAndRedirect();
         }
     }
 
-    useLayoutEffect(() => {
-        document.body.style.backgroundColor = "#393939";
-    })
+    /**
+     * **Performs the backend edit to the account**
+     * 
+     * This function will only be called after the front end checks have been completed.
+     * 
+     * Front end checks involve checking the cookie `userName` still exists in the state.
+     * This is to prevent modifying the cookie `userName` to edit another account.
+     * 
+     * *Backend*: `V2`
+     * @param {string} userName userName to edit, front end checks should ensure this is the same as the cookie
+     * @param {string} displayName Display name to edit to
+     * @param {string} description Description to edit to
+     */
+    async function performAccountEdit(userName, displayName, description) {
+        // PATCH /user 
 
-    useEffect(() => {
-        const fetchScoreData = async (userId) => {
-            let highScore = 0;
-            let numGames = 0;
-            try {
-                const res = await fetch(`${baseUrl}/scores?userID=${userId}`);
-                const data = await res.json();
-                if (data.length) {
-                    highScore = parseInt(data[0].score);
-                    numGames = parseInt(data.length);
-                }
-            } catch (err) {
-                console.log(err);
+        if (displayName.length === 0) displayName = accountInformation.displayName;
+        if (description.length === 0) description = accountInformation.accountDescription;
+
+        const response = await fetch(`${API_URL}/user`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                userName: userName,
+                displayName: displayName,
+                description: description
+            })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            // Check for a server message
+            if (data.message) {
+                console.log(data.message);
+                return expireCookiesAndRedirect();
             }
-
-            // set state with the result
-            setUserData(prev => ({
-                ...prev,
-                highscore: highScore,
-                played: numGames
-            }));
-        }
-
-        const callAPIAccountOld = async (userId) => {
-            let desc = `${user}'s bio!`;
-            let displayName = loggedInUser;
-            try {
-                const reqJson =
-                {
-                    userID: userId
-                }
-
-                const res = await fetch(baseUrl + '/user/show', {
-                    method: 'POST',
-                    headers: {
-                        "Content-type": "application/json"
-                    },
-                    body: JSON.stringify(reqJson)
-                });
-
-                const data = await res.json();
-                if (data.response.description !== "") {
-                    desc = data.response.description;
-                    displayName = data.response.displayName;
-                }
-
-            } catch (err) {
-                console.log(err);
-            }
-
-            // set state with the result
-            setUserData(prev => ({
-                ...prev,
-                description: desc,
-                displayName: displayName
-            }));
-        }
-
-        //if not test mode check cookie and update the data
-        //the tests will only use the template
-        if ((process.env.JEST_WORKER_ID === undefined || process.env.NODE_ENV !== 'test')) {
-            setCanLogin(loggedInUser == user);
-            if (loggedInUser == user) {
-                //logged in, so get auth from backend to update the data template
-                callAPIAccountOld(userId);
-                fetchScoreData(userId);
+            else {
+                // No message, wrong call?
+                console.log("An error occurred while trying to edit your account details. You have been signed out.")
+                return expireCookiesAndRedirect();
             }
         }
-    }, [])
+        else {
+            // Update state
+            setAccountInformation({
+                ...accountInformation,
+                displayName: data.displayName,
+                accountDescription: data.description,
+            });
 
-    //login check with backend is skipped if in test mode
-    //  (test renders with the template info)
-    if (canLogin || (!(process.env.JEST_WORKER_ID === undefined || process.env.NODE_ENV !== 'test'))) {
+            // Update cookies to match backend on path '/'
+            document.cookie = `displayName=${data.displayName};path=/;domain=`;
+
+            // Reload page
+            window.location.pathname = `/account/${accountInformation.userName}`;
+
+            // Account info retrieved
+            return true;
+        }
+    }
+
+    /**
+     * **Performs the backend deletion of the account**
+     * 
+     * This function will only be called after the front end checks have been completed.
+     * 
+     * Front end checks involve checking the cookie `userName` still exists in the state.
+     * This is to prevent modifying the cookie `userName` to edit another account.
+     * 
+     * *Backend*: `V2`
+     * @param {string} userName userName to delete, front end checks should ensure this is the same as the cookie
+     */
+    async function performAccountDeletion(userName) {
+        // DELETE /user
+
+        const response = await fetch(`${API_URL}/user`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                userName: userName
+            })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            // Check for a server message
+            if (data.message) {
+                console.log(data.message);
+                return expireCookiesAndRedirect();
+            }
+            else {
+                // No message, wrong call?
+                console.log("An error occurred while trying to delete your account. You have been signed out.")
+                return expireCookiesAndRedirect();
+            }
+        }
+        else {
+            return expireCookiesAndRedirect();
+        }
+    }
+
+    // ----------------
+
+    // FRONT END CALLS
+
+    /**
+     * **Used to verify edits to the account**
+     * Front-end only, then calls the backend edit.
+     * 
+     * This function will be called when the user clicks the "Apply Changes" button on the delete account page.
+     */
+    function verifyEdit() {
+        let newDisplayName = document.getElementById("displayNameEditBox").value;
+        let newDescription = document.getElementById("descriptionEditBox").value;
+
+        // The text boxes are limited to 15 and 200 characters respectively,
+        // but this is a double check.
+        if (newDisplayName.length > 15) {
+            setEditingError("Display name is too long!");
+            return false;
+        }
+        else if (newDescription.length > 200) {
+            setEditingError("Description is too long!");
+            return false;
+        }
+        else if (newDisplayName.length === 0 && newDescription.length === 0) {
+            // No changes, cancel editing.
+            newDisplayName = accountInformation.displayName;
+            newDescription = accountInformation.accountDescription;
+            setEditing(false);
+        }
+        else {
+            setEditingError("");
+        }
+
+        // Check cookie still exists against the userName in state
+        // If it does, call backend edit
+        // If it doesn't, sign out
+
+        // Get cookie userName
+        const userNameFromCookie = ('; ' + document.cookie).split(`; userName=`).pop().split(';')[0];
+        // Get state userName
+        const stateUserName = accountInformation.userName;
+
+        if (userNameFromCookie === stateUserName) {
+            // Call backend edit
+            performAccountEdit(stateUserName, newDisplayName, newDescription);
+        }
+        else {
+            // Sign out
+            expireCookiesAndRedirect();
+        }
+    }
+
+    /**
+     * **Used to verify the deletion of the account**
+     * Front-end only, then calls the backend deletion.
+     * 
+     * This function will be called when the user clicks the "Yes I am sure." button on the delete account page.
+     */
+    function verifyDeletion() {
+        // Check cookie still exists against the userName in state
+        // If it does, call backend deletion
+        // If it doesn't, sign out
+
+        // Get cookie userName
+        const userName = ('; ' + document.cookie).split(`; userName=`).pop().split(';')[0];
+        // Get state userName
+        const stateUserName = accountInformation.userName;
+
+        if (userName === stateUserName) {
+            // Call backend deletion
+            performAccountDeletion(stateUserName);
+        }
+        else {
+            // Sign out
+            expireCookiesAndRedirect();
+        }
+    }
+
+
+
+    // PAGE RENDERING
+
+    /**
+     * **Renders the achievements**
+     * 
+     * **WARNING:** CURRENTLY ACHIEVEMENTS ARE NOT IMPLEMENTED IN THE BACKEND
+     * 
+     * This function will be called when the page loads.
+     * @returns React Achievement component for each achievement in the account
+     */
+    const achievementsData = () => {
+        if (accountInformation.achievements) {
+            if (accountInformation.achievements.length === 0) {
+                return <p style={{ fontSize: 24 }}>No achievements yet!</p>
+            }
+            else {
+                return accountInformation.achievements.map((achievement) => (
+                    <Achievement name={achievement.name} description={achievement.description} locked={achievement.locked} />
+                ))
+            }
+        }
+    }
+
+    if (completeAllFEChecks()) {
+        if (editing) return (
+            <div className='accountPage'>
+                <div className='accountHeader'>
+                    <div className='accountLogoAndText'>
+                        <img alt="Wordeo Logo" className='accountLogo' src={WordeoLogo} onClick={() => { setEditing(false) }}></img>
+                        <h2 className='accountHeaderText'>Editing account</h2>
+                    </div>
+                    <div className='accountButtons'>
+                        <button className='accountButton' onClick={() => { verifyEdit() }}>Apply Changes</button>
+                        <button className='accountButton' onClick={() => { setEditing(false); setDeleting(true) }} style={{ background: '#F44242', border: '5px solid #FF6767' }}>Delete Account</button>
+                        <button className='accountButton' style={{ background: '#636363', border: '5px solid #757575' }} onClick={() => { setEditing(false) }}>Cancel</button>
+                    </div>
+                </div>
+                <div className='accountBody' style={{ justifyContent: 'center', alignItems: 'center' }}>
+                    <div className='editingAccount' style={{ display: 'flex', alignContent: 'center', alignItems: 'center' }}>
+                        <form className='editingForm' onSubmit={() => { verifyEdit() }}>
+                            <h4 className='largeLabel'>Display Name</h4>
+                            <input id="displayNameEditBox" className='accountEditInput' type='text' placeholder={accountInformation.displayName} maxLength={15}></input>
+                            <br></br>
+                            <br></br>
+                            <br></br>
+                            <h4 className='largeLabel'>Account Description</h4>
+                            <textarea id="descriptionEditBox" className='accountEditInputDescription' type='text' placeholder={accountInformation.accountDescription} maxLength={200}></textarea>
+                            <br></br>
+                            <br></br>
+                            <div className='warningNote'>
+                                {editingError}
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        )
+
+        if (deleting) return (
+            <div className='accountPage'>
+                <div className='accountHeader'>
+                    <div className='accountLogoAndText'>
+                        <img alt="Wordeo Logo" className='accountLogo' src={WordeoLogo} onClick={() => { setDeleting(false) }}></img>
+                        <h2 className='accountHeaderText'>Deleting account, are you sure?</h2>
+                    </div>
+                    <div className='accountButtons'>
+                    </div>
+                </div>
+                <div className='accountBody' style={{ justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
+                    <p style={{ fontSize: 30 }}>This action is irreversible and will delete all your progress!</p>
+                    <div className='editingAccount' style={{ display: 'flex', alignContent: 'center', alignItems: 'center' }}>
+                        <button className='accountButton' style={{ background: '#636363', border: '5px solid #757575', width: 'auto' }} onClick={() => { verifyDeletion() }}>Yes I am sure.</button>
+                        <button className='accountButton' style={{ background: '#0CAA00', border: '5px solid #0CCC00', width: 'auto' }} onClick={() => { setDeleting(false) }}>No - I'd like to play more Wordeo!</button>
+                    </div>
+                </div>
+            </div>
+        )
+
         return (
-            <div>
-                {page()}
+            <div className='accountPage'>
+                <div className='accountHeader'>
+                    <div className='accountLogoAndText'>
+                        <img alt="Wordeo Logo" className='accountLogo' src={WordeoLogo} onClick={() => { window.location.pathname = '/' }}></img>
+                        <h2 className='accountHeaderText'>Account Dashboard</h2>
+                    </div>
+                    <div className='accountButtons'>
+                        <button className='accountButton' onClick={() => { setEditing(true) }}>Edit...</button>
+                        <button className='accountButton' onClick={() => { expireCookiesAndRedirect() }} style={{ background: '#F44242', border: '5px solid #FF6767' }}>Sign Out</button>
+
+                    </div>
+                </div>
+                <div className='accountBody'>
+                    <div className='accountBodyRight'>
+                        <h3 className='accountDisplayName'>{accountInformation.displayName}</h3>
+                        <div className='accountDetails'>
+                            <h4 className='largeLabel'>Highest Score</h4>
+                            <h4 className='largeNumber'>{accountInformation.highestScore}</h4>
+                            <h4 className='largeLabel'>Games Played</h4>
+                            <h4 className='largeNumber'>{accountInformation.gamesPlayed}</h4>
+                            <h4 className='largeLabel'>Words Guessed</h4>
+                            <h4 className='largeNumber'>{accountInformation.wordsGuessed}</h4>
+                        </div>
+
+                    </div>
+                    <div className='accountBodyLeft'>
+                        <p className='accountDescription'>
+                            {accountInformation.accountDescription}
+                        </p>
+                        <h4 className='largeLabel'>Achievements</h4>
+                        <div className='accountAchievements'>
+                            {achievementsData()}
+                        </div>
+                    </div>
+                </div>
             </div>
         )
     }
     else {
-        //if not logged in or testing auto-redirect to sign in
-        return <Navigate to='/account/signin' />
-    }
-
-    function handleEdit() {
-        setEditing(!editing);
-    }
-
-    function handleEditApply() {
-        try {
-            let desc = document.getElementById('descInput').value;
-            let displayName = document.getElementById('displayNameInput').value;
-            setUserData(
-                {
-                    displayName: displayName,
-                    highscore: userData.highscore,
-                    played: userData.played,
-                    description: desc,
-                    achievements: userData.achievements
-                }
-            )
-
-            // set new cookies
-            document.cookie = `user=${displayName}; domain=; path=/`;
-            loggedInUser = displayName;
-
-            //send updates to backend if not testing
-            if ((process.env.JEST_WORKER_ID === undefined || process.env.NODE_ENV !== 'test')) {
-                callAPIEdit(userId, displayName, desc);
-            }
-
-            setEditing(!editing);
-        }
-        catch (error) {
-            alert('There was a problem applying the changes.' + error)
-        }
-    }
-
-    async function callAPIEdit(userId, displayName, description) {
-        const reqJson =
-        {
-            userID: userId,
-            displayName: displayName,
-            description: description
-        }
-
-        const res = await fetch(baseUrl + '/user/update', {
-            method: 'POST',
-            headers: {
-                "Content-type": "application/json"
-            },
-            body: JSON.stringify(reqJson)
-        });
-
-        const data = await res.json()
-
-        if (data)
-            setReply(data)
-        else {
-            setReply("An error occured")
-            console.log('error')
-        }
-    }
-
-    function handleLogout() {
-        //remove login cookie here
-        document.cookie = "user=;path=/;expires=Thu, 01 Jan 1970 00:00:00 GMT"
-        toHome();
-    }
-
-    function handleWantDelete() {
-        //user wants to delete account
-        setDelete(!wantDelete)
-    }
-
-    function doDelete() {
-        //backend deletion go here
-        //remove cookie
-        if ((process.env.JEST_WORKER_ID === undefined || process.env.NODE_ENV !== 'test'))
-            callAPIDelete({ user })
-
-        document.cookie = "user=;path=/;expires=Thu, 01 Jan 1970 00:00:00 GMT"
-        toHome();
-    }
-
-    async function callAPIDelete(name) {
-        console.log('delete account ' + name)
-        const reqJson =
-        {
-            userID: name
-        }
-
-        const res = await fetch(baseUrl + '/api/delete', {
-            method: 'POST',
-            headers: {
-                "Content-type": "application/json"
-            },
-            body: (reqJson)
-        });
-
-        const data = await res.json()
-
-        if (data)
-            setReply(data)
-        else {
-            setReply("An error occured")
-            console.log('error')
-        }
-
-        console.log(reply)
-    }
-
-    function toHome() {
-        //returns to home menu
-        window.location = '/';
-    }
-
-    function page() {
-        if (!wantDelete)
-            return (
-                <div>
-                    {top()}
-                    <div>
-                        {editMode()}
-                    </div>
-                </div>
-            )
-        else
-            return (
-                <div>
-                    {editMode()}
-                </div>
-            )
-    }
-
-    function editMode() {
-        if (!editing)    //normal account display
-            return (
-                <div>
-                    <div className='accountColoumn' style={{ display: 'inline-block', position: 'absolute', top: '35%', left: '0%', right: '30%' }}>
-                        <h1 color='#FCFCFC'>Highest Score</h1>
-                        <h1 id='highscore'>{userData.highscore}</h1>
-
-                        <h1>Games Played</h1>
-                        <h1 id='played'>{userData.played}</h1>
-                    </div>
-                    <div className='accountColoumn' style={{ display: 'inline-block', position: 'absolute', top: '15%', left: '30%' }}>
-                        <div id='desc' style={{ marginBtoom: 10, wordWrap: 'break-word', maxWidth: '960px' }}>
-                            {userData.description}
-                        </div>
-                        <div style={{ background: 'white', minWidth: '960px' }} className='dividerH' />
-                        <h1>Achievements</h1>
-                        {getAchievements()}
-                    </div>
-                </div>
-            )
-        else
-            if (!wantDelete)     //edit menu
-                return (
-                    <div>
-                        <div style={{ width: '1240px' }} className='accountColoumn'>
-                            <h1>Edit Profile</h1>
-                            <div style={{ background: 'white' }} className='dividerH' />
-                            <h2>Display Name</h2>
-                            <textarea id='displayNameInput' defaultValue={userData.displayName} className='editDescBox' rows='1'></textarea>
-                            <h2>Description</h2>
-                            <textarea id='descInput' defaultValue={userData.description} className='editDescBox' rows='6'></textarea>
-                        </div>
-                    </div>
-                )
-            else        //confirm deletion
-                return (
-                    <div style={{ width: '1240px', textAlign: 'center', justifyContent: 'center', color: 'white' }}>
-                        <h1>Are you sure you want to delete your account?</h1>
-                        <div style={{ background: 'white' }} className='dividerH' />
-                        <div style={{ padding: 10, display: 'flex', justifyContent: 'center' }}>
-                            <Button type='ternary' label='Delete' size='large' onClick={doDelete}></Button>
-                            <div style={{ margin: 50 }} />
-                            <Button type='primary' label='Cancel' size='large' onClick={handleWantDelete}></Button>
-                        </div>
-                    </div>
-                )
-    }
-
-    function top() {
-        return (
-            <div className='topbar'>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gridGap: 0, justifyContent: 'center' }}>
-                    <div>
-                        <img src={WordeoLogo} alt='Wordeo' style={{ height: 64, cursor: 'pointer', marginLeft: 20 }} onClick={toHome} />
-                    </div>
-                    <div style={{ marginTop: 20, textAlign: 'center', fontSize: '24px' }}>
-                        {loggedInUser}'s Account Dashboard
-                    </div>
-                    <div>
-                        {topButtons()}
-                    </div>
-                </div>
-            </div>
-        )
-    }
-
-    function topButtons() {
-        if (!editing)
-            return (
-                <div style={{ marginLeft: 200, marginRight: 20, display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gridGap: 0, justifyContent: 'right' }}>
-                    <button className='button-edit' onClick={handleEdit}>Edit</button>
-                    <button className='button-out' onClick={handleLogout}>Logout</button>
-                </div>
-            )
-        else
-            return (
-                <div style={{ marginLeft: 200, marginRight: 20, display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gridGap: 0, justifyContent: 'right' }}>
-                    <button className='button-edit' onClick={handleEditApply}>Apply</button>
-                    <button className='button-out' onClick={handleWantDelete}>Delete Account</button>
-                </div>
-            )
-    }
-
-    function getAchievements() {
-        if (userData.achievements.length > 0)
-            return (
-                userData.achievements.map(({ title, desc }) => {
-                    return (
-                        <Achievement key={(title, desc)} name={title} description={desc} />
-                    )
-                })
-            )
-        else
-            return (
-                <h2 style={{ color: "white" }}>
-                    No achievements yet.
-                </h2>
-            )
+        return window.location.pathname = "/account/signin";
     }
 }
+
+
+
+// FRONT END CHECKS
+// These can safely exist outside of the component to prevent re-renders and slow down the page.
+
+/**
+ * **Checks for URL and cookies**
+ * @returns True if the URL parameter equals to the cookie `userName`, false if not
+ */
+function verifyURLAndCookies() {
+    const displayNameExists = document.cookie.split(";").some((item) => item.trim().startsWith("displayName="));
+    const userNameExists = document.cookie.split(";").some((item) => item.trim().startsWith("userName="));
+
+    if (displayNameExists && userNameExists) {
+        const userName = ('; ' + document.cookie).split(`; userName=`).pop().split(';')[0];
+        const urlUserName = window.location.pathname.split("/")[2];
+
+        if (userName === urlUserName) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    else {
+        return false;
+    }
+}
+
+/**
+ * **Expires cookies and redirects to sign in page**
+ */
+function expireCookiesAndRedirect() {
+    document.cookie = `userName=;path=/;domain=;expires=Thu, 01 Jan 1970 00:00:00 UTC`;
+    document.cookie = `displayName=;path=/;domain=;expires=Thu, 01 Jan 1970 00:00:00 UTC`;
+
+    window.location.pathname = "/account/signin";
+}
+
+/**
+ * Does all front end checks
+ * Such as: verify the URL parameter equals to the cookie
+ * @returns True if all front end checks pass, false if not
+ */
+function completeAllFEChecks() {
+    let testURLAndCookies = verifyURLAndCookies();
+
+    if (testURLAndCookies) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+// ----------------
 
 export default AccountPage
