@@ -521,7 +521,12 @@ const AccountPage = () => {
         )
     }
     else {
-        if(!loggingOut) expireCookiesAndRedirect();
+        if (!loggingOut) {
+            window.location.pathname = '/account/signin';
+        }
+        else {
+            window.location.pathname = '/';
+        }
         return (
             <p>Redirecting...</p>
         )
