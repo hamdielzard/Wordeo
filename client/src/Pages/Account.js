@@ -78,6 +78,7 @@ const AccountPage = () => {
     const [editing, setEditing] = React.useState(false);
     const [editingError, setEditingError] = React.useState("");
     const [deleting, setDeleting] = React.useState(false);
+    const [loggingOut, setLoggingOut] = React.useState(false);
     const [testEnvironment, setTestEnvironment] = React.useState(false);
 
     useEffect(() => {
@@ -380,12 +381,12 @@ const AccountPage = () => {
     }
 
     /**
-    * **Expires cookies and redirects to sign in page**
+    * **Expires cookies and redirects to specified page**
     */
-    function expireCookiesAndRedirect() {
+    function expireCookiesAndRedirect(redirect = '/account/signin') {
         document.cookie = `userName=;path=/;domain=;expires=Thu, 01 Jan 1970 00:00:00 UTC`;
         document.cookie = `displayName=;path=/;domain=;expires=Thu, 01 Jan 1970 00:00:00 UTC`;
-
+        
         // clear state
         setAccountInformation({
             userName: "",
@@ -396,8 +397,8 @@ const AccountPage = () => {
             accountDescription: "",
             achievements: []
         });
-
-        window.location.pathname = "/account/signin";
+        
+        window.location.pathname = redirect;
     }
 
 
@@ -443,12 +444,12 @@ const AccountPage = () => {
                     <div className='editingAccount' style={{ display: 'flex', alignContent: 'center', alignItems: 'center' }}>
                         <form className='editingForm' onSubmit={() => { verifyEdit() }}>
                             <h4 className='largeLabel'>Display Name</h4>
-                            <input id="displayNameEditBox" className='accountEditInput' type='text' placeholder={accountInformation.displayName} maxLength={15}></input>
+                            <input id="displayNameEditBox" className='accountEditInput' type='text' defaultValue={accountInformation.displayName} maxLength={15}></input>
                             <br></br>
                             <br></br>
                             <br></br>
                             <h4 className='largeLabel'>Account Description</h4>
-                            <textarea id="descriptionEditBox" className='accountEditInputDescription' type='text' placeholder={accountInformation.accountDescription} maxLength={200}></textarea>
+                            <textarea id="descriptionEditBox" className='accountEditInputDescription' type='text' defaultValue={accountInformation.accountDescription} maxLength={200}></textarea>
                             <br></br>
                             <br></br>
                             <div className='warningNote'>
@@ -489,7 +490,7 @@ const AccountPage = () => {
                     </div>
                     <div className='accountButtons'>
                         <button className='accountButton' onClick={() => { setEditing(true) }}>Edit...</button>
-                        <button className='accountButton' onClick={() => { expireCookiesAndRedirect() }} style={{ background: '#F44242', border: '5px solid #FF6767' }}>Sign Out</button>
+                        <button className='accountButton' onClick={() => { setLoggingOut(true); expireCookiesAndRedirect("/") }} style={{ background: '#F44242', border: '5px solid #FF6767' }}>Sign Out</button>
 
                     </div>
                 </div>
@@ -520,7 +521,10 @@ const AccountPage = () => {
         )
     }
     else {
-        return window.location.pathname = "/account/signin";
+        if(!loggingOut) expireCookiesAndRedirect();
+        return (
+            <p>Redirecting...</p>
+        )
     }
 }
 
