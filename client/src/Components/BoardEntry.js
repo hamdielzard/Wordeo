@@ -2,8 +2,8 @@
 import React from 'react';
 import '../Styles/Leaderboard.css'
 
-const BoardEntry = ({ score,user,display,col,rank }) => {
-    if(display && display!=user)
+const BoardEntry = ({ score,user,col,rank }) => {
+   /* if(display && display!=user)
     return (
         <tr className='scoreRow'>
             <td style={{paddingRight:"120px",Width:"50px",color:col}}>#{rank}</td>
@@ -11,7 +11,7 @@ const BoardEntry = ({ score,user,display,col,rank }) => {
             <td style={{width:"100px",color:col}}>{score}</td>
         </tr>
     )
-    else
+    else*/
     return (
         <tr className='scoreRow'>
             <td style={{paddingRight:"120px",Width:"50px",color:col}}>#{rank}</td>
