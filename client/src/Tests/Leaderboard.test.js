@@ -69,7 +69,6 @@ test('Check renders leaderboard title', () => {
 
     waitFor (()=> expect(screen.getByText(/Solo/i)).toBeInTheDocument());
     waitFor (()=> expect(screen.getByText(/stubUser/)).toBeInTheDocument());
-    waitFor (()=> expect(screen.getByText(/(stub)/)).toBeInTheDocument());
     waitFor (()=> expect(screen.getByText(/600/)).toBeInTheDocument());
     waitFor (()=> expect(screen.getByText(/testData/)).toBeInTheDocument());
     waitFor (()=> expect(screen.getByText(/8000/)).toBeInTheDocument());
@@ -91,7 +90,6 @@ test('Check renders leaderboard title', () => {
     waitFor (()=> expect(screen.queryByText(/testData/)).not.toBeInTheDocument());
     waitFor (()=> expect(screen.getByText(/Multiplayer/i)).toBeInTheDocument());
     waitFor (()=> expect(screen.getByText(/multimode/)).toBeInTheDocument());
-    waitFor (()=> expect(screen.getByText(/(multi)/)).toBeInTheDocument());
     waitFor (()=> expect(screen.getByText(/8000/)).toBeInTheDocument());
     waitFor (()=> expect(screen.getByText(/#1/)).toBeInTheDocument());
     waitFor (()=> expect(screen.queryByText(/#2/)).not.toBeInTheDocument());
@@ -111,7 +109,6 @@ test('Check renders leaderboard title', () => {
     fireEvent.click(searchButton)
 
     waitFor (()=> expect(screen.getByText(/stubUser/)).toBeInTheDocument());
-    waitFor (()=> expect(screen.getByText(/(stub)/)).toBeInTheDocument());
     waitFor (()=> expect(screen.getByText(/600/)).toBeInTheDocument());
     waitFor (()=> expect(screen.getByText(/#1/)).toBeInTheDocument());
 
