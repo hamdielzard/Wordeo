@@ -79,7 +79,7 @@
     margin-left: auto;
     margin-right: auto;
     justify-content: center;
-    overflow: scroll;
+    overflow: auto;
     gap: 50px;
 }
 
