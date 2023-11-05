@@ -3,8 +3,7 @@ const Schema = mongoose.Schema
 
 const InventorySchema = new Schema({
     name: String,
-    description: String,
-    enabled: Boolean,
+    quantity: Number,
     datePurchased: Date
 }); 
 
