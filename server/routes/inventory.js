@@ -4,6 +4,6 @@ const router = express.Router()
 const createInventory = require('../controllers/InventoryController.js'); 
 
 // POST request to update user's inventory
-router.post('/user/inventory', createInventory);
+router.post('', createInventory);
 
 module.exports = router
