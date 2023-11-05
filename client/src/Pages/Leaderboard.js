@@ -113,7 +113,7 @@ const Leaderboard = () => {
     }
 
     return(
-        <div style={{textAlign:"center"}}>
+        <div className="leaderboard">
             <img src={WordeoLogo} alt='Wordeo' style={{ height: 128, cursor: 'pointer'}} onClick={() => { window.location = "/" }} />
             <h1>Leaderboards</h1>
             <div className="scoreRow" style={{justifyContent:"center"}}>
