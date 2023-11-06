@@ -10,6 +10,8 @@ const words = require('./routes/words');
 const scores = require('./routes/scores');
 const AuthRoute = require('./routes/auth');
 const UserRoute = require('./routes/user');
+//const InventoryRoutes = require('./routes/inventory');
+const StoreRoutes = require('./routes/store');
 
 // set express app
 const app = express();
@@ -21,6 +23,7 @@ app.use('/words', words);
 app.use('/scores', scores);
 app.use('/api', AuthRoute);
 app.use('/user', UserRoute);
+app.use('/store', StoreRoutes);
 
 // test endpoint
 app.get("/", (req, res) => {
