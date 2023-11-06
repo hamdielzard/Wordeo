@@ -24,6 +24,7 @@ function Home() {
             </div>
             <div className='homepageInteractive'>
                 <Button label="PLAY" onClick={() => { window.location = "/game" }} type="primary" size="large" />
+                <Button label="LEADERBOARD" onClick={() => { window.location = "/leaderboard" }} type="primary" size="medium" />
             </div>
             <div className="homepageFooter">
                 Login to save your progress!
