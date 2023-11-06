@@ -2,7 +2,7 @@ const logger = require('../logger');
 const User = require('../models/user');
 const { StoreItem } = require('../models/store');
 
-// GET /store/items
+// GET /store
 const getAllStoreItems = (req, res, next) => {
     // Retrieve all store items from the database
     StoreItem.find()
@@ -17,7 +17,7 @@ const getAllStoreItems = (req, res, next) => {
         });
 };
 
-// POST /store/buy
+// POST /store
 const buyItem = (req, res, next) => {
     const { userName, itemName, quantity } = req.body;
 

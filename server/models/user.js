@@ -1,10 +1,9 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const InventorySchema = new Schema({
+const ItemSchema = new Schema({
     name: String,
-    quantity: Number,
-    datePurchased: Date
+    quantity: Number
 }); 
 
 const AccountSchema = new Schema({
@@ -33,7 +32,7 @@ const AccountSchema = new Schema({
     wordsGuessed: {
         type: Number
     },
-    inventory: [InventorySchema]
+    inventory: [ItemSchema]
 
 }, { timestamps: true }) // creates 'createdAt' & 'updatedAt' timestamps automatically
 
