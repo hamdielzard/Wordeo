@@ -49,7 +49,14 @@ const GamePage = ({
     })
 
     React.useEffect(()=> {
-        fetchWords(numRounds)
+        if (gameStatus.gameEnd == true) {
+            // submit score
+            if (user !== "Guest") {
+                console.log("final score: " + gameStatus.score)
+                postScore(userId, gameStatus.score);
+            }
+        } else {
+            fetchWords(numRounds)
             .then((data) => {
                 setGameData(data);
                 updateGameStatus(prev => ({
@@ -59,6 +66,8 @@ const GamePage = ({
                 }));
                 setLoading(false);
             })
+        }
+        
     }, [gameStatus.gameEnd]);
 
     // Called by Timer.js to update game status
@@ -82,11 +91,6 @@ const GamePage = ({
                 gameEnd: true,
                 roundTime: 0
             }))
-
-            // submit score
-            if (user !== "Guest") {
-                postScore(userId, gameStatus.score);
-            }
         }
         
         restartRound()
