@@ -161,7 +161,7 @@ router.get("/", async (req, res) => {
       const leaderboard = await Score.aggregate([
         {
           $match: {
-            gameMode: gameMode 
+            gameMode: gameMode || Modes.Solo // if nothing matched, get solo mode leaderboard
           }
         },
         {
