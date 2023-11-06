@@ -157,5 +157,48 @@ router.get("/", async (req, res) => {
 
 });
 
+    try {
+      const leaderboard = await Score.aggregate([
+        {
+          $match: {
+            gameMode: gameMode 
+          }
+        },
+        {
+          $group: {
+            _id: "$user",
+            highestScore: { $max: "$score" }
+          }
+        },
+        {
+          $lookup: {
+            from: "users", 
+            localField: "_id",
+            foreignField: "_id",
+            as: "userAccount"
+          }
+        },
+        {
+          $unwind: "$userAccount"
+        },
+        {
+          $project: {
+            _id: 1,
+            highestScore: 1,
+            displayName: "$userAccount.displayName",
+            userName: "$userAccount.userName"
+          }
+        },
+        {
+          $sort: { highestScore: -1 }
+        }
+      ]);
+      res.status(200).json(leaderboard);
+      logger.info(`[200] GET /scores/leaderboard - Get leaderboard successful for gameMode: ${gameMode}`);
+    } catch (err) {
+      res.status(500).json({ message: err.message })
+      logger.error(`[500] GET /scores/leaderboard - Get leaderboard error occured: ${err}`);
+    }   
+})
 // export
 module.exports = router;
