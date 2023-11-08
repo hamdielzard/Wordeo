@@ -5,7 +5,10 @@ import ItemPopup from "../Components/Store/ItemPopup";
 import SuccessPopup from "../Components/Store/SuccessPopup";
 import Currency from "../Components/Store/Currency";
 import "../Styles/Store.css"
-import itemData from "../TEMPDB/itemdata.js"
+// import itemData from "../TEMPDB/itemdata.js"
+
+// API URL
+const API_URL = 'http://localhost:8080';
 
 const Store = () => {
     const [storeStatus, updateStoreStatus] = React.useState({
@@ -23,6 +26,28 @@ const Store = () => {
         isVisible: false,
         success: true
     })
+
+    const [itemData, updateItems] = React.useState(null)
+
+    React.useEffect(() => {
+        const fetchUserData = async () => {
+            const res = await fetch(`${API_URL}/user`);
+            const data = await res.json();
+
+            // TODO: uncomment and update with user currency
+            // updateAccountBalance(data.currency);
+        }
+
+        const fetchStoreData = async () => {
+            const res = await fetch(`${API_URL}/store`);
+            const data = await res.json();
+
+            updateItems(data.storeItems);
+        }
+
+        fetchUserData();
+        fetchStoreData();
+    }, [])
 
     // This function is called whenver the user selects a new category
     function updateSelection(newSelection) {
@@ -74,11 +99,11 @@ const Store = () => {
                 selection = {storeStatus.selection}
                 updateSelection = {updateSelection}
             />
-            <ItemGrid
+            {itemData && <ItemGrid
                 items = {itemData}
                 selection = {storeStatus.selection}
                 itemOnClick = {itemOnClick}
-            />
+            />}
             <ItemPopup
                 isVisible = {itemPopupStatus.isVisible}
                 item = {itemPopupStatus.item}
