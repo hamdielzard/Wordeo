@@ -7,6 +7,7 @@ import hallowween from "../../Images/hallowween.jpeg"
 const ImageDisplay = ({imgName, maxHeight, maxWidth}) => {
     let imgsrc = ""
 
+    // TODO: Match Items with their icon
     if (imgName == "Add Time") {
         imgsrc = sandClock
     }
