@@ -29,13 +29,20 @@ const Store = () => {
 
     const [itemData, updateItems] = React.useState(null)
 
+    // fetch userName
+    const userNameExists = document.cookie.split(";").some((item) => item.trim().startsWith("userName="));
+    let userName;
+
+    if (userNameExists) {
+        userName = ('; ' + document.cookie).split(`; userName=`).pop().split(';')[0];
+    }
+
     React.useEffect(() => {
         const fetchUserData = async () => {
-            const res = await fetch(`${API_URL}/user`);
+            const res = await fetch(`${API_URL}/user/coin?userName=${userName}`);
             const data = await res.json();
 
-            // TODO: uncomment and update with user currency
-            // updateAccountBalance(data.currency);
+            updateAccountBalance(data.coinBalance);
         }
 
         const fetchStoreData = async () => {
@@ -51,7 +58,7 @@ const Store = () => {
 
     // This function is called whenver the user selects a new category
     function updateSelection(newSelection) {
-        updateStoreStatus({ selection: newSelection})
+        updateStoreStatus({ selection: newSelection })
     }
 
     // This function is called whenever a user selects an item
@@ -69,7 +76,7 @@ const Store = () => {
         if (wasPurchased) {
             // Sufficient balance
             if (accountBalance - cost >= 0) {
-                updateAccountBalance(prev => prev-cost)
+                updateAccountBalance(prev => prev - cost)
                 updateSuccessPopup({
                     isVisible: true,
                     success: true
@@ -95,27 +102,27 @@ const Store = () => {
     // Store/item data goes to <ItemGrid items = {}
     return (
         <div className="store">
-            <Menu 
-                selection = {storeStatus.selection}
-                updateSelection = {updateSelection}
+            <Menu
+                selection={storeStatus.selection}
+                updateSelection={updateSelection}
             />
             {itemData && <ItemGrid
-                items = {itemData}
-                selection = {storeStatus.selection}
-                itemOnClick = {itemOnClick}
+                items={itemData}
+                selection={storeStatus.selection}
+                itemOnClick={itemOnClick}
             />}
             <ItemPopup
-                isVisible = {itemPopupStatus.isVisible}
-                item = {itemPopupStatus.item}
-                popupOnExit = {popupOnExit}
+                isVisible={itemPopupStatus.isVisible}
+                item={itemPopupStatus.item}
+                popupOnExit={popupOnExit}
             />
             <SuccessPopup
-                isVisible = {successPopupStatus.isVisible}
-                success = {successPopupStatus.success}
-                successPopupOnExit = {updateSuccessPopup}
+                isVisible={successPopupStatus.isVisible}
+                success={successPopupStatus.success}
+                successPopupOnExit={updateSuccessPopup}
             />
-            <Currency 
-                balance = {accountBalance}
+            <Currency
+                balance={accountBalance}
             />
         </div>
     )
