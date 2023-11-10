@@ -32,8 +32,11 @@ const AccountSchema = new Schema({
     wordsGuessed: {
         type: Number
     },
+    coins: {
+        type: Number,
+        default: 0,
+    },
     inventory: [ItemSchema]
-
 }, { timestamps: true }) // creates 'createdAt' & 'updatedAt' timestamps automatically
 
 const User = mongoose.model('User', AccountSchema)
