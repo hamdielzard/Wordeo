@@ -5,7 +5,10 @@ import ItemPopup from "../Components/Store/ItemPopup";
 import SuccessPopup from "../Components/Store/SuccessPopup";
 import Currency from "../Components/Store/Currency";
 import "../Styles/Store.css"
-import itemData from "../TEMPDB/itemdata.js"
+// import itemData from "../TEMPDB/itemdata.js"
+
+// API URL
+const API_URL = 'http://localhost:8080';
 
 const Store = () => {
     const [storeStatus, updateStoreStatus] = React.useState({
@@ -24,9 +27,38 @@ const Store = () => {
         success: true
     })
 
+    const [itemData, updateItems] = React.useState(null)
+
+    // fetch userName
+    const userNameExists = document.cookie.split(";").some((item) => item.trim().startsWith("userName="));
+    let userName;
+
+    if (userNameExists) {
+        userName = ('; ' + document.cookie).split(`; userName=`).pop().split(';')[0];
+    }
+
+    React.useEffect(() => {
+        const fetchUserData = async () => {
+            const res = await fetch(`${API_URL}/user/coin?userName=${userName}`);
+            const data = await res.json();
+
+            updateAccountBalance(data.coinBalance);
+        }
+
+        const fetchStoreData = async () => {
+            const res = await fetch(`${API_URL}/store`);
+            const data = await res.json();
+
+            updateItems(data.storeItems);
+        }
+
+        fetchUserData();
+        fetchStoreData();
+    }, [])
+
     // This function is called whenver the user selects a new category
     function updateSelection(newSelection) {
-        updateStoreStatus({ selection: newSelection})
+        updateStoreStatus({ selection: newSelection })
     }
 
     // This function is called whenever a user selects an item
@@ -44,7 +76,7 @@ const Store = () => {
         if (wasPurchased) {
             // Sufficient balance
             if (accountBalance - cost >= 0) {
-                updateAccountBalance(prev => prev-cost)
+                updateAccountBalance(prev => prev - cost)
                 updateSuccessPopup({
                     isVisible: true,
                     success: true
@@ -70,27 +102,27 @@ const Store = () => {
     // Store/item data goes to <ItemGrid items = {}
     return (
         <div className="store">
-            <Menu 
-                selection = {storeStatus.selection}
-                updateSelection = {updateSelection}
+            <Menu
+                selection={storeStatus.selection}
+                updateSelection={updateSelection}
             />
-            <ItemGrid
-                items = {itemData}
-                selection = {storeStatus.selection}
-                itemOnClick = {itemOnClick}
-            />
+            {itemData && <ItemGrid
+                items={itemData}
+                selection={storeStatus.selection}
+                itemOnClick={itemOnClick}
+            />}
             <ItemPopup
-                isVisible = {itemPopupStatus.isVisible}
-                item = {itemPopupStatus.item}
-                popupOnExit = {popupOnExit}
+                isVisible={itemPopupStatus.isVisible}
+                item={itemPopupStatus.item}
+                popupOnExit={popupOnExit}
             />
             <SuccessPopup
-                isVisible = {successPopupStatus.isVisible}
-                success = {successPopupStatus.success}
-                successPopupOnExit = {updateSuccessPopup}
+                isVisible={successPopupStatus.isVisible}
+                success={successPopupStatus.success}
+                successPopupOnExit={updateSuccessPopup}
             />
-            <Currency 
-                balance = {accountBalance}
+            <Currency
+                balance={accountBalance}
             />
         </div>
     )
