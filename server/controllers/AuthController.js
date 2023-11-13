@@ -52,7 +52,9 @@ const register = (req, res, next) => {
                         gamesPlayed: 0,
                         gamesWon: 0,
                         description: "",
-                        wordsGuessed: 0
+                        wordsGuessed: 0,
+                        coins: 0,
+                        achievements: createLockedAchievements()
                     })
 
                     user.save()
@@ -78,6 +80,39 @@ const register = (req, res, next) => {
         });
 
 }
+
+// Define a function to create 5 locked achievements
+const createLockedAchievements = () => {
+    const achievements = [
+        {
+            name: "Adventurer",
+            description: "Achieved for updating your description!",
+            locked: true
+        },
+        {
+            name: "Achievement 2",
+            description: "Achievement Locked",
+            locked: true
+        },
+        {
+            name: "Achievement 3",
+            description: "Achievement Locked",
+            locked: true
+        },
+        {
+            name: "Achievement 4",
+            description: "Achievement Locked",
+            locked: true
+        },
+        {
+            name: "Achievement 5",
+            description: "Achievement Locked",
+            locked: true
+        }
+    ];
+
+    return achievements;
+};
 
 // POST /auth/login
 const login = (req, res, next) => {
