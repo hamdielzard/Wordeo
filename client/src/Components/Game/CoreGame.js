@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import LetterBox from "./LetterBox";
 import IncorrectLetterBox from "./IncorrectLetterBox";
 
-const CoreGame = ({wordData, roundEnd, roundNum, incorrectLetterGuessed, initialCorrectLetters = [], initialIncorrectLetters = []}) => {
+const CoreGame = ({wordData, roundEnd, roundNum, inventory, incorrectLetterGuessed, initialCorrectLetters = [], initialIncorrectLetters = [], activePowerup, powerupOnConsume}) => {
     let word = wordData.word.toLowerCase()
 
     const [roundStatus, updateRoundStatus] = React.useState({
@@ -117,7 +117,7 @@ const CoreGame = ({wordData, roundEnd, roundNum, incorrectLetterGuessed, initial
         }
     }
 
-    // Whenever a user makes a guess (ie gameStatus changes), run this code block to check if the game 
+    // Whenever a user makes a guess (ie roundStatus changes), run this code block to check if the game 
     // has ended
     useEffect(() => {
         let allWordsGuessed = true
@@ -157,7 +157,37 @@ const CoreGame = ({wordData, roundEnd, roundNum, incorrectLetterGuessed, initial
         // Reset letter boxes
         updateLetters(createLetterBoxes(initialCorrectLetters))
         updateIncorrectLetters(createIncorrectLetterBoxes(initialIncorrectLetters))
-    }, [word])
+    }, [wordData])
+
+    useEffect(() => {
+        if (activePowerup == "Reveal Letter") {
+            let letterFound = false
+
+            while (!letterFound) { 
+                // Random index
+                let i = Math.floor(Math.random() * ((word.length-1) - 0 + 1) + 0)
+                
+                if (!letterFound && !roundStatus.correctLetters.includes(word.charAt(i).toLowerCase())) {
+                    letterFound = true
+                    
+                    // Create deep copy of the correct letters to be used by update
+                    // Need to do this because updateRoundStatus won't update quickly enough before running
+                    // updateLetters
+                    let correctLettersCopy = JSON.parse(JSON.stringify(roundStatus.correctLetters))
+                    correctLettersCopy.push(word.charAt(i).toLowerCase())
+
+                    updateRoundStatus(prev => ({
+                        ...prev,
+                        correctLetters: [... prev.correctLetters, word.charAt(i).toLowerCase()]
+                    }))
+                    
+                    updateLetters(createLetterBoxes(correctLettersCopy))
+                }
+            }
+
+            powerupOnConsume()
+        }
+    }, [activePowerup])
 
     return(
         <div className="coreGame">

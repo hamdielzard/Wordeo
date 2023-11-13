@@ -5,10 +5,6 @@ import ImageDisplay from "./ImageDisplay";
 const ItemPopup = ({item, isVisible, popupOnExit}) => {
     const [quantity, updateQuantity] = useState(1)
 
-    if (isVisible) {
-        
-    }
-
     return (isVisible) ? (
         <div>
             <div className="item-popup-overlay" />
