@@ -132,7 +132,8 @@ function Home() {
                                 </div>
                             </div>
                         )}
-                    </div>
+                        <Button label="LEADERBOARD" onClick={() => { window.location = "/leaderboard" }} type="primary" size="medium" />
+            </div>
                 )}
             </div>
 

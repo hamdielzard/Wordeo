@@ -7,11 +7,13 @@ const urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 
 // load router modules: https://expressjs.com/en/guide/routing.html
-const words = require('./routes/words');
-const scores = require('./routes/scores');
+const WordRoute = require('./routes/words');
+const ScoreRoute = require('./routes/scores');
 const AuthRoute = require('./routes/auth');
 const UserRoute = require('./routes/user');
 const GameRoute = require('./routes/game');
+const StoreRoutes = require('./routes/store');
+
 
 // Load socket io client to emit events to the server
 const io = require('socket.io-client');
@@ -25,7 +27,7 @@ process.stdin.on('data', (data) => {
         console.log("games clean all | g clean all \t- remove all games (could break things!)");
         console.log("socket test | st \t\t- emit a socket io event");
         console.log("exit | quit \t\t\t- exit the program");
-        
+
         console.log("\n");
     } else if (data.toString().trim() === 'exit' || data.toString().trim() === 'quit') {
         console.log("EXITING...\n\n");
@@ -35,6 +37,7 @@ process.stdin.on('data', (data) => {
         socket.emit('message', 'Hello World!');
     }
 });
+//const InventoryRoutes = require('./routes/inventory');
 
 // set express app
 const app = express();
@@ -42,11 +45,12 @@ const app = express();
 app.use(cors());
 app.use(jsonParser);
 app.use(urlencodedParser);
-app.use('/words', words);
-app.use('/scores', scores);
+app.use('/words', WordRoute);
+app.use('/scores', ScoreRoute);
 app.use('/api', AuthRoute);
 app.use('/user', UserRoute);
 app.use('/game', GameRoute);
+app.use('/store', StoreRoutes);
 
 // test endpoint
 app.get("/", (req, res) => {
