@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import Button from '../Components/Button';
 
 // Styles
 import '../Styles/Account.css'
@@ -137,51 +138,57 @@ const AccountPage = () => {
         const displayNameExists = document.cookie.split(";").some((item) => item.trim().startsWith("displayName="));
         const userNameExists = document.cookie.split(";").some((item) => item.trim().startsWith("userName="));
 
-        if (displayNameExists && userNameExists) {
-            const userName = ('; ' + document.cookie).split(`; userName=`).pop().split(';')[0];
-            // Can now connect to backend
-            const response = await fetch(`${API_URL}/user?userName=${userName}`);
-            const data = await response.json();
+        try {
+            if (displayNameExists && userNameExists) {
+                const userName = ('; ' + document.cookie).split(`; userName=`).pop().split(';')[0];
+                // Can now connect to backend
+                const response = await fetch(`${API_URL}/user?userName=${userName}`);
+                const data = await response.json();
 
-            if (!response.ok) {
-                console.log("An error occurred while trying to get your account details. You have been signed out.")
-                return expireCookiesAndRedirect();
+                if (!response.ok) {
+                    console.log("An error occurred while trying to get your account details. You have been signed out.")
+                    return expireCookiesAndRedirect();
+                }
+                else {
+                    if (data.response === null) {
+                        // Check for a server message
+                        if (data.message) {
+                            console.log(data.message);
+                            return expireCookiesAndRedirect();
+                        }
+                        else {
+                            // No message, wrong call?
+                            console.log("An error occurred while trying to get your account details. You have been signed out.")
+                            return expireCookiesAndRedirect();
+                        }
+                    }
+                    // Potential check: review all these fields are present
+                    setAccountInformation({
+                        userName: data.response.userName,
+                        displayName: data.response.displayName,
+                        highestScore: data.response.highscore,
+                        gamesPlayed: data.response.gamesPlayed,
+                        wordsGuessed: data.response.wordsGuessed,
+                        accountDescription: data.response.description,
+                        achievements: accountInformation.achievements // TODO: Add achievements
+                    });
+
+                    // Update cookies to match backend on path '/'
+                    document.cookie = `userName=${data.response.userName};path=/;domain=`;
+                    document.cookie = `displayName=${data.response.displayName};path=/;domain=`;
+
+                    // Account info retrieved
+                    return true;
+                }
             }
             else {
-                if (data.response === null) {
-                    // Check for a server message
-                    if (data.message) {
-                        console.log(data.message);
-                        return expireCookiesAndRedirect();
-                    }
-                    else {
-                        // No message, wrong call?
-                        console.log("An error occurred while trying to get your account details. You have been signed out.")
-                        return expireCookiesAndRedirect();
-                    }
-                }
-                // Potential check: review all these fields are present
-                setAccountInformation({
-                    userName: data.response.userName,
-                    displayName: data.response.displayName,
-                    highestScore: data.response.highscore,
-                    gamesPlayed: data.response.gamesPlayed,
-                    wordsGuessed: data.response.wordsGuessed,
-                    accountDescription: data.response.description,
-                    achievements: accountInformation.achievements // TODO: Add achievements
-                });
-
-                // Update cookies to match backend on path '/'
-                document.cookie = `userName=${data.response.userName};path=/;domain=`;
-                document.cookie = `displayName=${data.response.displayName};path=/;domain=`;
-
-                // Account info retrieved
-                return true;
+                // Cannot connect to backend, sign in again, remove cookies if exist
+                return expireCookiesAndRedirect();
             }
         }
-        else {
-            // Cannot connect to backend, sign in again, remove cookies if exist
-            return expireCookiesAndRedirect();
+        catch (error) {
+            alert(error);
+            return false;
         }
     }
 
@@ -386,7 +393,7 @@ const AccountPage = () => {
     function expireCookiesAndRedirect(redirect = '/account/signin') {
         document.cookie = `userName=;path=/;domain=;expires=Thu, 01 Jan 1970 00:00:00 UTC`;
         document.cookie = `displayName=;path=/;domain=;expires=Thu, 01 Jan 1970 00:00:00 UTC`;
-        
+
         // clear state
         setAccountInformation({
             userName: "",
@@ -397,7 +404,7 @@ const AccountPage = () => {
             accountDescription: "",
             achievements: []
         });
-        
+
         window.location.pathname = redirect;
     }
 
@@ -435,9 +442,9 @@ const AccountPage = () => {
                         <h2 className='accountHeaderText'>Editing account</h2>
                     </div>
                     <div className='accountButtons'>
-                        <button className='accountButton' onClick={() => { verifyEdit() }}>Apply Changes</button>
-                        <button className='accountButton' onClick={() => { setEditing(false); setDeleting(true) }} style={{ background: '#F44242', border: '5px solid #FF6767' }}>Delete Account</button>
-                        <button className='accountButton' style={{ background: '#636363', border: '5px solid #757575' }} onClick={() => { setEditing(false) }}>Cancel</button>
+                        <Button label="Apply Changes" onClick={() => { verifyEdit() }}>Apply Changes</Button>
+                        <Button label="Delete Account" onClick={() => { setEditing(false); setDeleting(true) }} type="ternary" />
+                        <Button label="Cancel" onClick={() => { setEditing(false) }} type="gray" />
                     </div>
                 </div>
                 <div className='accountBody' style={{ justifyContent: 'center', alignItems: 'center' }}>
@@ -474,8 +481,8 @@ const AccountPage = () => {
                 <div className='accountBody' style={{ justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
                     <p style={{ fontSize: 30 }}>This action is irreversible and will delete all your progress!</p>
                     <div className='editingAccount' style={{ display: 'flex', alignContent: 'center', alignItems: 'center' }}>
-                        <button className='accountButton' style={{ background: '#636363', border: '5px solid #757575', width: 'auto' }} onClick={() => { verifyDeletion() }}>Yes I am sure.</button>
-                        <button className='accountButton' style={{ background: '#0CAA00', border: '5px solid #0CCC00', width: 'auto' }} onClick={() => { setDeleting(false) }}>No - I'd like to play more Wordeo!</button>
+                        <Button label="Yes I am sure." onClick={() => { verifyDeletion() }} type="ternary" scale='0.9' size={20} />
+                        <Button label="No - I'd like to play more Wordeo!" onClick={() => { setDeleting(false) }} type="secondary" scale='0.9' size={20} />
                     </div>
                 </div>
             </div>
@@ -489,9 +496,8 @@ const AccountPage = () => {
                         <h2 className='accountHeaderText'>Account Dashboard</h2>
                     </div>
                     <div className='accountButtons'>
-                        <button className='accountButton' onClick={() => { setEditing(true) }}>Edit...</button>
-                        <button className='accountButton' onClick={() => { setLoggingOut(true); expireCookiesAndRedirect("/") }} style={{ background: '#F44242', border: '5px solid #FF6767' }}>Sign Out</button>
-
+                        <Button label="Edit..." onClick={() => { setEditing(true) }}>Edit...</Button>
+                        <Button label="Sign Out" onClick={() => { setLoggingOut(true); expireCookiesAndRedirect("/") }} type="ternary" />
                     </div>
                 </div>
                 <div className='accountBody'>

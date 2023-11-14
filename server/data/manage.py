@@ -37,6 +37,20 @@ def add_word():
     with open("words.json", "w") as f:
         json.dump({"words": words}, f)
 
+def print_categories():
+    # Load the words.json file
+    with open("words.json", "r") as f:
+        words = json.load(f)["words"]
+
+    # Create a set of categories
+    categories = set()
+    for word in words:
+        categories.add(word["category"])
+
+    # Print the unique categories
+    unique_categories = sorted(list(categories))
+    for category in unique_categories:
+        print(f"- {category}:")
 
 def view_words():
     from prettytable import PrettyTable
@@ -78,6 +92,7 @@ def main():
         print("3. Add a word (loop)")
         print("4. Backup words.json")
         print("5. Import from CSV")
+        print("6. Print categories")
         print("0. Exit")
         choice = input("Enter your choice: ")
         if choice == "1":
@@ -122,6 +137,8 @@ def main():
                     words.append(new_word)
                     with open("words.json", "w") as f:
                         json.dump({"words": words}, f)
+        elif choice == "6":
+            print_categories()
         elif choice == "0":
             break
         else:

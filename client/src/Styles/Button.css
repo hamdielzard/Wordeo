@@ -19,7 +19,25 @@
     width: 340px;
     height: 75px;
     cursor: pointer;
-    margin-bottom: 10px;
+    transition: all 0.2s ease-in-out;
+}
+
+.button-primary:hover {
+    background: #7f6cfa;
+    border: 5px solid #2b7cff;
+    box-shadow: 0 0 10px #2b7cff;
+    text-shadow: #00edfe 0 0 10px;
+    transition: all 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+
+.button-primary:active {
+    background: #5b4af4;
+    border: 5px solid #1e5cff;
+    box-shadow: 0 0 10px #1e5cff;
+    text-shadow: #00edfe 0 0 10px;
+    transform: scale(0.95);
+    transition: all 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 
 /* Secondary Button */
@@ -43,7 +61,24 @@
     width: 340px;
     height: 75px;
     cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
 
+.button-secondary:hover {
+    background: #45cf4a;
+    border: 5px solid #25b12a;
+    box-shadow: 0 0 10px #25b12a;
+    text-shadow: #15fe00 0 0 10px;
+    transition: all 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.button-secondary:active {
+    background: #2abf4a;
+    border: 5px solid #1d7f1f;
+    box-shadow: 0 0 10px #1d7f1f;
+    text-shadow: #00edfe 0 0 10px;
+    transform: scale(0.95);
+    transition: all 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 
 /* Ternary Button */
@@ -67,7 +102,24 @@
     width: 340px;
     height: 75px;
     cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
 
+.button-ternary:hover {
+    background: #ff7f7f;
+    border: 5px solid #ff4f4f;
+    box-shadow: 0 0 10px #ff4f4f;
+    text-shadow: #fe0000 0 0 10px;
+    transition: all 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.button-ternary:active {
+    background: #f44242;
+    border: 5px solid #7f1f1f;
+    box-shadow: 0 0 10px #7f1f1f;
+    text-shadow: #fe0000 0 0 10px;
+    transform: scale(0.95);
+    transition: all 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 
 /* Toggles Button */
@@ -87,4 +139,44 @@
     width: 100%;
     padding: 10px;
     cursor: pointer;
+}
+
+.button-gray {
+    border-radius: 20px;
+    border: 5px solid #757575;
+    background: #636363;
+    color: #FFF;
+    text-align: center;
+    font-family: Inter, Arial, Helvetica, sans-serif;
+    font-size: 48px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    padding: 10px;
+    width: 340px;
+    height: 75px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.button-gray:hover {
+    background: #7f7f7f;
+    border: 5px solid #4f4f4f;
+    box-shadow: 0 0 10px #4f4f4f;
+    text-shadow: #e3e3e3 0 0 10px;
+    transition: all 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.button-gray:active {
+    background: #636363;
+    border: 5px solid #1f1f1f;
+    box-shadow: 0 0 10px #1f1f1f;
+    text-shadow: #e3e3e3 0 0 10px;
+    transform: scale(0.95);
+    transition: all 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
 }

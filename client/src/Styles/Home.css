@@ -31,6 +31,17 @@
     max-width: 80%;
 }
 
+.homepageInteractivePlaying {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    width: 100%;
+    height: 75vh;
+    max-width: 80%;
+}
+
 .homepageFooter {
     display: flex;
     justify-content: center;
@@ -58,4 +69,216 @@
     position: absolute;
     right: 0;
     padding-right: 2%;
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, .7);
+    width: 100%;
+    height: 100%;
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.multiplayerComponents {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    width: 100%;
+}
+
+.modalBox {
+    background: #F0F0F0;
+    border-radius: 30px;
+    width: 60%;
+    height: 70%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: column;
+    box-shadow: #F0F0F0 0 0 10px;
+}
+
+.modalBoxHeader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 90%;
+    height: 10cqw;
+    font-size: 48px;
+    font-weight: 700;
+    padding: 10px;
+    color: #003366;
+}
+
+.modalBoxBody {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 90%;
+    height: 90cqw;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.modalLabel {
+    font-size: 32px;
+    font-weight: 500;
+    text-transform: uppercase;
+    color: #003366;
+    margin: 0px;
+}
+
+.modalButtonSection {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.modalInput {
+    border-radius: 20px;
+    border: 5px solid #a0a0a0;
+    background: #b7b7b7;
+    color: #ffffff;
+    text-align: center;
+    font-family: Inter, Arial, Helvetica, sans-serif;
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    padding: 10px;
+    width: 200px;
+    text-transform: uppercase;
+    transition: all 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.modalInput:focus {
+    background: #a5a5a5;
+    border: 5px solid #7e7e7e;
+    box-shadow: 0 0 10px #7e7e7e;
+    transition: all 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
+    outline: none;
+    transform: scale(1.1);
+}
+
+.modalInput:hover {
+    background: #a5a5a5;
+    border: 5px solid #7e7e7e;
+    box-shadow: 0 0 10px #7e7e7e;
+    text-shadow: #e3e3e3 0 0 10px;
+    transition: all 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.modalInput::placeholder {
+    color: rgba(255, 255, 255, .7);
+    text-transform: uppercase;
+}
+
+.toastRed {
+    background-color: #F8D7DA;
+    border-radius: 20px;
+    color: #FF0000;
+    /* appear in the middle but bottom */
+    position: fixed;
+    bottom: 40px;
+    padding: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 30px;
+    /* center the text */
+    text-align: center;
+    /* add a small border */
+    /* add animation */
+    animation: fadeIn 1s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.homepageLogo {
+    transition: all 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.homepageLogo:hover {
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 15px rgb(237, 178, 0));
+}
+
+/* Animations */
+
+.modalOpen {
+    animation-name: pop-out;
+    animation-duration: 0.3s;
+    animation-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.modalClose {
+    animation-name: pop-in;
+    animation-duration: 0.3s;
+    animation-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.overlayFadeIn {
+    animation-name: fadeIn;
+    animation-duration: 0.3s;
+    animation-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.overlayFadeOut {
+    animation-name: fadeOut;
+    animation-duration: 0.3s;
+    animation-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+/* Keyframes */
+
+@keyframes pop-out {
+    0% {
+        transform: scale(0.8);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes pop-in {
+    0% {
+        transform: scale(1);
+    }
+
+    100% {
+        transform: scale(0.8);
+    }
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
 }
