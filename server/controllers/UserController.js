@@ -114,7 +114,9 @@ const update = (req, res, next) => {
             }
         })
         .catch(error => {
-            // Handle the error
+            res.status(500).json({ message: 'An error occurred while updating the user!' });
+            logger.error(`[500] PATCH /user userName: ${userName} - UserController: Error occurred while updating user`);
+            logger.cont(`Details: ${error}`);
         });
 };
 
