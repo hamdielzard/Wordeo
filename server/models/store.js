@@ -33,8 +33,6 @@ const initialStoreItems = [
 // Function to initialize the store items in the database
 const initializeStoreItems = async () => {
     try {
-        //await StoreItem.deleteMany({});
-
         // Check if store items already exist in the database
         const existingItems = await StoreItem.find();
 
@@ -49,4 +47,4 @@ const initializeStoreItems = async () => {
 };
 
 // Export the StoreItem model and the initialization function
-module.exports = { StoreItem, initializeStoreItems };
+module.exports = { StoreItem, initialStoreItems, initializeStoreItems };
