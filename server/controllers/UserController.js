@@ -47,101 +47,76 @@ const index = (req, res, next) => {
     }
 }
 
+const updateDescriptionAchievement = async (user) => {
+    if (user.achievements && user.achievements[0] && user.achievements[0].locked) {
+        user.achievements[0].locked = false;
+        await user.save();
+        return true;
+    }
+    return false;
+};
+
+const updateAchievements = async (user) => {
+    const descriptionAchievementUnlocked = await updateDescriptionAchievement(user);
+    // Add more achievement logic here if needed
+    return descriptionAchievementUnlocked;
+};
+
 // PATCH /user/
 const update = (req, res, next) => {
-    let userName = req.body.userName;
-
-    let updateData = {
+    const userName = req.body.userName;
+    const updateData = {
         displayName: req.body.displayName,
-        description: req.body.description
+        description: req.body.description || '',
     };
 
-    if (updateData.description == null || updateData.description == undefined || updateData.description == "") {
-        updateData.description = "";
+    if (!userName) {
+        res.status(400).json({ message: 'Bad request! userName is required!' });
+        logger.warn(`[400] PATCH /user userName: ${userName} - UserController: Bad request! Missing userName`);
+        return;
     }
-    if (userName == null || userName == undefined || userName == "") {
-        // Missing userName (400)
-        res.status(400).json({
-            message: 'Bad request! userName is required!'
-        })
-        logger.warn(`[400] PATCH /user userName: ${userName} - UserController: Bad request! Missing userName`)
-        return
-    }
-    if (updateData.displayName == null || updateData.displayName == undefined || updateData.displayName == "") {
-        // Missing displayName (400)
-        res.status(400).json({
-            message: 'Bad request! displayName is required!'
-        })
-        logger.warn(`[400] PATCH /user userName: ${userName} - UserController: Bad request! Missing displayName`)
-        return
-    }
-    else {
-        User.findOne({ "userName": userName })
-            .then(user => {
-                if (!user) {
-                    // User not found (404)
-                    res.status(404).json({
-                        message: `User ${userName} not found!`
-                    })
-                    logger.warn(`[404] PATCH /user userName: ${userName} - UserController: User not found`)
-                    return
-                }
 
-                // Check if the achievement is locked (first-time update)
-                if (user.achievements != undefined && user.achievements[0] != undefined && user.achievements.locked != undefined && user.achievements[0].locked) {
-                    // First-time update, unlock achievement 1
-                    user.achievements[0].locked = false;
-                    user.save()
-                        .then(updatedUser => {
-                            // Success (200)
-                            res.status(200).json({
-                                message: `User ${userName} updated successfully and earned Achievement 1!`,
-                                displayName: updateData.displayName,
-                                description: updateData.description
-                            });
-                            logger.info(`[200] PATCH /user userName: ${userName} - UserController: Update user successful and earned Achievement 1`);
-                            logger.cont(`displayName: ${updateData.displayName}`);
-                            logger.cont(`description: ${updateData.description}`);
-                        })
-                        .catch(error => {
-                            // Error (500)
-                            res.status(500).json({
-                                message: 'Failed to update user!'
-                            });
-                            logger.info(`[500] PATCH /user userName: ${userName} - UserController: Failed to update user and award Achievement 1!`);
-                            logger.cont(`displayName: ${updateData.displayName}`);
-                            logger.cont(`description: ${updateData.description}`);
-                            logger.cont(`Details: ${error}`);
-                        });
-                } 
-                else {
-                    // User has already earned Achievement 1, continue with regular user update logic
-                    User.findOneAndUpdate({ "userName": userName }, updateData)
-                        .then(response => {
-                            // Success (200)
-                            res.status(200).json({
-                                message: `User ${userName} updated successfully!`,
-                                displayName: updateData.displayName,
-                                description: updateData.description
-                            });
-                            logger.info(`[200] PATCH /user userName: ${userName} - UserController: Update user successful`);
-                            logger.cont(`displayName: ${updateData.displayName}`);
-                            logger.cont(`description: ${updateData.description}`);
-                        })
-                        .catch(error => {
-                            // Error (500)
-                            res.status(500).json({
-                                message: 'Failed to update user!'
-                            });
-                            logger.info(`[500] PATCH /user userName: ${userName} - UserController: Failed to update user!`);
-                            logger.cont(`displayName: ${updateData.displayName}`);
-                            logger.cont(`description: ${updateData.description}`);
-                            logger.cont(`Details: ${error}`);
-                        });
-                }
-            })
+    if (!updateData.displayName) {
+        res.status(400).json({ message: 'Bad request! displayName is required!' });
+        logger.warn(`[400] PATCH /user userName: ${userName} - UserController: Bad request! Missing displayName`);
+        return;
     }
-}
+
+    User.findOne({ userName })
+        .then(async (user) => {
+            if (!user) {
+                res.status(404).json({ message: `User ${userName} not found!` });
+                logger.warn(`[404] PATCH /user userName: ${userName} - UserController: User not found`);
+                return;
+            }
+
+            const descriptionAchievementUnlocked = await updateAchievements(user);
+
+            if (!descriptionAchievementUnlocked) {
+                User.findOneAndUpdate({ userName }, updateData)
+                    .then(response => {
+                        res.status(200).json({
+                            message: `User ${userName} updated successfully!`,
+                            displayName: updateData.displayName,
+                            description: updateData.description,
+                        });
+                        logger.info(`[200] PATCH /user userName: ${userName} - UserController: Update user successful`);
+                        logger.cont(`displayName: ${updateData.displayName}`);
+                        logger.cont(`description: ${updateData.description}`);
+                    })
+                    .catch(error => {
+                        res.status(500).json({ message: 'Failed to update user!' });
+                        logger.info(`[500] PATCH /user userName: ${userName} - UserController: Failed to update user!`);
+                        logger.cont(`displayName: ${updateData.displayName}`);
+                        logger.cont(`description: ${updateData.description}`);
+                        logger.cont(`Details: ${error}`);
+                    });
+            }
+        })
+        .catch(error => {
+            // Handle the error
+        });
+};
 
 // PATCH /user/inventory
 const createInventory = (req, res, next) => {
