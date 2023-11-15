@@ -88,7 +88,7 @@ const update = (req, res, next) => {
                 }
 
                 // Check if the achievement is locked (first-time update)
-                if (user.achievements[0].locked) {
+                if (user.achievements != undefined && user.achievements[0] != undefined && user.achievements.locked != undefined && user.achievements[0].locked) {
                     // First-time update, unlock achievement 1
                     user.achievements[0].locked = false;
                     user.save()
