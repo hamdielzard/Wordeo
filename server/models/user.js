@@ -42,6 +42,7 @@ const AccountSchema = new Schema({
         type: Number,
         default: 0,
     },
+
     inventory: [ItemSchema],
     
     achievements: [AchievementSchema]
