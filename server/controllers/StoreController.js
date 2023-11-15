@@ -54,11 +54,11 @@ const buyItem = (req, res, next) => {
                     user.inventory.push({ name: itemName, quantity });
 
                     // Save both the updated store item and user document
-                    return Promise.all([storeItem.save(), user.save()]);
-                })
-                .then(([updatedStoreItem, updatedUser]) => {
-                    res.status(200).json({ message: `Item ${itemName} purchased successfully`, user: updatedUser });
-                    logger.info(`[200] POST /store/buy - StoreController: Item purchase successful for ${userName}`);
+                    return Promise.all([storeItem.save(), user.save()])
+                    .then(([updatedStoreItem, updatedUser]) => {
+                        res.status(200).json({ message: `Item ${itemName} purchased successfully`, user: updatedUser });
+                        logger.info(`[200] POST /store/buy - StoreController: Item purchase successful for ${userName}`);
+                    })
                 })
                 .catch(error => {
                     res.status(500).json({ message: 'Failed to purchase item!' });

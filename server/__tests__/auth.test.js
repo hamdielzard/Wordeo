@@ -6,6 +6,7 @@ const server = require("../server");
 const supertest = require("supertest");
 const mongoose = require("mongoose");
 const User = require('../models/user');
+const bcrypt = require('bcryptjs');
 require("dotenv").config();
 
 const address = process.env.MONGODB_URL_TEST || `mongodb://localhost:27017/test?directConnection=true&serverSelectionTimeoutMS=2000`;
@@ -20,7 +21,7 @@ afterEach(async () => {
 });
 
 describe('POST /auth/register', () => {
-    it('Register new user', async () => {
+    it('Register new user with no display name', async () => {
         const userName = uuidv4(); // Generate a unique userName
         const payload = {
             "userName": userName,
@@ -34,11 +35,31 @@ describe('POST /auth/register', () => {
             .send(payload);
 
         expect(res.status).toEqual(200);
+        expect(res.body.displayName).toEqual(userName);
+        expect(res.body.message).toEqual("User registered successfully!");
+    });
+
+    it('Register new user with a display name', async () => {
+        const userName = uuidv4(); // Generate a unique userName
+        const displayName = "newUser"
+        const payload = {
+            "userName": userName,
+            "password": "Test@123",
+            "displayName": displayName
+        }
+
+        const res = await supertest(server)
+            .post('/api/register')
+            .set('Content-Type', 'application/json')
+            .set('Accept', '*/*')
+            .send(payload);
+
+        expect(res.status).toEqual(200);
+        expect(res.body.displayName).toEqual(displayName);
         expect(res.body.message).toEqual("User registered successfully!");
     });
     
     it('Register with blank username', async () => {
-        const userName = uuidv4(); // Generate a unique userName
         const payload = {
             "userName": undefined,
             "password": "undefined"
@@ -94,6 +115,54 @@ describe('POST /auth/register', () => {
         expect(res.body.message).toEqual("User registered successfully!");
         expect(res2.status).toEqual(409);
         expect(res2.body.message).toEqual("User already exists!");
+    });
+
+    it('On hash error, should return an http 400 response', async () => {
+        const userName = uuidv4(); // Generate a unique userName
+        const payload = {
+            "userName": userName,
+            "password": "Test@123"
+        }
+
+        const hashStub = jest.spyOn(bcrypt, 'hash');
+        hashStub.mockImplementation((password, rounds, callback) => {
+            // simulate an error by calling the callback with an error
+            callback(new Error('Hash error'));
+        });
+
+        const res = await supertest(server)
+        .post('/api/register')
+        .set('Content-Type', 'application/json')
+        .set('Accept', '*/*')
+        .send(payload);
+
+        expect(res.status).toEqual(400);
+        expect(res.body.message).toEqual("Failed to sign up at this time");
+
+        hashStub.mockRestore();
+    });
+
+    it('On save error, should return an http 500 response', async () => {
+        const userName = uuidv4(); // Generate a unique userName
+        const payload = {
+            "userName": userName,
+            "password": "Test@123"
+        }
+    
+        // Stubbing the User.save to simulate an error during save
+        const saveStub = jest.spyOn(User.prototype, 'save');
+        saveStub.mockRejectedValue(new Error('Save error'));
+    
+        const res = await supertest(server)
+            .post('/api/register')
+            .set('Content-Type', 'application/json')
+            .set('Accept', '*/*')
+            .send(payload);
+    
+        expect(res.status).toEqual(500);
+        expect(res.body.message).toEqual("An error occurred!");
+
+        saveStub.mockRestore();
     });
 });
 
@@ -201,4 +270,30 @@ describe('POST /auth/login', () => {
         expect(loginResponse.status).toEqual(400);
         expect(loginResponse.body.message).toEqual("Password does not match!");
     });
+
+    it('Error during login should return an http 500 response', async () => {
+        const userName = 'existingUser';
+        const password = 'Test@123';
+    
+        const findOneStub = jest.spyOn(User, 'findOne');
+        findOneStub.mockResolvedValue({ userName, password: 'hashedPassword', displayName: 'Existing User' });
+    
+        const compareStub = jest.spyOn(bcrypt, 'compare');
+        compareStub.mockImplementation((pass, hashedPass, callback) => {
+            // simulate an error during password comparison
+            callback(new Error('Comparison error'));
+        });
+    
+        const res = await supertest(server)
+            .post('/api/login')
+            .set('Content-Type', 'application/json')
+            .set('Accept', '*/*')
+            .send({ userName, password });
+    
+        expect(res.status).toEqual(500);
+        expect(res.body.message).toEqual("An error occurred!");
+    
+        findOneStub.mockRestore();
+        compareStub.mockRestore();
+    });    
 });

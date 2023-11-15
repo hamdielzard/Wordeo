@@ -63,7 +63,7 @@ const createScore = async (req, res) => {
     .catch(error => {
       // WARN: Can't test this?
       res.status(500).json({
-        message: 'An error occured!'
+        message: 'An error occurred!'
       })
       logger.error(`[500] POST /scores - Add score error occurred`)
       logger.cont(`Details: ${error}`)
@@ -77,9 +77,9 @@ const getScores = async (req, res) => {
   let gameMode = req.query.gameMode;
 
   // If all 3 fields are empty, return all scores
-  if (gameMode == null && gameMode == undefined && gameMode == "" &&
-    userName == null && userName == undefined && userName == "" &&
-    count == null && count == undefined && count == "") {
+  if ((gameMode == null || gameMode == undefined || gameMode == "") &&
+    (userName == null || userName == undefined || userName == "") &&
+    (count == null || count == undefined || count == "")) {
     count = 10; // Default count to 10, to prevent returning large amounts of data
 
     Score.find(filter)

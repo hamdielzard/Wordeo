@@ -140,11 +140,11 @@ const createInventory = (req, res, next) => {
             }
 
             // Save the updated user document
-            return user.save();
-        })
-        .then(updatedUser => {
-            res.status(200).json({ message: 'Inventory updated successfully', user: updatedUser });
-            logger.info(`[200] PATCH /user/inventory - UserController: Inventory update successful for ${userName}`);
+            return user.save()
+                .then(updatedUser => {
+                    res.status(200).json({ message: 'Inventory updated successfully', user: updatedUser });
+                    logger.info(`[200] PATCH /user/inventory - UserController: Inventory update successful for ${userName}`);
+                });
         })
         .catch(error => {
             res.status(500).json({ message: 'Failed to update inventory!' });
@@ -168,7 +168,7 @@ const updateCoins = (req, res, next) => {
                 // User not found (404)
                 return res.status(404).json({ message: `User ${userName} not found!` });
             }
-            
+
             if (quantity > 0) {
                 // Add coin to balance
                 user.coins += quantity;
@@ -180,12 +180,13 @@ const updateCoins = (req, res, next) => {
             }
 
             // Save the updated user document
-            return user.save();
+            return user.save()
+                .then(updatedUser => {
+                    res.status(200).json({ message: 'Coins updated successfully', user: updatedUser });
+                    logger.info(`[200] PATCH /user/coin - UserController: Coins update successful for ${userName}`);
+                });
         })
-        .then(updatedUser => {
-            res.status(200).json({ message: 'Coins updated successfully', user: updatedUser });
-            logger.info(`[200] PATCH /user/coin - UserController: Coins update successful for ${userName}`);
-        })
+
         .catch(error => {
             res.status(500).json({ message: 'Failed to update coins!' });
             logger.error(`[500] PATCH /user/coin - UserController: Coins update error occurred for ${userName}`);
@@ -193,7 +194,7 @@ const updateCoins = (req, res, next) => {
         });
 };
 
-// GET /user/coin-balance
+// GET /user/coin
 const getCoinBalance = (req, res, next) => {
     const { userName } = req.query;
 
