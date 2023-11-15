@@ -1,6 +1,5 @@
 // These handle the socket.io server, which is what we use for multiplayer
 const { Server } = require("socket.io");
-const Word = require('./models/words');
 // -----
 
 
@@ -32,11 +31,6 @@ mongoose.connect(process.env.MONGODB_URL)
         // Clear & insert the word data to the database
         await Word.deleteMany({});
         const res = await Word.insertMany(data.words);
-
-        // Start your Express server after database initialization
-        app.listen(PORT, HOST, () => {
-            logger.info(`Server listening on port ${HOST}:${PORT}`);
-        });
     })
     .catch((err) => logger.error(err));
 
@@ -54,13 +48,13 @@ const io = new Server(6060, {
 
 // Socket.io event handlers
 io.on("connection", (socket) => {
-    // When a client connects, log it
-    logger.socket(`A user connected: ${socket.id}`);
+    // When a client connects, log it - Commented out because it's annoying
+    // logger.socket(`A user connected: ${socket.id}`);
 
-    // When a client disconnects, log it
-    socket.on("disconnect", () => {
-        logger.socket(`A user disconnected: ${socket.id}`);
-    });
+    // When a client disconnects, log it - Commented out because it's annoying
+    // socket.on("disconnect", () => {
+    //     logger.socket(`A user disconnected: ${socket.id}`);
+    // });
 
     // When a client sends a message, log it
     socket.on("message", (message) => {
@@ -80,6 +74,7 @@ io.on("connection", (socket) => {
     socket.on("leave-lobby", (data) => {
         logger.socket(`${data.playerName} left lobby: ${data.gameCode} - ${socket.id}`);
         socket.leave(data.gameCode);
+        socket.to(data.gameCode).emit("playerLeft", data);
     });
 
     // Client sends message to lobby
@@ -87,11 +82,17 @@ io.on("connection", (socket) => {
         logger.socket(`${data.playerName} sent message to lobby: ${data.gameCode} - ${socket.id}`);
         socket.to(data.gameCode).emit("message-lobby", data);
     });
-    
+
     // Client starts game
     socket.on("start-game", (data) => {
         logger.socket(`${data.playerName} started game: ${data.gameCode} - ${socket.id}`);
         socket.to(data.gameCode).emit("start-game", data);
+    });
+
+    // Client tells other clients that they are in too
+    socket.on("iAmHereToo", (data) => {
+        logger.socket(`${data.playerName} telling clients that they are in too: ${data.gameCode} - ${socket.id}`);
+        socket.to(data.gameCode).emit("youAreHereToo", data);
     });
 });
 

@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import '../Styles/Game.css'
 import Button from '../Components/Button'
+import Card from '../Components/Card';
 const io = require('socket.io-client');
 
 
@@ -8,6 +9,7 @@ const API_URL = 'http://localhost:8080';
 const MP_URL = 'http://localhost:6060';
 const socket = io(MP_URL);
 const playerName = document.cookie.split(";").some((item) => item.trim().startsWith("displayName=")) ? ('; ' + document.cookie).split(`; displayName=`).pop().split(';')[0] : null;
+const userNameCK = document.cookie.split(";").some((item) => item.trim().startsWith("userName=")) ? ('; ' + document.cookie).split(`; userName=`).pop().split(';')[0] : null;
 const gameCode = window.location.pathname.split("/").pop();
 
 
@@ -19,7 +21,7 @@ const GamePage = () => {
 
 
     // STATE
-    const [lobbyShown, setLobbyShown] = React.useState(false);
+    const [lobbyShown, setLobbyShown] = React.useState(true);
     const [gameDetails, setGameDetails] = React.useState({
         message: null,
         gameDetails: {
@@ -29,34 +31,49 @@ const GamePage = () => {
         players: null,
         createdAt: null,
         privateGame: null,
-        userName: null
+        userName: null,
+        words: null,
     });
     const [wordList, setWordList] = React.useState([]);
     const [roundCount, setRoundCount] = React.useState(0);
+    const [playerList, setPlayerList] = React.useState([]);
+
+    if (!playerList.includes(playerName)) {
+        setPlayerList(playerList.concat(playerName));
+    }
+
 
 
     // SOCKET IO
     socket.on('playerJoined', (data) => {
-        console.log(data);
+        if (playerList.includes(data.playerName)) {
+            return;
+        }
+        setPlayerList(playerList.concat(data.playerName));
+        
+        // Also emit to the server that I am in the game too
+        socket.emit('iAmHereToo', { "gameCode": gameCode, "playerName": playerName })
+    });
+    
+    socket.on('youAreHereToo', (data) => {
+        if (playerList.includes(data.playerName)) {
+            return;
+        }
+        setPlayerList(playerList.concat(data.playerName));
+    });
+    
+    socket.on('playerLeft', (data) => {
+        setPlayerList(playerList.filter((player) => player !== data.playerName));
     });
 
 
     // EFFECTS
     useEffect(() => {
-        getGameDetails(gameCode).then((data) => {
-            setGameDetails(data);
-        });
-        
-        setWordList([{
-            "word": "test",
-            "hints": [
-                "test",
-                "test",
-                "test",
-            ],
-            "category": "application",
-            "difficulty": 1,
-        }])
+        if (gameDetails.gameDetails.gameMode == null) {
+            getGameDetails(gameCode).then((data) => {
+                setGameDetails(data);
+            });
+        }
     }, []);
 
 
@@ -107,7 +124,11 @@ const GamePage = () => {
                         Players
                     </div>
                     <div className="lobbyPlayerList">
-                        No players yet!
+                        {playerList.map((player, index) => {
+                            return (
+                                <Card name={player} key={index} />
+                            )
+                        })}
                     </div>
                 </div>
             </div>
@@ -132,16 +153,16 @@ const GamePage = () => {
             </div>
             <div className="gameInteractive">
                 <div className='gameTimer'>
-                    
+
                 </div>
                 <div className='gameClue'>
-                    
+
                 </div>
                 <div className='gameLetterBoxes'>
-                    
+
                 </div>
                 <div className='gameLetterIncorrectBoxes'>
-                    
+
                 </div>
             </div>
         </div>)
@@ -176,7 +197,11 @@ async function getGameDetails(gameCode) {
         const data = await response.json();
         socket.emit('join-lobby', { "gameCode": gameCode, "playerName": playerName })
         return data;
-    } else {
+    }
+    else if (response.status === 404) {
+        window.location.pathname = '/';
+    }
+    else {
         throw new Error('Failed to fetch game details');
     }
 }

@@ -55,7 +55,7 @@ const logger = {
             if (logs.length > MAX_LOGS) {
                 logs.shift();
             }
-            exportLogs();
+            //exportLogs(); - TODO: Turn this on after fixing client spam, otherwise it will destroy your hard drive with constant writes :)
         }
     }
 };

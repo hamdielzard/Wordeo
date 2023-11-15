@@ -1,6 +1,6 @@
 const logger = require('../logger')
-const User = require('../models/user')
-const Scores = require('../models/scores')
+const User = require('../models/user');
+const Scores = require('../models/scores');
 
 const DEBUGGING = false;
 
@@ -24,7 +24,7 @@ process.stdin.on('data', (data) => {
 });
 
 /**
- * **POST /lobby**
+ * **POST /game**
  * 
  * @see {@link createLobby}
  */
@@ -80,7 +80,8 @@ const create = (req, res, next) => {
                     players: lobby.players,
                     createdAt: lobby.createdAt,
                     privateGame: lobby.privateGame,
-                    userName: lobby.userName
+                    userName: lobby.userName,
+                    words: lobby.words
                 })
                 logger.info(`[200] POST /game - GameController: Game ${lobby.gameDetails.gameCode} created successfully by ${lobby.userName}`)
                 return
@@ -98,6 +99,11 @@ const create = (req, res, next) => {
 
 }
 
+/**
+ * **GET /game**
+ * 
+ * @see {@link findLobby}
+ */
 const get = (req, res, next) => {
     const gameCode = req.query.gameCode;
 
@@ -177,6 +183,73 @@ const generateGameCode = () => {
  * @returns Lobby object representing the lobby that was created
  */
 const createLobby = (gameMode, userName, privateGame, customSettings = {}) => {
+    // TODO: Custom settings should return words based on the custom settings
+
+    // Fix this later TODO:
+    const words = [
+        {
+            word: "test",
+            hints: ["test"],
+            category: "test",
+            difficulty: 1
+        },
+        {
+            word: "test2",
+            hints: ["test2"],
+            category: "test2",
+            difficulty: 2
+        },
+        {
+            word: "test3",
+            hints: ["test3"],
+            category: "test3",
+            difficulty: 3
+        },
+        {
+            word: "test4",
+            hints: ["test4"],
+            category: "test4",
+            difficulty: 4
+        },
+        {
+            word: "test5",
+            hints: ["test5"],
+            category: "test5",
+            difficulty: 5
+        },
+        {
+            word: "test6",
+            hints: ["test6"],
+            category: "test6",
+            difficulty: 6
+        },
+        {
+            word: "test7",
+            hints: ["test7"],
+            category: "test7",
+            difficulty: 7
+        },
+        {
+            word: "test8",
+            hints: ["test8"],
+            category: "test8",
+            difficulty: 8
+        },
+        {
+            word: "test9",
+            hints: ["test9"],
+            category: "test9",
+            difficulty: 9
+        },
+        {
+            word: "test10",
+            hints: ["test10"],
+            category: "test10",
+            difficulty: 10
+        },
+    ];
+
+
     const lobby = {
         gameDetails: {
             ...customSettings,
@@ -188,7 +261,8 @@ const createLobby = (gameMode, userName, privateGame, customSettings = {}) => {
         gameStarted: false,
         createdAt: Date.now(),
         privateGame: privateGame,
-        userName: userName
+        userName: userName,
+        words: words
     };
     lobbies.push(lobby);
     return lobby;

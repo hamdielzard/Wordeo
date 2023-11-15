@@ -39,11 +39,11 @@ function Home() {
     };
 
     const handleJoinGameClick = () => {
-        // TODO: Implement join game functionality
+        window.location.pathname = '/game/' + joinCode;
     };
 
     const handleCreateGameClick = () => {
-        // TODO: Implement create game functionality
+        requestNewLobby("multi");
     };
 
     // Backend Calls
@@ -116,8 +116,8 @@ function Home() {
                                 <div className='modalButtonSection'>
                                     <div className='multiplayerComponents'>
                                         <input tabIndex='0' className='modalInput' type="text" placeholder="JOIN CODE" onChange={handleJoinCodeChange} maxLength={6} onKeyDown={(e) => { e.key === "Enter" ? setWarningError("Not implemented yet!") : noOp() }} />
-                                        <Button label="Join Game" onClick={() => { setWarningError("Not implemented yet!") }} type="primary" size={32} />
-                                        <Button label="Create Game" onClick={() => { setWarningError("Not implemented yet!") }} type="secondary" size={32} />
+                                        <Button label="Join Game" onClick={() => { handleJoinGameClick() }} type="primary" size={32} />
+                                        <Button label="Create Game" onClick={() => { handleCreateGameClick() }} type="secondary" size={32} />
                                     </div>
                                 </div>
 
