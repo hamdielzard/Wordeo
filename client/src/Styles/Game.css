@@ -35,6 +35,7 @@
     font-weight: 700;
     cursor: pointer;
     transition: all 0.4s cubic-bezier(0.075, 0.82, 0.165, 1);
+    user-select: none;
 }
 
 .lobbyGameCode:hover {
@@ -45,7 +46,7 @@
 .lobbyGameCode:active {
     color: #0fb649;
     transition: all 0.4s cubic-bezier(0.075, 0.82, 0.165, 1);
-    font-size: calc(32px - 2px);
+    font-size: 31px;
 }
 
 .lobbyIntSide {
@@ -113,14 +114,81 @@
     height: calc(100vh - 75px);
 }
 
+.playerListTB {
+    justify-content: flex-start;
+}
+
+/* Game Page */
+
 .gameInteractive {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: center;
+    align-items: center;
     text-decoration: none;
     width: 100%;
     height: calc(100vh - 75px);
 }
+
+.gameTimer {
+    padding-top: 30px;
+    height: calc(100vh - 70vh);
+}
+
+.gameMain {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 10px;
+    height: calc(100vh - 30vh);
+    text-align: center;
+}
+
+.gameClue {
+    font-size: 64px;
+    color: #f0f0f0;
+    font-weight: 700;
+    text-shadow: 0 0 10px #dddddd
+}
+
+.gameLetterBoxes {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    height: 100px;
+}
+
+/* Inner Game Components */
+.letterBox {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    width: 70px;
+    height: 100px;
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    border: 3px solid #bfbfbf;
+    transition: all 0.4s cubic-bezier(0.075, 0.82, 0.165, 1);
+    font-size: 50px;
+    color: #393939;
+    font-weight: 700;
+}
+
+.correctLetter {
+    border: 3px solid #42FF00;
+    background-color: #ABFF68;
+}
+
+.inCorrectLetter {
+    border: 3px solid #FF0000;
+    background-color: #FF6767;
+    scale: 0.8;
+}
+
 
 /* Scroll Bar */
 

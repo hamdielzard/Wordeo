@@ -134,7 +134,8 @@ function Home() {
                         )}
                     </div>
                 )}
-                <Button label="LEADERBOARD" onClick={() => { window.location = "/leaderboard" }} type="primary" size="medium" />
+                <br></br>
+                <Button label="LEADERBOARD" onClick={() => { window.location = "/leaderboard" }} type="primary" size={32} />
             </div>
 
             <div className="homepageFooter">Login to save your progress!</div>

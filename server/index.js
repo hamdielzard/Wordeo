@@ -86,13 +86,19 @@ io.on("connection", (socket) => {
     // Client starts game
     socket.on("start-game", (data) => {
         logger.socket(`${data.playerName} started game: ${data.gameCode} - ${socket.id}`);
-        socket.to(data.gameCode).emit("start-game", data);
+        socket.to(data.gameCode).emit("gameStarted", data);
     });
 
-    // Client tells other clients that they are in too
+    // Client tells other clients that they are in the game too
     socket.on("iAmHereToo", (data) => {
         logger.socket(`${data.playerName} telling clients that they are in too: ${data.gameCode} - ${socket.id}`);
         socket.to(data.gameCode).emit("youAreHereToo", data);
+    });
+
+    // Client tells other clients that they have switched to started
+    socket.on("iHaveStarted", async (data) => {
+        logger.socket(`${data.playerName} telling clients that they have switched to started: ${data.gameCode} - ${socket.id}`);
+        socket.to(data.gameCode).emit("gameRoundStarted", data);
     });
 });
 
