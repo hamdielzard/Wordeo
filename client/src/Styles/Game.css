@@ -135,12 +135,16 @@
     height: calc(100vh - 70vh);
 }
 
+.gamePowerups {
+    align-self: start;
+}
+
 .gameMain {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     gap: 10px;
-    height: calc(100vh - 30vh);
+    height: calc(100vh - 50vh);
     text-align: center;
 }
 

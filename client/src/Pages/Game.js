@@ -231,6 +231,13 @@ const GamePage = ({initialLoad = true, data = [], numRounds = data.length ? data
                 </div>
             </div>
             <div className="gameInteractive">
+                <div className="gamePowerups">
+                    <PowerupButton 
+                        powerups = {inventory}
+                        powerupHandler = {powerupHandler}
+                        activePowerup = {activePowerup}
+                    />   
+                </div>
                 <div className='gameTimer'>
                     <OldTimer 
                         initialTime = {gameStatus.roundTime}
@@ -238,6 +245,8 @@ const GamePage = ({initialLoad = true, data = [], numRounds = data.length ? data
                         onEnd = {roundEnd}
                         timePenalty = {2}
                         incorrectLettersGuessed = {roundStatus.incorrectLettersGuessed}
+                        activePowerup = {activePowerup}
+                        powerupOnConsume = {powerupOnConsume}
                     />
                 </div>
                 <div className='gameMain'>
@@ -245,6 +254,8 @@ const GamePage = ({initialLoad = true, data = [], numRounds = data.length ? data
                         wordData = {gameStatus.currWord}
                         roundEnd = {wordGuessed}
                         incorrectLetterGuessed = {incorrectLetterWasGuessed}
+                        activePowerup = {activePowerup}
+                        powerupOnConsume = {powerupOnConsume}
                     />
                 </div>
             </div>
