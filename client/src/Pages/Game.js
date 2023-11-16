@@ -4,6 +4,9 @@ import Button from '../Components/Button'
 import Card from '../Components/Card';
 import Timer from '../Components/Timer';
 import LetterBox from '../Components/LetterBox';
+import CoreGame from "../Components/OldGame/CoreGame"
+import OldTimer from "../Components/OldGame/OldTimer"
+import { fetchWords, postScore } from '../Util/ApiCalls'
 const io = require('socket.io-client');
 
 
@@ -15,7 +18,10 @@ const userNameCK = document.cookie.split(";").some((item) => item.trim().startsW
 const gameCode = window.location.pathname.split("/").pop();
 
 
-const GamePage = () => {
+const GamePage = ({initialLoad = true, data = [], numRounds = data.length ? data.length : 10}) => {
+    let user = "Guest";
+    let userId = "";
+
     // VERIFICATION
     if (gameCode === "game") {
         window.location.pathname = '/';
@@ -39,10 +45,26 @@ const GamePage = () => {
     });
     const [wordList, setWordList] = React.useState(null);
     const [roundCount, setRoundCount] = React.useState(null);
-    const [currentRound, setCurrentRound] = React.useState(0);
+    const [currentRound, setCurrentRound] = React.useState(1);
     const [playerList, setPlayerList] = React.useState([]);
     const [currentScore, setCurrentScore] = React.useState(0);
     const [sentStarted, setSentStarted] = React.useState(false);
+
+    // Game states
+    const [gameStatus, updateGameStatus] = React.useState({
+        round: 1,
+        score: 0,
+        currWord: data.length ? data[0] : null,
+        initialScore: 0,
+        gameEnd: false,
+        roundTime: null,
+        wordGuessed: false,
+    })
+    const [roundStatus, updateRoundStatus] = React.useState({
+        incorrectLettersGuessed: 0
+    })
+    const [loading, setLoading] = React.useState(initialLoad)
+    const [gameData, setGameData] = React.useState(data)
 
 
     if (!playerList.includes(playerName)) {
@@ -94,6 +116,34 @@ const GamePage = () => {
     useEffect(() => {
         getGameDetails(gameCode);
     }, [gameDetails.gameDetails.gameCode]);
+
+    // Called at the beginning
+    // Called whenever game ends, if game ends then post score
+    // If game does not end, get new word data
+    React.useEffect(()=> {
+        if (gameStatus.gameEnd == true) {
+            // submit score
+            if (user !== "Guest") {
+                console.log("final score: " + gameStatus.score)
+                postScore(userId, gameStatus.score);
+            }
+        } else {
+            fetchWords(numRounds)
+            .then((data) => {
+                setGameData(data);
+                updateGameStatus(prev => ({
+                    ...prev,
+                    currWord: data[0],
+                    initialScore: determineWordInitialScore(data[0].difficulty, data[0].word.length),
+                    roundTime: determineWordInitialTime(data[0].difficulty, data[0].word.length)
+                }));
+                setRoundCount(data.length)
+                setLoading(false);
+            })
+        }
+        
+    }, [gameStatus.gameEnd]);
+
 
 
     // LOBBY
@@ -172,25 +222,84 @@ const GamePage = () => {
             </div>
             <div className="gameInteractive">
                 <div className='gameTimer'>
-                    <Timer initialTime={10000} onTimerComplete={() => { }} />
+                    <OldTimer 
+                        initialTime = {gameStatus.roundTime}
+                        wordGuessed = {gameStatus.wordGuessed}
+                        onEnd = {roundEnd}
+                        timePenalty = {2}
+                        incorrectLettersGuessed = {roundStatus.incorrectLettersGuessed}
+                    />
                 </div>
                 <div className='gameMain'>
-                    <div className='gameClue'>
-                        Clue
-                    </div>
-                    <div className='gameLetterBoxes'>
-                        <LetterBox letter={"A"} correct={true} />
-                        <LetterBox />
-                        <LetterBox />
-                    </div>
-                    <div className='gameLetterBoxes'>
-                        <LetterBox letter={"B"} correct={false} />
-
-                    </div>
+                    <CoreGame 
+                        wordData = {gameStatus.currWord}
+                        roundEnd = {wordGuessed}
+                        incorrectLetterGuessed = {incorrectLetterWasGuessed}
+                    />
                 </div>
             </div>
         </div>)
     }
+
+    // GAME FUNCTIONS
+    // Called by CoreGame.js whenever a word was guessed, wordGuessed is set to true,
+    // Since wordGuessed is a dependency of Timer.js, Timer.js will respond to this change in state
+    function wordGuessed() {
+        updateGameStatus(prev => ({
+            ...prev,
+            wordGuessed: true
+        }))
+
+        restartRound()
+    }
+
+    // Called by Timer.js when either time has run out, or user has solved the word
+    function roundEnd(timeStarted, timeSolved) {
+        const scoreEarned = determineFinalScore(timeStarted, timeSolved, gameStatus.initialScore)
+        // Duplicate powerups and make all powerups available again
+        // updateInventory(prevInventory => prevInventory.map(powerup => new Powerup(powerup.name, powerup.quantity, false)))
+
+        setCurrentScore(prev => prev + scoreEarned)
+        setCurrentRound(prev => prev + 1)
+
+        if (gameStatus.round+1 <= gameData.length) {
+            updateGameStatus(prev =>({
+                ...prev,
+                round: prev.round + 1,
+                score: prev.score + scoreEarned,
+                currWord: gameData[prev.round],
+                initialScore: determineWordInitialScore(gameData[prev.round].difficulty, gameData[prev.round].word.length),
+                roundTime: determineWordInitialTime(gameData[prev.round].difficulty, gameData[prev.round].word.length),
+                wordGuessed: false
+            }))
+        }
+        else {
+            // game ended
+            updateGameStatus(prev =>({
+                ...prev,
+                score: prev.score + scoreEarned,
+                gameEnd: true,
+                roundTime: 0
+            }))
+        }
+        
+        restartRound()
+    }
+
+    // Called by CoreGame.js whenever an incorrect letter was guessed
+    function incorrectLetterWasGuessed() {
+        updateRoundStatus(prev => ({
+            incorrectLettersGuessed: prev.incorrectLettersGuessed + 1
+        }))
+    }
+
+    function restartRound() {
+        updateRoundStatus({
+            incorrectLettersGuessed: 0
+        })
+    }
+
+
     // HELPER FUNCTIONS
 
 
@@ -284,26 +393,49 @@ const GamePage = () => {
  * @param {int} wordLength The length of the word (unimplemented, maybe easier LONGER words should take longer to solve)
  * @returns Array of [initialTime, initialScore]
  */
-function determineWordInitialTimeAndScore(difficulty, wordLength) {
+function determineWordInitialTime(difficulty, wordLength) {
     if (difficulty <= 2) {
         // 0 to 2
-        return [15, 1000];
+        return 15;
     }
     else if (difficulty <= 6) {
         // 3 to 6
-        return [20, 2000];
+        return 20;
     }
     else if (difficulty <= 8) {
         // 7 to 8
-        return [25, 3000];
+        return 25;
     }
     else if (difficulty <= 10) {
         // 9 to 10
-        return [30, 4000];
+        return 30;
     }
     else {
         // 11+
-        return [30, 5000];
+        return 30;
+    }
+}
+
+function determineWordInitialScore(difficulty, wordLength) {
+    if (difficulty <= 2) {
+        // 0 to 2
+        return 1000;
+    }
+    else if (difficulty <= 6) {
+        // 3 to 6
+        return 2000;
+    }
+    else if (difficulty <= 8) {
+        // 7 to 8
+        return 3000;
+    }
+    else if (difficulty <= 10) {
+        // 9 to 10
+        return 4000;
+    }
+    else {
+        // 11+
+        return 5000;
     }
 }
 
@@ -319,7 +451,7 @@ function determineFinalScore(timeStarted, timeSolved, initialPossibleScore) {
     // Time started is the time the word was shown
     // Time solved is how much time was left when the word was solved
     // Time difference is how much time it took to solve the word
-    let timeDifference = timeSolved - timeStarted;
+    let timeDifference = timeStarted - timeSolved;
 
     // If the time solved is 0, then the word was not solved
     if (timeSolved === 0) {
