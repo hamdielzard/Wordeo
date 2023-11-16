@@ -4,6 +4,8 @@ import Button from '../Components/Button'
 import Card from '../Components/Card';
 import Timer from '../Components/Timer';
 import LetterBox from '../Components/LetterBox';
+import { Powerup } from "../Components/Game/Powerups/Powerup"
+import PowerupButton from "../Components/Game/Powerups/PowerupButton"
 import CoreGame from "../Components/OldGame/CoreGame"
 import OldTimer from "../Components/OldGame/OldTimer"
 import { fetchWords, postScore } from '../Util/ApiCalls'
@@ -310,7 +312,7 @@ const GamePage = ({initialLoad = true, data = [], numRounds = data.length ? data
     }
 
     // Called by CoreGame.js to update round status
-    function incorrectLetterGuessed() {
+    function incorrectLetterWasGuessed() {
         updateRoundStatus(prev => ({
             incorrectLettersGuessed: prev.incorrectLettersGuessed + 1
         }))
