@@ -58,7 +58,7 @@ const GamePage = ({initialLoad = true, data = [], numRounds = data.length ? data
         initialScore: 0,
         gameEnd: false,
         roundTime: null,
-        wordGuessed: false,
+        wordGuessed: false
     })
     const [roundStatus, updateRoundStatus] = React.useState({
         incorrectLettersGuessed: 0
@@ -116,6 +116,14 @@ const GamePage = ({initialLoad = true, data = [], numRounds = data.length ? data
     useEffect(() => {
         getGameDetails(gameCode);
     }, [gameDetails.gameDetails.gameCode]);
+
+    const [inventory, updateInventory] = React.useState(initializeInventory())
+
+    const [activePowerup, updateActivePowerup] = React.useState("none")
+
+    function initializeInventory() {
+        return [new Powerup("Add Time", 5, false), new Powerup("Reveal Letter", 1, false)]
+    }
 
     // Called at the beginning
     // Called whenever game ends, if game ends then post score
@@ -262,6 +270,9 @@ const GamePage = ({initialLoad = true, data = [], numRounds = data.length ? data
         setCurrentScore(prev => prev + scoreEarned)
         setCurrentRound(prev => prev + 1)
 
+        // Duplicate powerups and make all powerups available again
+        updateInventory(prevInventory => prevInventory.map(powerup => new Powerup(powerup.name, powerup.quantity, false)))
+
         if (gameStatus.round+1 <= gameData.length) {
             updateGameStatus(prev =>({
                 ...prev,
@@ -286,8 +297,20 @@ const GamePage = ({initialLoad = true, data = [], numRounds = data.length ? data
         restartRound()
     }
 
-    // Called by CoreGame.js whenever an incorrect letter was guessed
-    function incorrectLetterWasGuessed() {
+    // Called by CoreGame.js to update game status
+    // Called whenever a word was guessed, wordGuessed is set to true,
+    // And Timer.js will calculate the score and call roundEnd()
+    function wordGuessed() {
+        updateGameStatus(prev => ({
+            ...prev,
+            wordGuessed: true
+        }))
+
+        restartRound()
+    }
+
+    // Called by CoreGame.js to update round status
+    function incorrectLetterGuessed() {
         updateRoundStatus(prev => ({
             incorrectLettersGuessed: prev.incorrectLettersGuessed + 1
         }))
@@ -297,6 +320,27 @@ const GamePage = ({initialLoad = true, data = [], numRounds = data.length ? data
         updateRoundStatus({
             incorrectLettersGuessed: 0
         })
+    }
+
+    // Called when a power up button is clicked
+    function powerupHandler(powerup) {
+        // Powerups can only be used once per round
+        if (!powerup.hasActivated) {
+            powerup.quantity -= 1
+            powerup.hasActivated = true
+
+            if (powerup.name == "Add Time") {
+                updateActivePowerup("Add Time")
+            }
+            else if (powerup.name == "Reveal Letter") {
+                updateActivePowerup("Reveal Letter")
+            }
+        }  
+    }
+
+    // Called after a powerup has been used
+    function powerupOnConsume() {
+        updateActivePowerup("none")
     }
 
 
