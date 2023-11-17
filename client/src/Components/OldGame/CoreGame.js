@@ -43,8 +43,6 @@ const CoreGame = ({wordData, roundEnd, roundNum, inventory, incorrectLetterGuess
                     </div>
                 )
             }
-
-            console.log(initialLetters)
         }
         return initialLetters
     }

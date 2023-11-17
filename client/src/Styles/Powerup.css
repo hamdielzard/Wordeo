@@ -1,0 +1,43 @@
+.power-up-button-container{
+    width: 120px;
+    height: 150px;
+    flex-shrink: 0;
+    margin: 15px;
+    border-radius: 20px;
+    position: relative;
+}
+
+.power-up-button {
+    border-radius: 20px;
+    border: 4px solid #248C28;
+    background: #4CAF50;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content:center;
+    align-items: center;
+}
+
+.power-up-button-overlay {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 100%;
+    width: 100%;
+    border-radius: 20px;
+    border: 4px solid rgba(0, 0, 0, 0.5);
+    z-index: 100;
+    background: rgba(0, 0, 0, 0.5);
+    position: absolute;
+}
+
+.power-up-grid {
+    display: flex;
+    align-self: flex-start;
+    margin-left: 25px
+}

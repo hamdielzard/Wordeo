@@ -4,6 +4,9 @@ import Button from '../Components/Button'
 import Card from '../Components/Card';
 import Timer from '../Components/Timer';
 import LetterBox from '../Components/LetterBox';
+import GameOver from '../Components/OldGame/GameOver';
+import { Powerup } from "../Components/Game/Powerups/Powerup"
+import PowerupButton from "../Components/Game/Powerups/PowerupButton"
 import CoreGame from "../Components/OldGame/CoreGame"
 import OldTimer from "../Components/OldGame/OldTimer"
 import { fetchWords, postScore } from '../Util/ApiCalls'
@@ -58,7 +61,7 @@ const GamePage = ({initialLoad = true, data = [], numRounds = data.length ? data
         initialScore: 0,
         gameEnd: false,
         roundTime: null,
-        wordGuessed: false,
+        wordGuessed: false
     })
     const [roundStatus, updateRoundStatus] = React.useState({
         incorrectLettersGuessed: 0
@@ -117,6 +120,14 @@ const GamePage = ({initialLoad = true, data = [], numRounds = data.length ? data
         getGameDetails(gameCode);
     }, [gameDetails.gameDetails.gameCode]);
 
+    const [inventory, updateInventory] = React.useState(initializeInventory())
+
+    const [activePowerup, updateActivePowerup] = React.useState("none")
+
+    function initializeInventory() {
+        return [new Powerup("Add Time", 5, false), new Powerup("Reveal Letter", 1, false)]
+    }
+
     // Called at the beginning
     // Called whenever game ends, if game ends then post score
     // If game does not end, get new word data
@@ -143,8 +154,6 @@ const GamePage = ({initialLoad = true, data = [], numRounds = data.length ? data
         }
         
     }, [gameStatus.gameEnd]);
-
-
 
     // LOBBY
     if (lobbyShown) {
@@ -220,24 +229,45 @@ const GamePage = ({initialLoad = true, data = [], numRounds = data.length ? data
                     {playerName ? playerName : "Loading userName"}
                 </div>
             </div>
-            <div className="gameInteractive">
-                <div className='gameTimer'>
-                    <OldTimer 
-                        initialTime = {gameStatus.roundTime}
-                        wordGuessed = {gameStatus.wordGuessed}
-                        onEnd = {roundEnd}
-                        timePenalty = {2}
-                        incorrectLettersGuessed = {roundStatus.incorrectLettersGuessed}
+            { gameStatus.gameEnd &&
+                <div className="gameOver">
+                    <GameOver 
+                        score = {currentScore}
+                        restartGame = {restartGame}
                     />
                 </div>
-                <div className='gameMain'>
-                    <CoreGame 
-                        wordData = {gameStatus.currWord}
-                        roundEnd = {wordGuessed}
-                        incorrectLetterGuessed = {incorrectLetterWasGuessed}
-                    />
+            }
+            { !gameStatus.gameEnd &&
+                <div className="gameInteractive">
+                    <div className="gamePowerups">
+                        <PowerupButton 
+                            powerups = {inventory}
+                            powerupHandler = {powerupHandler}
+                            activePowerup = {activePowerup}
+                        />   
+                    </div>
+                    <div className='gameTimer'>
+                        <OldTimer 
+                            initialTime = {gameStatus.roundTime}
+                            wordGuessed = {gameStatus.wordGuessed}
+                            onEnd = {roundEnd}
+                            timePenalty = {2}
+                            incorrectLettersGuessed = {roundStatus.incorrectLettersGuessed}
+                            activePowerup = {activePowerup}
+                            powerupOnConsume = {powerupOnConsume}
+                        />
+                    </div>
+                    <div className='gameMain'>
+                        <CoreGame 
+                            wordData = {gameStatus.currWord}
+                            roundEnd = {wordGuessed}
+                            incorrectLetterGuessed = {incorrectLetterWasGuessed}
+                            activePowerup = {activePowerup}
+                            powerupOnConsume = {powerupOnConsume}
+                        />
+                    </div>
                 </div>
-            </div>
+            }
         </div>)
     }
 
@@ -260,9 +290,15 @@ const GamePage = ({initialLoad = true, data = [], numRounds = data.length ? data
         // updateInventory(prevInventory => prevInventory.map(powerup => new Powerup(powerup.name, powerup.quantity, false)))
 
         setCurrentScore(prev => prev + scoreEarned)
-        setCurrentRound(prev => prev + 1)
+
+        // Duplicate powerups and make all powerups available again
+        updateInventory(prevInventory => prevInventory.map(powerup => new Powerup(powerup.name, powerup.quantity, false)))
+
+        console.log(gameData.round)
 
         if (gameStatus.round+1 <= gameData.length) {
+            setCurrentRound(prev => prev + 1)
+
             updateGameStatus(prev =>({
                 ...prev,
                 round: prev.round + 1,
@@ -286,7 +322,19 @@ const GamePage = ({initialLoad = true, data = [], numRounds = data.length ? data
         restartRound()
     }
 
-    // Called by CoreGame.js whenever an incorrect letter was guessed
+    // Called by CoreGame.js to update game status
+    // Called whenever a word was guessed, wordGuessed is set to true,
+    // And Timer.js will calculate the score and call roundEnd()
+    function wordGuessed() {
+        updateGameStatus(prev => ({
+            ...prev,
+            wordGuessed: true
+        }))
+
+        restartRound()
+    }
+
+    // Called by CoreGame.js to update round status
     function incorrectLetterWasGuessed() {
         updateRoundStatus(prev => ({
             incorrectLettersGuessed: prev.incorrectLettersGuessed + 1
@@ -297,6 +345,41 @@ const GamePage = ({initialLoad = true, data = [], numRounds = data.length ? data
         updateRoundStatus({
             incorrectLettersGuessed: 0
         })
+    }
+
+    function restartGame() {
+        updateGameStatus({
+            round: 1,
+            score: 0,
+            currWord: gameData[0],
+            gameEnd: false,
+            initialScore: determineWordInitialScore(gameData[0].difficulty, gameData[0].word.length),
+            roundTime: determineWordInitialTime(gameData[0].difficulty, gameData[0].word.length),
+            wordGuessed: false
+        })
+        setCurrentRound(1)
+        setCurrentScore(0)
+    }
+
+    // Called when a power up button is clicked
+    function powerupHandler(powerup) {
+        // Powerups can only be used once per round
+        if (!powerup.hasActivated) {
+            powerup.quantity -= 1
+            powerup.hasActivated = true
+
+            if (powerup.name == "Add Time") {
+                updateActivePowerup("Add Time")
+            }
+            else if (powerup.name == "Reveal Letter") {
+                updateActivePowerup("Reveal Letter")
+            }
+        }  
+    }
+
+    // Called after a powerup has been used
+    function powerupOnConsume() {
+        updateActivePowerup("none")
     }
 
 
