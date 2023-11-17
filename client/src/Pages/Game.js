@@ -21,7 +21,7 @@ const userNameCK = document.cookie.split(";").some((item) => item.trim().startsW
 const gameCode = window.location.pathname.split("/").pop();
 
 
-const GamePage = ({initialLoad = true, initialState = false, lobbyDebug = false, data = [], numRounds = data.length ? data.length : 10}) => {
+const GamePage = ({initialLoad = true, initialState = false, lobbyInitial = true, lobbyDebug = false, data = [], numRounds = data.length ? data.length : 10}) => {
     let user = "Guest";
     let userId = "";
 
@@ -33,7 +33,7 @@ const GamePage = ({initialLoad = true, initialState = false, lobbyDebug = false,
 
     // STATE
     const [gameCodeCopied, setGameCodeCopied] = React.useState(false);
-    const [lobbyShown, setLobbyShown] = React.useState(true);
+    const [lobbyShown, setLobbyShown] = React.useState(lobbyInitial);
     const [gameDetails, setGameDetails] = React.useState({
         message: null,
         gameDetails: {

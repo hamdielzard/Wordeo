@@ -10,6 +10,9 @@ const GameOver = (props) => {
             <div className="gameOver--score">
                 {props.score}
             </div>
+            <div className="gameOver--coins">
+                + {Math.floor(props.score / 30)} Coins
+            </div>
             <Button label="Play again?" onClick={props.restartGame} type="primary" size="medium" />
             <Button label="Leave game" onClick={() => {window.location = "/"}} type="secondary" size="medium" />
         </div>
