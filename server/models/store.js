@@ -28,13 +28,8 @@ const initializeStoreItems = async () => {
         // Check if store items already exist in the database
         // reset store items
         await StoreItem.deleteMany({})
-        const existingItems = await StoreItem.find();
-
-        // If no items exist, insert the initial items
-        if (existingItems.length === 0) {
-            await StoreItem.insertMany(initialStoreItems);
-            console.log('Store items initialized successfully.');
-        }
+        await StoreItem.insertMany(initialStoreItems);
+        console.log('Store items initialized successfully.');
     } catch (error) {
         console.error('Error initializing store items:', error);
     }
