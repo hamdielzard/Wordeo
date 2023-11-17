@@ -21,7 +21,7 @@ const userNameCK = document.cookie.split(";").some((item) => item.trim().startsW
 const gameCode = window.location.pathname.split("/").pop();
 
 
-const GamePage = ({initialLoad = true, data = [], numRounds = data.length ? data.length : 10}) => {
+const GamePage = ({initialLoad = true, initialState = false, lobbyDebug = false, data = [], numRounds = data.length ? data.length : 10}) => {
     let user = "Guest";
     let userId = "";
 
@@ -59,7 +59,7 @@ const GamePage = ({initialLoad = true, data = [], numRounds = data.length ? data
         score: 0,
         currWord: data.length ? data[0] : null,
         initialScore: 0,
-        gameEnd: false,
+        gameEnd: initialState,
         roundTime: null,
         wordGuessed: false
     })
@@ -156,7 +156,7 @@ const GamePage = ({initialLoad = true, data = [], numRounds = data.length ? data
     }, [gameStatus.gameEnd]);
 
     // LOBBY
-    if (lobbyShown) {
+    if (lobbyShown && !lobbyDebug) {
         return (<div className="lobbyPage">
             <div className="lobbyHeader">
                 <div className="lobbyHeaderSide rightHead">
@@ -213,7 +213,7 @@ const GamePage = ({initialLoad = true, data = [], numRounds = data.length ? data
         </div>)
     }
     // GAME PAGE
-    else {
+    else if (!lobbyShown || lobbyDebug) {
         return (<div className="lobbyPage">
             <div className="lobbyHeader">
                 <div className="lobbyHeaderSide rightHead">
@@ -230,12 +230,10 @@ const GamePage = ({initialLoad = true, data = [], numRounds = data.length ? data
                 </div>
             </div>
             { gameStatus.gameEnd &&
-                <div className="gameOver">
-                    <GameOver 
-                        score = {currentScore}
-                        restartGame = {restartGame}
-                    />
-                </div>
+                <GameOver 
+                    score = {currentScore}
+                    restartGame = {restartGame}
+                />
             }
             { !gameStatus.gameEnd &&
                 <div className="gameInteractive">
@@ -257,15 +255,13 @@ const GamePage = ({initialLoad = true, data = [], numRounds = data.length ? data
                             powerupOnConsume = {powerupOnConsume}
                         />
                     </div>
-                    <div className='gameMain'>
-                        <CoreGame 
-                            wordData = {gameStatus.currWord}
-                            roundEnd = {wordGuessed}
-                            incorrectLetterGuessed = {incorrectLetterWasGuessed}
-                            activePowerup = {activePowerup}
-                            powerupOnConsume = {powerupOnConsume}
-                        />
-                    </div>
+                    <CoreGame 
+                        wordData = {gameStatus.currWord}
+                        roundEnd = {wordGuessed}
+                        incorrectLetterGuessed = {incorrectLetterWasGuessed}
+                        activePowerup = {activePowerup}
+                        powerupOnConsume = {powerupOnConsume}
+                    />
                 </div>
             }
         </div>)
