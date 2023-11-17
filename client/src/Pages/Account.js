@@ -145,33 +145,33 @@ const AccountPage = () => {
                 const response = await fetch(`${API_URL}/user?userName=${userName}`);
                 const data = await response.json();
 
-                if (!response.ok) {
-                    console.log("An error occurred while trying to get your account details. You have been signed out.")
-                    return expireCookiesAndRedirect();
-                }
-                else {
-                    if (data.response === null) {
-                        // Check for a server message
-                        if (data.message) {
-                            console.log(data.message);
-                            return expireCookiesAndRedirect();
-                        }
-                        else {
-                            // No message, wrong call?
-                            console.log("An error occurred while trying to get your account details. You have been signed out.")
-                            return expireCookiesAndRedirect();
-                        }
+            if (!response.ok) {
+                console.log("An error occurred while trying to get your account details. You have been signed out.")
+                return expireCookiesAndRedirect();
+            }
+            else {
+                if (data.response === null) {
+                    // Check for a server message
+                    if (data.message) {
+                        console.log(data.message);
+                        return expireCookiesAndRedirect();
                     }
-                    // Potential check: review all these fields are present
-                    setAccountInformation({
-                        userName: data.response.userName,
-                        displayName: data.response.displayName,
-                        highestScore: data.response.highscore,
-                        gamesPlayed: data.response.gamesPlayed,
-                        wordsGuessed: data.response.wordsGuessed,
-                        accountDescription: data.response.description,
-                        achievements: accountInformation.achievements // TODO: Add achievements
-                    });
+                    else {
+                        // No message, wrong call?
+                        console.log("An error occurred while trying to get your account details. You have been signed out.")
+                        return expireCookiesAndRedirect();
+                    }
+                }
+                // Potential check: review all these fields are present
+                setAccountInformation({
+                    userName: data.response.userName,
+                    displayName: data.response.displayName,
+                    highestScore: data.response.highscore,
+                    gamesPlayed: data.response.gamesPlayed,
+                    wordsGuessed: data.response.wordsGuessed,
+                    accountDescription: data.response.description,
+                    achievements:  data.response.achievements
+                });
 
                     // Update cookies to match backend on path '/'
                     document.cookie = `userName=${data.response.userName};path=/;domain=`;

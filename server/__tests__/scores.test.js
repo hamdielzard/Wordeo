@@ -145,6 +145,27 @@ describe('POST /scores', () => {
         expect(res.body.gameMode).toEqual(payload.gameMode);
     });
 
+    it('Error during score creation should return an http 500 response', async () => {
+        const payload = { score: 95, userName: testAccountName, gameMode: "multi" };
+    
+        // Stubbing the Score.save to simulate an error during save
+        const saveStub = jest.spyOn(Score.prototype, 'save');
+        saveStub.mockRejectedValue(new Error('Save error'));
+    
+        const res = await supertest(server)
+            .post('/scores')
+            .set('Content-Type', 'application/json')
+            .set('Accept', '*/*')
+            .send(payload);
+    
+        expect(res.status).toEqual(500);
+        expect(res.body.message).toEqual("An error occurred!");
+    
+        expect(saveStub).toHaveBeenCalled();
+
+        saveStub.mockRestore();
+    });
+    
 });
 
 describe('GET /scores', () => {
@@ -269,6 +290,74 @@ describe('GET /scores', () => {
                 expect(element.score).toBeLessThanOrEqual(resA.body.response[i - 1].score);
             }
         }
+    });
+
+    it('Error during score retrieval should return an http 500 response', async () => {
+        const userExistsStub = jest.spyOn(User, 'exists');
+        userExistsStub.mockResolvedValue(true);
+
+        const findStub = jest.spyOn(Score, 'find');
+        findStub.mockImplementation(() => ({
+            limit: jest.fn().mockReturnThis(), // return the same object for further chaining
+            sort: jest.fn().mockRejectedValue(new Error('Sort error')) // cause error on deepest call
+        }));
+    
+        const res = await supertest(server)
+            .get(`/scores?count=${""}&userName=${""}&gameMode=${""}`);
+    
+        expect(res.status).toEqual(500);
+        expect(res.body.message).toEqual("Failed to get all scores!");
+    
+        expect(findStub).toHaveBeenCalled();
+    
+        userExistsStub.mockRestore();
+        findStub.mockRestore();
+    });
+
+    it('Error during score retrieval should return an http 500 response', async () => {
+        const userExistsStub = jest.spyOn(User, 'exists');
+        userExistsStub.mockResolvedValue(true);
+
+        const findStub = jest.spyOn(Score, 'find');
+        findStub.mockImplementation(() => ({
+            limit: jest.fn().mockReturnThis(), // return the same object for further chaining
+            sort: jest.fn().mockRejectedValue(new Error('Sort error')) // cause error on deepest call
+        }));
+    
+        const res = await supertest(server)
+            .get(`/scores?count=${1}&userName=${testAccountName}&gameMode=${Modes.Solo}`);
+    
+        expect(res.status).toEqual(500);
+        expect(res.body.message).toEqual("Failed to get scores!");
+    
+        expect(findStub).toHaveBeenCalled();
+    
+        userExistsStub.mockRestore();
+        findStub.mockRestore();
+    });
+    
+    it('An invalid gameMode should return an http 400 status', async () => {
+        const newScore = new Score({ score: 999, userName: testAccountName, gameMode: Modes.Solo });
+        await newScore.save();
+        const res = await supertest(server)
+            .get('/scores?gameMode=classic');
+
+        expect(res.status).toEqual(400);
+    });
+
+    it('If a non-existing user was provided, it should return an http 404', async () => {
+        const newScore = new Score({ score: 999, userName: testAccountName, gameMode: Modes.Solo });
+        await newScore.save();
+        
+        const userExistsStub = jest.spyOn(User, 'exists');
+        userExistsStub.mockResolvedValue(false);
+        
+        const res = await supertest(server)
+            .get('/scores?userName=noName');
+
+        expect(res.status).toEqual(404);
+
+        userExistsStub.mockRestore();
     });
 });
 

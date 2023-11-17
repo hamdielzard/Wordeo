@@ -45,7 +45,7 @@ const register = (req, res, next) => {
                     }
 
                     let user = new User({
-                        displayName: req.body.displayName,
+                        displayName: displayName,
                         userName: req.body.userName,
                         password: hashedPass,
                         highscore: 0,
@@ -64,12 +64,10 @@ const register = (req, res, next) => {
                                 displayName: user.displayName
                             })
                         })
-
-
                         .catch(error => {
                             logger.error(`[500] POST /auth/register - AuthController: Sign up error occurred: ${error}`)
                             return res.status(500).json({
-                                message: 'An error occured!'
+                                message: 'An error occurred!'
                             })
 
                         })

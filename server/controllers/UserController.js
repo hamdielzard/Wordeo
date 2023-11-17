@@ -47,70 +47,71 @@ const index = (req, res, next) => {
     }
 }
 
-// PATCH /user/
-const update = (req, res, next) => {
-    let userName = req.body.userName;
+const updateDescriptionAchievement = async (updateData, user) => {
+    var userUpdated = false;
+    
+    if (updateData.description.length !== 0) {
+        user.achievements[0].locked = false;
+        await user.save();
+        userUpdated = true;
+    }
 
-    let updateData = {
+    return userUpdated;
+};
+
+const updateAchievements = async (updateData, user) => {
+    const descriptionAchievementUnlocked = await updateDescriptionAchievement(updateData, user);
+    // Add more achievement logic here if needed
+    return descriptionAchievementUnlocked;
+};
+
+// PATCH /user/
+const update = async (req, res, next) => {
+    const userName = req.body.userName;
+    const updateData = {
         displayName: req.body.displayName,
-        description: req.body.description
+        description: req.body.description || '',
     };
 
-    if (updateData.description == null || updateData.description == undefined || updateData.description == "") {
-        updateData.description = "";
+    if (!userName) {
+        res.status(400).json({ message: 'Bad request! userName is required!' });
+        logger.warn(`[400] PATCH /user userName: ${userName} - UserController: Bad request! Missing userName`);
+        return;
     }
-    if (userName == null || userName == undefined || userName == "") {
-        // Missing userName (400)
-        res.status(400).json({
-            message: 'Bad request! userName is required!'
-        })
-        logger.warn(`[400] PATCH /user userName: ${userName} - UserController: Bad request! Missing userName`)
-        return
+
+    if (!updateData.displayName) {
+        res.status(400).json({ message: 'Bad request! displayName is required!' });
+        logger.warn(`[400] PATCH /user userName: ${userName} - UserController: Bad request! Missing displayName`);
+        return;
     }
-    if (updateData.displayName == null || updateData.displayName == undefined || updateData.displayName == "") {
-        // Missing displayName (400)
-        res.status(400).json({
-            message: 'Bad request! displayName is required!'
-        })
-        logger.warn(`[400] PATCH /user userName: ${userName} - UserController: Bad request! Missing displayName`)
-        return
+
+    try {
+        const user = await User.findOne({ userName });
+
+        if (!user) {
+            res.status(404).json({ message: `User ${userName} not found!` });
+            logger.warn(`[404] PATCH /user userName: ${userName} - UserController: User not found`);
+            return;
+        }
+
+        await updateAchievements(updateData, user);
+        await User.findOneAndUpdate({ userName }, updateData)
+
+        res.status(200).json({
+            message: `User ${userName} updated successfully!`,
+            displayName: updateData.displayName,
+            description: updateData.description,
+        });
+        logger.info(`[200] PATCH /user userName: ${userName} - UserController: Update user successful`);
+        logger.cont(`displayName: ${updateData.displayName}`);
+        logger.cont(`description: ${updateData.description}`);
+
+    } catch (error) {
+        res.status(500).json({ message: 'An error occurred while updating the user!' });
+        logger.error(`[500] PATCH /user userName: ${userName} - UserController: Error occurred while updating user`);
+        logger.cont(`Details: ${error}`);
     }
-    else {
-        User.findOne({ "userName": userName })
-            .then(user => {
-                if (!user) {
-                    // User not found (404)
-                    res.status(404).json({
-                        message: `User ${userName} not found!`
-                    })
-                    logger.warn(`[404] PATCH /user userName: ${userName} - UserController: User not found`)
-                    return
-                }
-                User.findOneAndUpdate({ "userName": userName }, updateData)
-                    .then(response => {
-                        // Success (200)
-                        res.status(200).json({
-                            message: `User ${userName} updated successfully!`,
-                            displayName: updateData.displayName,
-                            description: updateData.description
-                        })
-                        logger.info(`[200] PATCH /user userName: ${userName} - UserController: Update user successful`)
-                        logger.cont(`displayName: ${updateData.displayName}`)
-                        logger.cont(`description: ${updateData.description}`)
-                    })
-                    .catch(error => {
-                        // Error (500)
-                        res.status(500).json({
-                            message: 'Failed to update user!'
-                        })
-                        logger.info(`[500] PATCH /user userName: ${userName} - UserController: Failed to update user!`)
-                        logger.cont(`displayName: ${updateData.displayName}`)
-                        logger.cont(`description: ${updateData.description}`)
-                        logger.cont(`Details: ${error}`)
-                    })
-            })
-    }
-}
+};
 
 // PATCH /user/inventory
 const createInventory = (req, res, next) => {
@@ -140,11 +141,11 @@ const createInventory = (req, res, next) => {
             }
 
             // Save the updated user document
-            return user.save();
-        })
-        .then(updatedUser => {
-            res.status(200).json({ message: 'Inventory updated successfully', user: updatedUser });
-            logger.info(`[200] PATCH /user/inventory - UserController: Inventory update successful for ${userName}`);
+            return user.save()
+                .then(updatedUser => {
+                    res.status(200).json({ message: 'Inventory updated successfully', user: updatedUser });
+                    logger.info(`[200] PATCH /user/inventory - UserController: Inventory update successful for ${userName}`);
+                });
         })
         .catch(error => {
             res.status(500).json({ message: 'Failed to update inventory!' });
@@ -168,7 +169,7 @@ const updateCoins = (req, res, next) => {
                 // User not found (404)
                 return res.status(404).json({ message: `User ${userName} not found!` });
             }
-            
+
             if (quantity > 0) {
                 // Add coin to balance
                 user.coins += quantity;
@@ -180,12 +181,13 @@ const updateCoins = (req, res, next) => {
             }
 
             // Save the updated user document
-            return user.save();
+            return user.save()
+                .then(updatedUser => {
+                    res.status(200).json({ message: 'Coins updated successfully', user: updatedUser });
+                    logger.info(`[200] PATCH /user/coin - UserController: Coins update successful for ${userName}`);
+                });
         })
-        .then(updatedUser => {
-            res.status(200).json({ message: 'Coins updated successfully', user: updatedUser });
-            logger.info(`[200] PATCH /user/coin - UserController: Coins update successful for ${userName}`);
-        })
+
         .catch(error => {
             res.status(500).json({ message: 'Failed to update coins!' });
             logger.error(`[500] PATCH /user/coin - UserController: Coins update error occurred for ${userName}`);
@@ -193,7 +195,7 @@ const updateCoins = (req, res, next) => {
         });
 };
 
-// GET /user/coin-balance
+// GET /user/coin
 const getCoinBalance = (req, res, next) => {
     const { userName } = req.query;
 
