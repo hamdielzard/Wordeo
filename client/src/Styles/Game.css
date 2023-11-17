@@ -193,6 +193,46 @@
     scale: 0.8;
 }
 
+.gameOver {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    row-gap: 25px;
+    margin-top: 50px;
+}
+
+/* Game Over */
+.gameOver--text {
+    color: #42FF00;
+    text-align: center;
+    font-family: Inter;
+    font-size: 96px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+
+.gameOver--score {
+    color: #F5F5F5;
+    text-align: center;
+    font-family: Inter;
+    font-size: 128px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+
+.gameOver--coins {
+    color: #72A2F1;
+    font-family: Inter;
+    font-size: 48px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+
+    margin-bottom: 25px;
+}
 
 /* Scroll Bar */
 

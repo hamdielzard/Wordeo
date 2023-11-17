@@ -4,6 +4,7 @@ import Button from '../Components/Button'
 import Card from '../Components/Card';
 import Timer from '../Components/Timer';
 import LetterBox from '../Components/LetterBox';
+import GameOver from '../Components/OldGame/GameOver';
 import { Powerup } from "../Components/Game/Powerups/Powerup"
 import PowerupButton from "../Components/Game/Powerups/PowerupButton"
 import CoreGame from "../Components/OldGame/CoreGame"
@@ -154,8 +155,6 @@ const GamePage = ({initialLoad = true, data = [], numRounds = data.length ? data
         
     }, [gameStatus.gameEnd]);
 
-
-
     // LOBBY
     if (lobbyShown) {
         return (<div className="lobbyPage">
@@ -230,35 +229,45 @@ const GamePage = ({initialLoad = true, data = [], numRounds = data.length ? data
                     {playerName ? playerName : "Loading userName"}
                 </div>
             </div>
-            <div className="gameInteractive">
-                <div className="gamePowerups">
-                    <PowerupButton 
-                        powerups = {inventory}
-                        powerupHandler = {powerupHandler}
-                        activePowerup = {activePowerup}
-                    />   
-                </div>
-                <div className='gameTimer'>
-                    <OldTimer 
-                        initialTime = {gameStatus.roundTime}
-                        wordGuessed = {gameStatus.wordGuessed}
-                        onEnd = {roundEnd}
-                        timePenalty = {2}
-                        incorrectLettersGuessed = {roundStatus.incorrectLettersGuessed}
-                        activePowerup = {activePowerup}
-                        powerupOnConsume = {powerupOnConsume}
+            { gameStatus.gameEnd &&
+                <div className="gameOver">
+                    <GameOver 
+                        score = {currentScore}
+                        restartGame = {restartGame}
                     />
                 </div>
-                <div className='gameMain'>
-                    <CoreGame 
-                        wordData = {gameStatus.currWord}
-                        roundEnd = {wordGuessed}
-                        incorrectLetterGuessed = {incorrectLetterWasGuessed}
-                        activePowerup = {activePowerup}
-                        powerupOnConsume = {powerupOnConsume}
-                    />
+            }
+            { !gameStatus.gameEnd &&
+                <div className="gameInteractive">
+                    <div className="gamePowerups">
+                        <PowerupButton 
+                            powerups = {inventory}
+                            powerupHandler = {powerupHandler}
+                            activePowerup = {activePowerup}
+                        />   
+                    </div>
+                    <div className='gameTimer'>
+                        <OldTimer 
+                            initialTime = {gameStatus.roundTime}
+                            wordGuessed = {gameStatus.wordGuessed}
+                            onEnd = {roundEnd}
+                            timePenalty = {2}
+                            incorrectLettersGuessed = {roundStatus.incorrectLettersGuessed}
+                            activePowerup = {activePowerup}
+                            powerupOnConsume = {powerupOnConsume}
+                        />
+                    </div>
+                    <div className='gameMain'>
+                        <CoreGame 
+                            wordData = {gameStatus.currWord}
+                            roundEnd = {wordGuessed}
+                            incorrectLetterGuessed = {incorrectLetterWasGuessed}
+                            activePowerup = {activePowerup}
+                            powerupOnConsume = {powerupOnConsume}
+                        />
+                    </div>
                 </div>
-            </div>
+            }
         </div>)
     }
 
@@ -281,12 +290,15 @@ const GamePage = ({initialLoad = true, data = [], numRounds = data.length ? data
         // updateInventory(prevInventory => prevInventory.map(powerup => new Powerup(powerup.name, powerup.quantity, false)))
 
         setCurrentScore(prev => prev + scoreEarned)
-        setCurrentRound(prev => prev + 1)
 
         // Duplicate powerups and make all powerups available again
         updateInventory(prevInventory => prevInventory.map(powerup => new Powerup(powerup.name, powerup.quantity, false)))
 
+        console.log(gameData.round)
+
         if (gameStatus.round+1 <= gameData.length) {
+            setCurrentRound(prev => prev + 1)
+
             updateGameStatus(prev =>({
                 ...prev,
                 round: prev.round + 1,
@@ -333,6 +345,20 @@ const GamePage = ({initialLoad = true, data = [], numRounds = data.length ? data
         updateRoundStatus({
             incorrectLettersGuessed: 0
         })
+    }
+
+    function restartGame() {
+        updateGameStatus({
+            round: 1,
+            score: 0,
+            currWord: gameData[0],
+            gameEnd: false,
+            initialScore: determineWordInitialScore(gameData[0].difficulty, gameData[0].word.length),
+            roundTime: determineWordInitialTime(gameData[0].difficulty, gameData[0].word.length),
+            wordGuessed: false
+        })
+        setCurrentRound(1)
+        setCurrentScore(0)
     }
 
     // Called when a power up button is clicked
