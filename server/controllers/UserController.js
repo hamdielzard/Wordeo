@@ -47,23 +47,26 @@ const index = (req, res, next) => {
     }
 }
 
-const updateDescriptionAchievement = async (user) => {
-    if (user.achievements && user.achievements[0] && user.achievements[0].locked) {
+const updateDescriptionAchievement = async (updateData, user) => {
+    var userUpdated = false;
+    
+    if (updateData.description.length !== 0) {
         user.achievements[0].locked = false;
         await user.save();
-        return true;
+        userUpdated = true;
     }
-    return false;
+
+    return userUpdated;
 };
 
-const updateAchievements = async (user) => {
-    const descriptionAchievementUnlocked = await updateDescriptionAchievement(user);
+const updateAchievements = async (updateData, user) => {
+    const descriptionAchievementUnlocked = await updateDescriptionAchievement(updateData, user);
     // Add more achievement logic here if needed
     return descriptionAchievementUnlocked;
 };
 
 // PATCH /user/
-const update = (req, res, next) => {
+const update = async (req, res, next) => {
     const userName = req.body.userName;
     const updateData = {
         displayName: req.body.displayName,
@@ -82,42 +85,32 @@ const update = (req, res, next) => {
         return;
     }
 
-    User.findOne({ userName })
-        .then(async (user) => {
-            if (!user) {
-                res.status(404).json({ message: `User ${userName} not found!` });
-                logger.warn(`[404] PATCH /user userName: ${userName} - UserController: User not found`);
-                return;
-            }
+    try {
+        const user = await User.findOne({ userName });
 
-            const descriptionAchievementUnlocked = await updateAchievements(user);
+        if (!user) {
+            res.status(404).json({ message: `User ${userName} not found!` });
+            logger.warn(`[404] PATCH /user userName: ${userName} - UserController: User not found`);
+            return;
+        }
 
-            if (!descriptionAchievementUnlocked) {
-                User.findOneAndUpdate({ userName }, updateData)
-                    .then(response => {
-                        res.status(200).json({
-                            message: `User ${userName} updated successfully!`,
-                            displayName: updateData.displayName,
-                            description: updateData.description,
-                        });
-                        logger.info(`[200] PATCH /user userName: ${userName} - UserController: Update user successful`);
-                        logger.cont(`displayName: ${updateData.displayName}`);
-                        logger.cont(`description: ${updateData.description}`);
-                    })
-                    .catch(error => {
-                        res.status(500).json({ message: 'Failed to update user!' });
-                        logger.info(`[500] PATCH /user userName: ${userName} - UserController: Failed to update user!`);
-                        logger.cont(`displayName: ${updateData.displayName}`);
-                        logger.cont(`description: ${updateData.description}`);
-                        logger.cont(`Details: ${error}`);
-                    });
-            }
-        })
-        .catch(error => {
-            res.status(500).json({ message: 'An error occurred while updating the user!' });
-            logger.error(`[500] PATCH /user userName: ${userName} - UserController: Error occurred while updating user`);
-            logger.cont(`Details: ${error}`);
+        await updateAchievements(updateData, user);
+        await User.findOneAndUpdate({ userName }, updateData)
+
+        res.status(200).json({
+            message: `User ${userName} updated successfully!`,
+            displayName: updateData.displayName,
+            description: updateData.description,
         });
+        logger.info(`[200] PATCH /user userName: ${userName} - UserController: Update user successful`);
+        logger.cont(`displayName: ${updateData.displayName}`);
+        logger.cont(`description: ${updateData.description}`);
+
+    } catch (error) {
+        res.status(500).json({ message: 'An error occurred while updating the user!' });
+        logger.error(`[500] PATCH /user userName: ${userName} - UserController: Error occurred while updating user`);
+        logger.cont(`Details: ${error}`);
+    }
 };
 
 // PATCH /user/inventory

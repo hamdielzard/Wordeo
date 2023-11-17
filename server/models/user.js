@@ -12,6 +12,14 @@ const AchievementSchema = new Schema({
     locked: Boolean
 });
 
+const defaultAchievements = [
+    {
+        name: "Adventurer",
+        description: "Achieved for updating your description!",
+        locked: true
+    }
+];
+
 const AccountSchema = new Schema({
     displayName: {
         type: String
@@ -45,7 +53,10 @@ const AccountSchema = new Schema({
 
     inventory: [ItemSchema],
     
-    achievements: [AchievementSchema]
+    achievements: {
+        type: [AchievementSchema],
+        default: defaultAchievements
+    }
 }, { timestamps: true }) // creates 'createdAt' & 'updatedAt' timestamps automatically
 
 const User = mongoose.model('User', AccountSchema)

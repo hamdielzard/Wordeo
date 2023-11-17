@@ -168,7 +168,7 @@ const AccountPage = () => {
                     gamesPlayed: data.response.gamesPlayed,
                     wordsGuessed: data.response.wordsGuessed,
                     accountDescription: data.response.description,
-                    achievements: accountInformation.achievements // TODO: Add achievements
+                    achievements:  data.response.achievements
                 });
 
                 // Update cookies to match backend on path '/'
