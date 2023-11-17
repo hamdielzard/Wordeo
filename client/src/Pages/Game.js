@@ -21,7 +21,7 @@ const userNameCK = document.cookie.split(";").some((item) => item.trim().startsW
 const gameCode = window.location.pathname.split("/").pop();
 
 
-const GamePage = ({initialLoad = true, initialState = false, lobbyDebug = false, data = [], numRounds = data.length ? data.length : 10}) => {
+const GamePage = ({ initialLoad = true, initialState = false, lobbyDebug = false, data = [], numRounds = data.length ? data.length : 10 }) => {
     let user = "Guest";
     let userId = "";
 
@@ -131,7 +131,7 @@ const GamePage = ({initialLoad = true, initialState = false, lobbyDebug = false,
     // Called at the beginning
     // Called whenever game ends, if game ends then post score
     // If game does not end, get new word data
-    React.useEffect(()=> {
+    React.useEffect(() => {
         if (gameStatus.gameEnd == true) {
             // submit score
             if (user !== "Guest") {
@@ -140,19 +140,19 @@ const GamePage = ({initialLoad = true, initialState = false, lobbyDebug = false,
             }
         } else {
             fetchWords(numRounds)
-            .then((data) => {
-                setGameData(data);
-                updateGameStatus(prev => ({
-                    ...prev,
-                    currWord: data[0],
-                    initialScore: determineWordInitialScore(data[0].difficulty, data[0].word.length),
-                    roundTime: determineWordInitialTime(data[0].difficulty, data[0].word.length)
-                }));
-                setRoundCount(data.length)
-                setLoading(false);
-            })
+                .then((data) => {
+                    setGameData(data);
+                    updateGameStatus(prev => ({
+                        ...prev,
+                        currWord: data[0],
+                        initialScore: determineWordInitialScore(data[0].difficulty, data[0].word.length),
+                        roundTime: determineWordInitialTime(data[0].difficulty, data[0].word.length)
+                    }));
+                    setRoundCount(data.length)
+                    setLoading(false);
+                })
         }
-        
+
     }, [gameStatus.gameEnd]);
 
     // LOBBY
@@ -229,38 +229,38 @@ const GamePage = ({initialLoad = true, initialState = false, lobbyDebug = false,
                     {playerName ? playerName : "Loading userName"}
                 </div>
             </div>
-            { gameStatus.gameEnd &&
-                <GameOver 
-                    score = {currentScore}
-                    restartGame = {restartGame}
+            {gameStatus.gameEnd &&
+                <GameOver
+                    score={currentScore}
+                    restartGame={restartGame}
                 />
             }
-            { !gameStatus.gameEnd &&
+            {!gameStatus.gameEnd &&
                 <div className="gameInteractive">
                     <div className="gamePowerups">
-                        <PowerupButton 
-                            powerups = {inventory}
-                            powerupHandler = {powerupHandler}
-                            activePowerup = {activePowerup}
-                        />   
-                    </div>
-                    <div className='gameTimer'>
-                        <OldTimer 
-                            initialTime = {gameStatus.roundTime}
-                            wordGuessed = {gameStatus.wordGuessed}
-                            onEnd = {roundEnd}
-                            timePenalty = {2}
-                            incorrectLettersGuessed = {roundStatus.incorrectLettersGuessed}
-                            activePowerup = {activePowerup}
-                            powerupOnConsume = {powerupOnConsume}
+                        <PowerupButton
+                            powerups={inventory}
+                            powerupHandler={powerupHandler}
+                            activePowerup={activePowerup}
                         />
                     </div>
-                    <CoreGame 
-                        wordData = {gameStatus.currWord}
-                        roundEnd = {wordGuessed}
-                        incorrectLetterGuessed = {incorrectLetterWasGuessed}
-                        activePowerup = {activePowerup}
-                        powerupOnConsume = {powerupOnConsume}
+                    <div className='gameTimer'>
+                        <OldTimer
+                            initialTime={gameStatus.roundTime}
+                            wordGuessed={gameStatus.wordGuessed}
+                            onEnd={roundEnd}
+                            timePenalty={2}
+                            incorrectLettersGuessed={roundStatus.incorrectLettersGuessed}
+                            activePowerup={activePowerup}
+                            powerupOnConsume={powerupOnConsume}
+                        />
+                    </div>
+                    <CoreGame
+                        wordData={gameStatus.currWord}
+                        roundEnd={wordGuessed}
+                        incorrectLetterGuessed={incorrectLetterWasGuessed}
+                        activePowerup={activePowerup}
+                        powerupOnConsume={powerupOnConsume}
                     />
                 </div>
             }
@@ -292,10 +292,10 @@ const GamePage = ({initialLoad = true, initialState = false, lobbyDebug = false,
 
         console.log(gameData.round)
 
-        if (gameStatus.round+1 <= gameData.length) {
+        if (gameStatus.round + 1 <= gameData.length) {
             setCurrentRound(prev => prev + 1)
 
-            updateGameStatus(prev =>({
+            updateGameStatus(prev => ({
                 ...prev,
                 round: prev.round + 1,
                 score: prev.score + scoreEarned,
@@ -307,14 +307,14 @@ const GamePage = ({initialLoad = true, initialState = false, lobbyDebug = false,
         }
         else {
             // game ended
-            updateGameStatus(prev =>({
+            updateGameStatus(prev => ({
                 ...prev,
                 score: prev.score + scoreEarned,
                 gameEnd: true,
                 roundTime: 0
             }))
         }
-        
+
         restartRound()
     }
 
@@ -370,7 +370,7 @@ const GamePage = ({initialLoad = true, initialState = false, lobbyDebug = false,
             else if (powerup.name == "Reveal Letter") {
                 updateActivePowerup("Reveal Letter")
             }
-        }  
+        }
     }
 
     // Called after a powerup has been used
