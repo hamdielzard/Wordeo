@@ -86,26 +86,6 @@ const createLockedAchievements = () => {
             name: "Adventurer",
             description: "Achieved for updating your description!",
             locked: true
-        },
-        {
-            name: "Achievement 2",
-            description: "Achievement Locked",
-            locked: true
-        },
-        {
-            name: "Achievement 3",
-            description: "Achievement Locked",
-            locked: true
-        },
-        {
-            name: "Achievement 4",
-            description: "Achievement Locked",
-            locked: true
-        },
-        {
-            name: "Achievement 5",
-            description: "Achievement Locked",
-            locked: true
         }
     ];
 
