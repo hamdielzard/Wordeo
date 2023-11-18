@@ -6,12 +6,12 @@ services:
       - "27017:27017"
   client:
     build: ./client
-    image: hamdielzard/wordeo:${RELEASE_TAG}
+    image: hamdielzard/wordeo:client_${RELEASE_TAG}
     ports:
       - "3000:3000"
   server:
     build: ./server
-    image: hamdielzard/wordeo:${RELEASE_TAG}
+    image: hamdielzard/wordeo:server_${RELEASE_TAG}
     ports:
       - "8080:8080"
       - "6060:6060"
