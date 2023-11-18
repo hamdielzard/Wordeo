@@ -8,6 +8,7 @@
   - [`INFO` - Achievements for Users](#info---achievements-for-users)
   - [`GET /user` - Get user(s) info](#get-user---get-users-info)
   - [`PATCH /user` - Update user details](#patch-user---update-user-details)
+  - [`PATCH /user/inventory` - Update user inventory](#patch-user---update-user-inventory)
   - [`DELETE /user/` - Delete user](#delete-user---delete-user)
 - [Multiplayer: Game](#multiplayer-game)
   - [`POST /game` - Request new lobby](#post-game---request-new-lobby)
@@ -23,6 +24,9 @@
 - [Scores](#scores)
   - [`POST /scores` - Create a score](#post-scores---create-a-score)
   - [`GET /scores` - Get scores](#get-scores---get-scores)
+- [Store](#store)
+  - [`GET /store` - Retrieve all store items](#get-store---retrieve-store-items)
+  - [`POST /store` - Buy item](#post-store---buy-item)
 
 
 # Authentication
@@ -217,6 +221,128 @@ fetch("/user")
 >```json
 >{
 >   "message": "Failed to update user!"
+>}
+>```
+
+## `PATCH /user/inventory` - Update user inventory
+*Updates the inventory for a user*
+
+**Request Body**
+```json
+{
+   "userName": "Puz",
+   "itemName": "bestpuzzler",
+   "quantity": "hello world!"
+}
+```
+- `userName` (string): User to change
+- `itemName` (string): Name of the item to add
+- `quantity` (number): Number of item quantity to update
+
+**Response Body**
+
+> **200**
+>```json
+>{
+>   "message": "Inventory updated successfully",
+>   //Updated user info...
+>}
+>```
+
+> **400** | If `userName` or `itemName` or `quantity` are missing
+>```json
+>{
+>   "message": "Please provide userName, itemName, and quantity in the request body.",
+>}
+>```
+
+> **404** | If `userName` is not found
+>```json
+>{
+>   "message": "User Puz not found!"
+>}
+>```
+
+> **500** | Inventory update error
+>```json
+>{
+>   "message": "Inventory update error occurred for Puz!"
+>}
+>```
+
+## `PATCH /user/coin` - Update user coin balance
+*Updates the number of coins for a user*
+
+**Request Body**
+```json
+{
+   "userName": "Puz",
+   "quantity": 10
+}
+```
+
+- `userName` (string): User to change
+- `quantity` (number): Number of item quantity to update
+
+> **200**
+>```json
+>{
+>   "message": "Coins updated successfully",
+>   //Updated user info...
+>}
+>```
+
+> **400** | If `userName` or `quantity` is not found
+>```json
+>{
+>   "message": "Please provide userName and a valid quantity in the request body."
+>}
+>```
+
+> **404** | If `userName` is not found
+>```json
+>{
+>   "message": "User Puz not found!"
+>}
+>```
+
+> **500**
+>```json
+>{
+>   "message": "Failed to update coins!"
+>}
+>```
+
+## `GET /user/coin` - Get user coin balance
+*Gets the number of coins for a user*
+
+**Request Body**
+```json
+{
+   "userName": "Puz"
+}
+```
+
+- `userName` (string): User to change
+
+> **200**
+>```json
+>{
+>   //Updated user coin balance
+>}
+>```
+
+> **400** | If `userName` is not provided
+>```json
+>{
+>   "message": "User Puz not found!"
+>}
+>```
+
+> **500**
+>```json
+>{
+>   "message": "Failed to retrieve coin balance!"
 >}
 >```
 
@@ -575,3 +701,80 @@ fetch("/scores?userName=hello&gameMode=multi")
 // Fetch all scores
 fetch("/scores")
 ```
+
+# Store
+## `GET /store` - GET request to retrieve all store items
+*Gets all the store items from the database*
+
+**Response Body**
+> **200** | Success
+>```json
+>{
+>    "storeItems": [
+>        {
+>            "_id": "xxx",
+>            "name": "Add Time",
+>            "description": "Add 5 seconds to the timer",
+>            "category": "powerup",
+>            "price": 500,
+>            "enabled": false,
+>            "__v": 0
+>        },
+>        {
+>            "_id": "xxx",
+>            "name": "Reveal Letter",
+>            "description": "Reveal one random letter in the word",
+>            "category": "powerup",
+>            "price": 2500,
+>            "enabled": false,
+>            "__v": 0
+>        }
+>    ]
+>}
+>```
+> **500** | Error occurred while retrieving store items
+>```json
+>{
+>   "message": "Failed to retrieve store items!"
+>}
+>```
+## `POST /store` - POST request to buy an item
+*Gets all the store items from the database*
+
+**Request Body**
+```json
+{
+    "userName": "Mac",
+    "itemName": "Cup",
+    "quantity": 10
+}
+```
+- `userName` (string): The user's name
+- `itemName` (string): The item's name
+- `quantity` (number): The quantity of items to modify
+
+**Response Body**
+> **200** | Success
+>```json
+>{
+>   "message": "Item purchase successful for Mac"
+>}
+>```
+> **400** | Invalid userName, itemName, and quantity in the request body.
+>```json
+>{
+>   "message": "Please provide userName, itemName, and quantity in the request body."
+>}
+>```
+> **500** | Purchase failed
+>```json
+>{
+>   "message": "Item purchase error occurred for Mac"
+>}
+>```
+> **500** | User not found
+>```json
+>{
+>   "message": "User lookup error occurred for Mac"
+>}
+>```
