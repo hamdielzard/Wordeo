@@ -10,7 +10,7 @@ import "../Styles/Store.css"
 // API URL
 const API_URL = 'http://localhost:8080';
 
-const Store = () => {
+const Store = ({initialItems = null}) => {
     const [storeStatus, updateStoreStatus] = React.useState({
         selection: "all"
     })
@@ -27,7 +27,7 @@ const Store = () => {
         success: true
     })
 
-    const [itemData, updateItems] = React.useState(null)
+    const [itemData, updateItems] = React.useState(initialItems)
 
     // fetch userName
     const userNameExists = document.cookie.split(";").some((item) => item.trim().startsWith("userName="));
@@ -38,22 +38,25 @@ const Store = () => {
     }
 
     React.useEffect(() => {
-        const fetchUserData = async () => {
-            const res = await fetch(`${API_URL}/user/coin?userName=${userName}`);
-            const data = await res.json();
+        if (initialItems == null)
+        {
+            const fetchUserData = async () => {
+                const res = await fetch(`${API_URL}/user/coin?userName=${userName}`);
+                const data = await res.json();
+    
+                updateAccountBalance(data.coinBalance);
+            }
+    
+            const fetchStoreData = async () => {
+                const res = await fetch(`${API_URL}/store`);
+                const data = await res.json();
+    
+                updateItems(data.storeItems);
+            }
 
-            updateAccountBalance(data.coinBalance);
+            fetchUserData();
+            fetchStoreData();
         }
-
-        const fetchStoreData = async () => {
-            const res = await fetch(`${API_URL}/store`);
-            const data = await res.json();
-
-            updateItems(data.storeItems);
-        }
-
-        fetchUserData();
-        fetchStoreData();
     }, [])
 
     // This function is called whenver the user selects a new category
