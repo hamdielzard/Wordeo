@@ -152,7 +152,7 @@ const GamePage = ({initialLoad = true, initialState = false, initialCorrectLette
                 setLoading(false);
             })
         }
-        
+
     }, [gameStatus.gameEnd]);
 
     // LOBBY
@@ -285,17 +285,17 @@ const GamePage = ({initialLoad = true, initialState = false, initialCorrectLette
         const scoreEarned = determineFinalScore(timeStarted, timeSolved, gameStatus.initialScore)
         // Duplicate powerups and make all powerups available again
         // updateInventory(prevInventory => prevInventory.map(powerup => new Powerup(powerup.name, powerup.quantity, false)))
-        console.log(scoreEarned)
 
         setCurrentScore(prev => prev + scoreEarned)
 
         // Duplicate powerups and make all powerups available again
         updateInventory(prevInventory => prevInventory.map(powerup => new Powerup(powerup.name, powerup.quantity, false)))
 
-        if (gameStatus.round+1 <= gameData.length) {
+
+        if (gameStatus.round + 1 <= gameData.length) {
             setCurrentRound(prev => prev + 1)
 
-            updateGameStatus(prev =>({
+            updateGameStatus(prev => ({
                 ...prev,
                 round: prev.round + 1,
                 score: prev.score + scoreEarned,
@@ -307,14 +307,14 @@ const GamePage = ({initialLoad = true, initialState = false, initialCorrectLette
         }
         else {
             // game ended
-            updateGameStatus(prev =>({
+            updateGameStatus(prev => ({
                 ...prev,
                 score: prev.score + scoreEarned,
                 gameEnd: true,
                 roundTime: 0
             }))
         }
-        
+
         restartRound()
     }
 
@@ -370,7 +370,7 @@ const GamePage = ({initialLoad = true, initialState = false, initialCorrectLette
             else if (powerup.name == "Reveal Letter") {
                 updateActivePowerup("Reveal Letter")
             }
-        }  
+        }
     }
 
     // Called after a powerup has been used

@@ -36,6 +36,4 @@ describe('The Game Page Acceptance tests', () => {
 
         expect(container.getElementsByClassName('gameClue').length).toBe(1);
     });
-
-
 });

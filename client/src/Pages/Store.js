@@ -24,7 +24,8 @@ const Store = ({initialItems = null, initialBalance = 5000 }) => {
 
     const [successPopupStatus, updateSuccessPopup] = React.useState({
         isVisible: false,
-        success: true
+        success: true,
+        message: null
     })
 
     const [itemData, updateItems] = React.useState(initialItems)
@@ -73,25 +74,84 @@ const Store = ({initialItems = null, initialBalance = 5000 }) => {
         })
     }
 
+    const patchUserBalance = async (cost) => {
+        const payload = {
+            userName: userName,
+            quantity: -cost
+        }
+
+        const res = await fetch(`${API_URL}/user/coin`, {
+            method: 'PATCH',
+            headers: {
+                'Content-type': 'application/json',
+            },
+            body: JSON.stringify(payload),
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+            throw new Error(data.message);
+        }
+    }
+
+    const patchUserInventory = async (item, quantity) => {
+        const payload = {
+            userName: userName,
+            itemName: item.name,
+            quantity: quantity
+        }
+
+        const res = await fetch(`${API_URL}/user/inventory`, {
+            method: 'PATCH',
+            headers: {
+                'Content-type': 'application/json',
+            },
+            body: JSON.stringify(payload),
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+            throw new Error(data.message);
+        }
+    }
+
     // This function is called after user interacts with item popup
     // wasPurchased is true if the user purchased the item
-    function popupOnExit(wasPurchased, item, quantitity, cost) {
-        if (wasPurchased) {
-            // Sufficient balance
-            if (accountBalance - cost >= 0) {
-                updateAccountBalance(prev => prev - cost)
-                updateSuccessPopup({
-                    isVisible: true,
-                    success: true
-                })
+    async function popupOnExit(wasPurchased, item, quantity, cost) {
+        try {
+            if (wasPurchased) {
+                // Sufficient balance
+                if (accountBalance - cost >= 0) {
+                    updateAccountBalance(prev => prev - cost)
+    
+                    // send backend request to update user balance & inventory
+                    await patchUserBalance(cost);
+                    await patchUserInventory(item, quantity);
+    
+                    updateSuccessPopup({
+                        isVisible: true,
+                        success: true,
+                        message: null
+                    })
+                }
+                // Insufficient balance
+                else {
+                    updateSuccessPopup({
+                        isVisible: true,
+                        success: false,
+                        message: null
+                    })
+                }
             }
-            // Insufficient balance
-            else {
-                updateSuccessPopup({
-                    isVisible: true,
-                    success: false
-                })
-            }
+        } catch (err) {
+            // backend call to update user failed
+            updateSuccessPopup({
+                isVisible: true,
+                success: false,
+                message: "There was an issue with the server. Please try again."
+            })
+
+            console.log(err)
         }
 
         // Hide the popup window
@@ -122,6 +182,7 @@ const Store = ({initialItems = null, initialBalance = 5000 }) => {
             <SuccessPopup
                 isVisible={successPopupStatus.isVisible}
                 success={successPopupStatus.success}
+                message={successPopupStatus.message}
                 successPopupOnExit={updateSuccessPopup}
             />
             <Currency

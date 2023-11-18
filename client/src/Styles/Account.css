@@ -121,6 +121,11 @@ html {
     text-align: right;
 }
 
+.inv {
+    font-size: 32px;
+    font-variant: normal;
+}
+
 .accountDescription {
     margin: 0px;
     margin-top: 20px;

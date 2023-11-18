@@ -183,14 +183,8 @@ describe('PATCH /user', () => {
         expect(res.body.description).toEqual(payload.description);
 
         // Check it has updated with GET
-
-        const getPayload = {
-            "userName": testUser
-        }
-
         const res2 = await supertest(server)
-            .get(`/user?userName=${getPayload.userName}`)
-
+            .get(`/user?userName=${testUser}`)
         expect(res2.status).toEqual(200);
         expect(res2.body.response.userName).toEqual(testUser);
         expect(res2.body.response.displayName).toEqual(payload.displayName);
@@ -198,7 +192,7 @@ describe('PATCH /user', () => {
     });
 
     it('should return a 500 response if an error occurs during user retrieval', async () => {
-        jest.spyOn(User, 'findOneAndUpdate').mockRejectedValue(new Error('Simulated error'));
+        jest.spyOn(User, 'findOne').mockRejectedValue(new Error('Simulated error'));
 
         const payload = {
             "userName": testUser,
@@ -211,9 +205,9 @@ describe('PATCH /user', () => {
             .send(payload);
 
         expect(res.status).toBe(500);
-        expect(res.body.message).toBe('Failed to update user!');
+        expect(res.body.message).toBe('An error occurred while updating the user!');
 
-        User.findOneAndUpdate.mockRestore();
+        User.findOne.mockRestore();
     });
 });
 
@@ -254,29 +248,29 @@ describe('DELETE /user', () => {
 
     it('should return a 500 response if an error occurs during user search', async () => {
         jest.spyOn(User, 'findOne').mockRejectedValue(new Error('find error'));
-    
+
         const response = await supertest(server)
-          .delete('/user')
-          .send({ userName: testUser });
-    
+            .delete('/user')
+            .send({ userName: testUser });
+
         expect(response.status).toBe(500);
         expect(response.body.message).toBe('Failed to find user!');
-    
+
         User.findOne.mockRestore();
-      });
+    });
 
     it('should return a 500 response if an error occurs during user deletion', async () => {
         jest.spyOn(User, 'findOneAndDelete').mockRejectedValue(new Error('find and delete error'));
-    
+
         const response = await supertest(server)
-          .delete('/user')
-          .send({ userName: testUser });
-    
+            .delete('/user')
+            .send({ userName: testUser });
+
         expect(response.status).toBe(500);
         expect(response.body.message).toBe('Failed to delete user!');
-    
+
         User.findOneAndDelete.mockRestore();
-      });
+    });
 });
 
 describe('PATCH /user/inventory', () => {

@@ -1,10 +1,15 @@
 import React from "react";
 import Button from "../Button";
 
-const SuccessPopup = ({isVisible, success, successPopupOnExit}) => {
+const SuccessPopup = ({
+    isVisible,
+    success,
+    message = success ? "The item bought has been added to your inventory" : "Insufficient funds",
+    successPopupOnExit
+}) => {
     let header = success ? "Success!" : "Failed!"
-    let content = success ? "The item bought has been added to your inventory" : "Insufficient funds"
-
+    let content = message
+    
     return (isVisible) ? (
         <div className="success-popup">
             <div className="success-popup-header">
