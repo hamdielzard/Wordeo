@@ -18,7 +18,7 @@ const ItemPopup = ({item, isVisible, popupOnExit}) => {
                             updateQuantity(1)
                         }}
                         type="ternary" 
-                        size="medium" 
+                        size="small"
                     />
                 </div>
                 <div className="item-popup-image">
