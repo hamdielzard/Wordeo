@@ -5,7 +5,7 @@ import ImageDisplay from "./ImageDisplay";
 const ItemIcon = ({item, itemOnClick}) => {
 
     return(
-        <div className="item-icon" onClick = {() => itemOnClick(item)}>
+        <div className="item-icon" onClick = {() => itemOnClick(item)} data-testid={item.name}>
             <div className="item-icon-image">
                 <ImageDisplay 
                     imgName = {item.name}

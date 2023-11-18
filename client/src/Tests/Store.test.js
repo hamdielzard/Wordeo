@@ -60,5 +60,15 @@ describe('The Store Page', () => {
         // Second store item is reveal letter, we expect it to have a price of 1000
         expect(container.getElementsByClassName('item-icon-price')[1].textContent).toBe("1000");
     })
+
+    test('number of coins should be adjusted appropriately', () => {
+        const { container } = render(<Store initialItems={stubData}/>);
+        const item = screen.getByTestId("Add Time")
+        fireEvent.click(item)
+        const purchaseButton = screen.getByText(500, {selector:".button-secondary"})
+        fireEvent.click(purchaseButton)
+
+        expect(container.getElementsByClassName('item-popup').length).toBe(1);
+    })
 });
 
