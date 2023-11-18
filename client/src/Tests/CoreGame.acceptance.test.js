@@ -26,7 +26,7 @@ const stubData = [{
 
 describe('The Game Page Acceptance tests', () => {
     test('Start a game\nCore Game should render upon lobby exit', () => {
-        const { container } = render(<Game initialLoad={false} data={stubData} lobbyInitial={false}/>);
+        const { container } = render(<Game initialLoad={false} data={stubData} lobbyDebug={true}/>);
 
         expect(container.getElementsByClassName('gameMain').length).toBe(1);
     });
