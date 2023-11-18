@@ -45,14 +45,16 @@ const register = (req, res, next) => {
                     }
 
                     let user = new User({
-                        displayName: req.body.displayName,
+                        displayName: displayName,
                         userName: req.body.userName,
                         password: hashedPass,
                         highscore: 0,
                         gamesPlayed: 0,
                         gamesWon: 0,
                         description: "",
-                        wordsGuessed: 0
+                        wordsGuessed: 0,
+                        coins: 0,
+                        achievements: createLockedAchievements()
                     })
 
                     user.save()
@@ -64,12 +66,10 @@ const register = (req, res, next) => {
                                 displayName: user.displayName
                             })
                         })
-
-
                         .catch(error => {
                             logger.error(`[500] POST /auth/register - AuthController: Sign up error occurred: ${error}`)
                             return res.status(500).json({
-                                message: 'An error occured!'
+                                message: 'An error occurred!'
                             })
 
                         })
@@ -78,6 +78,39 @@ const register = (req, res, next) => {
         });
 
 }
+
+// Define a function to create 5 locked achievements
+const createLockedAchievements = () => {
+    const achievements = [
+        {
+            name: "Adventurer",
+            description: "Achieved for updating your description!",
+            locked: true
+        },
+        {
+            name: "Achievement 2",
+            description: "Achievement Locked",
+            locked: true
+        },
+        {
+            name: "Achievement 3",
+            description: "Achievement Locked",
+            locked: true
+        },
+        {
+            name: "Achievement 4",
+            description: "Achievement Locked",
+            locked: true
+        },
+        {
+            name: "Achievement 5",
+            description: "Achievement Locked",
+            locked: true
+        }
+    ];
+
+    return achievements;
+};
 
 // POST /auth/login
 const login = (req, res, next) => {
