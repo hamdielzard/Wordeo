@@ -3,14 +3,15 @@
 **Table of Contents**
 
 1. [Puzzlers Team](#puzzlers-team)
-2. [Project Proposal](#project-proposal)
-3. [User Stories](#user-stories)
-4. [Architecture](#architecture)
-5. [Sequence](#sequence-diagram)
-6. [Design](/images/design/DESIGN.md)
-7. [Meetings](https://github.com/hamdielzard/Wordeo/wiki/Meetings)
-8. [Wiki Homepage](https://github.com/hamdielzard/Wordeo/wiki)
-9. [Test Plan](Wordeo%20Test%20Plan.pdf)
+2. [How to Run](#how-to-run)
+3. [Project Proposal](#project-proposal)
+4. [User Stories](#user-stories)
+5. [Architecture](#architecture)
+6. [Sequence](#sequence-diagram)
+7. [Design](/images/design/DESIGN.md)
+8. [Meetings](https://github.com/hamdielzard/Wordeo/wiki/Meetings)
+9. [Wiki Homepage](https://github.com/hamdielzard/Wordeo/wiki)
+10. [Test Plan](Wordeo%20Test%20Plan.pdf)
 
 # Puzzlers Team
 Dani Youn
@@ -22,6 +23,17 @@ Souvik Ray
 Hamdi Elzard
 
 Benedict Agupitan
+
+# How to Run
+Wordeo is containerized in Docker hub as two images for both the client (frontend) and the server (backend).
+
+To run Wordeo,
+1. Clone the repository
+2. Run a terminal with docker-compose installed pointed towards the root directory.
+3. Run `export RELEASE_TAG={release tag}` where release tag is up to you.
+4. Run `docker-compose pull`
+5. Run `docker-compose up --build -d`
+6. Run a browser and head to http://localhost:3000 to launch the game.
 
 # Project Proposal
 ## Summary and Vision
@@ -342,15 +354,4 @@ The frontend client will use React js.
 #
 # Sequence Diagram
 ![sequence diagram](images/wordeo-sequence.png)
-
-# How to Run
-Wordeo is containerized in Docker hub as two images for both the client (frontend) and the server (backend).
-
-To run Wordeo,
-1. Clone the repository
-2. Run a terminal with docker-compose installed pointed towards the root directory.
-3. Run `export RELEASE_TAG={release tag}` where release tag is up to you.
-4. Run `docker-compose pull`
-5. Run `docker-compose up -d`
-6. Run a browser and head to http://localhost:3000 to launch the game.
 
