@@ -22,7 +22,7 @@ const Timer = ({ initialTime, onTimerComplete }) => {
     });
 
     return (
-        <div className="timer">
+        <div className="timer" data-testid="timer">
             <div className="timer-text">{time}</div>
         </div>
     );

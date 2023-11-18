@@ -21,7 +21,7 @@ const userNameCK = document.cookie.split(";").some((item) => item.trim().startsW
 const gameCode = window.location.pathname.split("/").pop();
 
 
-const GamePage = ({ initialLoad = true, initialState = false, lobbyDebug = false, data = [], numRounds = data.length ? data.length : 10 }) => {
+const GamePage = ({initialLoad = true, initialState = false, initialCorrectLetters = [], lobbyDebug = false, data = [], numRounds = data.length ? data.length : 10}) => {
     let user = "Guest";
     let userId = "";
 
@@ -47,7 +47,7 @@ const GamePage = ({ initialLoad = true, initialState = false, lobbyDebug = false
         words: null,
     });
     const [wordList, setWordList] = React.useState(null);
-    const [roundCount, setRoundCount] = React.useState(null);
+    const [roundCount, setRoundCount] = React.useState(data.length ? data.length : null);
     const [currentRound, setCurrentRound] = React.useState(1);
     const [playerList, setPlayerList] = React.useState([]);
     const [currentScore, setCurrentScore] = React.useState(0);
@@ -58,7 +58,7 @@ const GamePage = ({ initialLoad = true, initialState = false, lobbyDebug = false
         round: 1,
         score: 0,
         currWord: data.length ? data[0] : null,
-        initialScore: 0,
+        initialScore: data.length ? determineWordInitialScore(data[0].difficulty, data[0].word.length) : 0,
         gameEnd: initialState,
         roundTime: null,
         wordGuessed: false
@@ -131,15 +131,16 @@ const GamePage = ({ initialLoad = true, initialState = false, lobbyDebug = false
     // Called at the beginning
     // Called whenever game ends, if game ends then post score
     // If game does not end, get new word data
-    React.useEffect(() => {
-        if (gameStatus.gameEnd == true) {
-            // submit score
-            if (user !== "Guest") {
-                console.log("final score: " + gameStatus.score)
-                postScore(userId, gameStatus.score);
-            }
-        } else {
-            fetchWords(numRounds)
+    React.useEffect(()=> {
+        if (lobbyDebug == false) {
+            if (gameStatus.gameEnd == true) {
+                // submit score
+                if (user !== "Guest") {
+                    console.log("final score: " + gameStatus.score)
+                    postScore(userId, gameStatus.score);
+                }
+            } else {
+                fetchWords(numRounds)
                 .then((data) => {
                     setGameData(data);
                     updateGameStatus(prev => ({
@@ -151,6 +152,7 @@ const GamePage = ({ initialLoad = true, initialState = false, lobbyDebug = false
                     setRoundCount(data.length)
                     setLoading(false);
                 })
+            }
         }
 
     }, [gameStatus.gameEnd]);
@@ -229,38 +231,39 @@ const GamePage = ({ initialLoad = true, initialState = false, lobbyDebug = false
                     {playerName ? playerName : "Loading userName"}
                 </div>
             </div>
-            {gameStatus.gameEnd &&
-                <GameOver
-                    score={currentScore}
-                    restartGame={restartGame}
+            { gameStatus.gameEnd &&
+                <GameOver 
+                    score = {currentScore}
+                    restartGame = {restartGame}
                 />
             }
-            {!gameStatus.gameEnd &&
+            { !gameStatus.gameEnd &&
                 <div className="gameInteractive">
                     <div className="gamePowerups">
-                        <PowerupButton
-                            powerups={inventory}
-                            powerupHandler={powerupHandler}
-                            activePowerup={activePowerup}
-                        />
+                        <PowerupButton 
+                            powerups = {inventory}
+                            powerupHandler = {powerupHandler}
+                            activePowerup = {activePowerup}
+                        />   
                     </div>
                     <div className='gameTimer'>
-                        <OldTimer
-                            initialTime={gameStatus.roundTime}
-                            wordGuessed={gameStatus.wordGuessed}
-                            onEnd={roundEnd}
-                            timePenalty={2}
-                            incorrectLettersGuessed={roundStatus.incorrectLettersGuessed}
-                            activePowerup={activePowerup}
-                            powerupOnConsume={powerupOnConsume}
+                        <OldTimer 
+                            initialTime = {gameStatus.roundTime}
+                            wordGuessed = {gameStatus.wordGuessed}
+                            onEnd = {roundEnd}
+                            timePenalty = {2}
+                            incorrectLettersGuessed = {roundStatus.incorrectLettersGuessed}
+                            activePowerup = {activePowerup}
+                            powerupOnConsume = {powerupOnConsume}
                         />
                     </div>
-                    <CoreGame
-                        wordData={gameStatus.currWord}
-                        roundEnd={wordGuessed}
-                        incorrectLetterGuessed={incorrectLetterWasGuessed}
-                        activePowerup={activePowerup}
-                        powerupOnConsume={powerupOnConsume}
+                    <CoreGame 
+                        wordData = {gameStatus.currWord}
+                        roundEnd = {wordGuessed}
+                        incorrectLetterGuessed = {incorrectLetterWasGuessed}
+                        activePowerup = {activePowerup}
+                        powerupOnConsume = {powerupOnConsume}
+                        initialCorrectLetters = {initialCorrectLetters}
                     />
                 </div>
             }
@@ -290,7 +293,6 @@ const GamePage = ({ initialLoad = true, initialState = false, lobbyDebug = false
         // Duplicate powerups and make all powerups available again
         updateInventory(prevInventory => prevInventory.map(powerup => new Powerup(powerup.name, powerup.quantity, false)))
 
-        console.log(gameData.round)
 
         if (gameStatus.round + 1 <= gameData.length) {
             setCurrentRound(prev => prev + 1)
