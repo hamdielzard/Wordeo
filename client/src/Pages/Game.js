@@ -47,7 +47,7 @@ const GamePage = ({initialLoad = true, initialState = false, initialCorrectLette
         words: null,
     });
     const [wordList, setWordList] = React.useState(null);
-    const [roundCount, setRoundCount] = React.useState(null);
+    const [roundCount, setRoundCount] = React.useState(data.length ? data.length : null);
     const [currentRound, setCurrentRound] = React.useState(1);
     const [playerList, setPlayerList] = React.useState([]);
     const [currentScore, setCurrentScore] = React.useState(0);
@@ -132,25 +132,27 @@ const GamePage = ({initialLoad = true, initialState = false, initialCorrectLette
     // Called whenever game ends, if game ends then post score
     // If game does not end, get new word data
     React.useEffect(()=> {
-        if (gameStatus.gameEnd == true) {
-            // submit score
-            if (user !== "Guest") {
-                console.log("final score: " + gameStatus.score)
-                postScore(userId, gameStatus.score);
+        if (lobbyDebug == false) {
+            if (gameStatus.gameEnd == true) {
+                // submit score
+                if (user !== "Guest") {
+                    console.log("final score: " + gameStatus.score)
+                    postScore(userId, gameStatus.score);
+                }
+            } else {
+                fetchWords(numRounds)
+                .then((data) => {
+                    setGameData(data);
+                    updateGameStatus(prev => ({
+                        ...prev,
+                        currWord: data[0],
+                        initialScore: determineWordInitialScore(data[0].difficulty, data[0].word.length),
+                        roundTime: determineWordInitialTime(data[0].difficulty, data[0].word.length)
+                    }));
+                    setRoundCount(data.length)
+                    setLoading(false);
+                })
             }
-        } else {
-            fetchWords(numRounds)
-            .then((data) => {
-                setGameData(data);
-                updateGameStatus(prev => ({
-                    ...prev,
-                    currWord: data[0],
-                    initialScore: determineWordInitialScore(data[0].difficulty, data[0].word.length),
-                    roundTime: determineWordInitialTime(data[0].difficulty, data[0].word.length)
-                }));
-                setRoundCount(data.length)
-                setLoading(false);
-            })
         }
 
     }, [gameStatus.gameEnd]);

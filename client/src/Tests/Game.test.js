@@ -122,6 +122,16 @@ describe('The Game Page', () => {
         expect(container.getElementsByClassName('timer-text')[0].textContent).toBe('30');
     });
 
+    test('When a round starts, the client should have loaded all the words', () => {
+        const { container } = render(<Game data={stubData}/>);
+        const button = screen.getByText("Start Game")
+        fireEvent.click(button)
+
+        // There are 3 words, check if all three words are being loaded by the header
+        // USES Round 2 instead of 1 due to front end implementation
+        expect(container.getElementsByClassName('lobbyHeaderSide')[1].textContent).toBe("Round 2 of 3");
+    })
+
     test('When a round starts, the client should set the timer', () => {
         const { container } = render(<Game initialLoad={false} data={stubData} lobbyDebug ={true}/>);
         
