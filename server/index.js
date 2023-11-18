@@ -14,6 +14,7 @@ const { initializeStoreItems } = require('./models/store');
 
 const HOST = '0.0.0.0';
 const PORT = process.env.PORT || 8080;
+const SOCKET_PORT = process.env.SOCKET_PORT || 6060;
 
 // Connect to the database
 mongoose.connect(process.env.MONGODB_URL)
@@ -40,7 +41,7 @@ mongoose.connect(process.env.MONGODB_URL)
 // Socket.io server
 
 // Start socket.io server on port 6060
-const io = new Server(6060, {
+const io = new Server(SOCKET_PORT, {
     cors: {
         origin: "*",
     }
