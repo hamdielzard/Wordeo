@@ -121,6 +121,11 @@ html {
     text-align: right;
 }
 
+.inv {
+    font-size: 32px;
+    font-variant: normal;
+}
+
 .accountDescription {
     margin: 0px;
     margin-top: 20px;
@@ -129,6 +134,10 @@ html {
     font-weight: 500;
     padding-bottom: 10px;
     opacity: 0.5;
+}
+
+.accountDetails {
+    overflow: auto;
 }
 
 .accountAchievements {
