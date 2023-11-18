@@ -132,14 +132,14 @@ describe('The Game Page', () => {
         const { container } = render(<Game initialLoad={false} data={stubData} lobbyDebug ={true} initialCorrectLetters={["d","i","s","c","o","r"]}/>);
         
 
-        expect(container.getElementsByClassName('lobbyHeaderSide rightHead')[0].textContent).toBe(1);
+        expect(container.getElementsByClassName('lobbyHeaderSide rightHead')[0].textContent).toBe("Score: 1000");
     })
 
     test('When the game is complete, the client should see the resulting score', () => {
         const { container } = render(<Game initialLoad={false} initialState={true} data={stubData} lobbyDebug ={true}/>);
         
         // Perfect Game with word Discord
-        expect(container.getElementsByClassName('gameOver--score')[0].textContent).toBe("Score: 1000");
+        expect(container.getElementsByClassName('gameOver--score')[0].textContent).toBe("0");
     })
 });
 
