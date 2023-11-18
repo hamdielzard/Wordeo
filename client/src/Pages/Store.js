@@ -10,7 +10,7 @@ import "../Styles/Store.css"
 // API URL
 const API_URL = 'http://localhost:8080';
 
-const Store = ({initialItems = null}) => {
+const Store = ({initialItems = null, initialBalance = 5000 }) => {
     const [storeStatus, updateStoreStatus] = React.useState({
         selection: "all"
     })
@@ -20,7 +20,7 @@ const Store = ({initialItems = null}) => {
         item: null
     })
 
-    const [accountBalance, updateAccountBalance] = React.useState(5000)
+    const [accountBalance, updateAccountBalance] = React.useState(initialBalance)
 
     const [successPopupStatus, updateSuccessPopup] = React.useState({
         isVisible: false,

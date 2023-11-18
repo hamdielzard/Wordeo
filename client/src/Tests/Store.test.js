@@ -68,7 +68,7 @@ describe('The Store Page', () => {
         const purchaseButton = screen.getByText(500, {selector:".button-secondary"})
         fireEvent.click(purchaseButton)
 
-        expect(container.getElementsByClassName('item-popup').length).toBe(1);
+        expect(container.getElementsByClassName('currency')[0].textContent).toBe("4500");
     })
 });
 

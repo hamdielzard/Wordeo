@@ -101,5 +101,45 @@ describe('The Game Page', () => {
 
         expect(onEnd).toHaveBeenCalledTimes(1);
     });
+
+    test('View guessed letters\nCorrect letters should update the letter boxes. Boxes hosting correct letters should turn green and have visible letters', () => { 
+        const { container } = render(<CoreGame wordData = {stubData[0]} initialCorrectLetters = {'d'}/>);
+
+        // Affected word boxes should be the first and last box
+        // These letter boxes should have the extra class correctLetter
+        const box0 = container.getElementsByClassName('letterBox correctLetter')[0];
+        const box6 = container.getElementsByClassName('letterBox correctLetter')[1];
+        
+
+        // Check if the affected boxes are the correct one by checking the letter
+        expect(box0.textContent).toBe("d")
+        expect(box6.textContent).toBe("d")
+    });
+
+    test('View remaining time\nTimer should match time given', () => { 
+        const { container } = render(<Timer initialTime = {30} wordGuessed = {false} />);
+
+        expect(container.getElementsByClassName('timer-text')[0].textContent).toBe('30');
+    });
+
+    test('When a round starts, the client should set the timer', () => {
+        const { container } = render(<Game initialLoad={false} data={stubData} lobbyDebug ={true}/>);
+        
+        expect(container.getElementsByClassName('timer-text').length).toBe(1);
+    })
+
+    test('When a word is complete, the client should calculate the score based on the remaining time', () => {
+        const { container } = render(<Game initialLoad={false} data={stubData} lobbyDebug ={true} initialCorrectLetters={["d","i","s","c","o","r"]}/>);
+        
+
+        expect(container.getElementsByClassName('lobbyHeaderSide rightHead')[0].textContent).toBe(1);
+    })
+
+    test('When the game is complete, the client should see the resulting score', () => {
+        const { container } = render(<Game initialLoad={false} initialState={true} data={stubData} lobbyDebug ={true}/>);
+        
+        // Perfect Game with word Discord
+        expect(container.getElementsByClassName('gameOver--score')[0].textContent).toBe("Score: 1000");
+    })
 });
 

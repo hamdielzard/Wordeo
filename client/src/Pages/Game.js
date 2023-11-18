@@ -21,7 +21,7 @@ const userNameCK = document.cookie.split(";").some((item) => item.trim().startsW
 const gameCode = window.location.pathname.split("/").pop();
 
 
-const GamePage = ({initialLoad = true, initialState = false, lobbyDebug = false, data = [], numRounds = data.length ? data.length : 10}) => {
+const GamePage = ({initialLoad = true, initialState = false, initialCorrectLetters = [], lobbyDebug = false, data = [], numRounds = data.length ? data.length : 10}) => {
     let user = "Guest";
     let userId = "";
 
@@ -58,7 +58,7 @@ const GamePage = ({initialLoad = true, initialState = false, lobbyDebug = false,
         round: 1,
         score: 0,
         currWord: data.length ? data[0] : null,
-        initialScore: 0,
+        initialScore: data.length ? determineWordInitialScore(data[0].difficulty, data[0].word.length) : 0,
         gameEnd: initialState,
         roundTime: null,
         wordGuessed: false
@@ -261,6 +261,7 @@ const GamePage = ({initialLoad = true, initialState = false, lobbyDebug = false,
                         incorrectLetterGuessed = {incorrectLetterWasGuessed}
                         activePowerup = {activePowerup}
                         powerupOnConsume = {powerupOnConsume}
+                        initialCorrectLetters = {initialCorrectLetters}
                     />
                 </div>
             }
@@ -284,13 +285,12 @@ const GamePage = ({initialLoad = true, initialState = false, lobbyDebug = false,
         const scoreEarned = determineFinalScore(timeStarted, timeSolved, gameStatus.initialScore)
         // Duplicate powerups and make all powerups available again
         // updateInventory(prevInventory => prevInventory.map(powerup => new Powerup(powerup.name, powerup.quantity, false)))
+        console.log(scoreEarned)
 
         setCurrentScore(prev => prev + scoreEarned)
 
         // Duplicate powerups and make all powerups available again
         updateInventory(prevInventory => prevInventory.map(powerup => new Powerup(powerup.name, powerup.quantity, false)))
-
-        console.log(gameData.round)
 
         if (gameStatus.round+1 <= gameData.length) {
             setCurrentRound(prev => prev + 1)
