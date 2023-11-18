@@ -73,7 +73,8 @@ const AccountPage = () => {
         gamesPlayed: 0,
         wordsGuessed: 0,
         accountDescription: "",
-        achievements: testingAchievements ? testingAchievementsData : []
+        achievements: testingAchievements ? testingAchievementsData : [],
+        inventory: []
     });
 
     const [editing, setEditing] = React.useState(false);
@@ -129,6 +130,12 @@ const AccountPage = () => {
                         "description": "testAch2",
                         "locked": true
                     }
+                ],
+                inventory: [
+                    {
+                        "name": "testItem",
+                        "quantity": 1
+                    }
                 ]
             });
             return true;
@@ -145,33 +152,34 @@ const AccountPage = () => {
                 const response = await fetch(`${API_URL}/user?userName=${userName}`);
                 const data = await response.json();
 
-            if (!response.ok) {
-                console.log("An error occurred while trying to get your account details. You have been signed out.")
-                return expireCookiesAndRedirect();
-            }
-            else {
-                if (data.response === null) {
-                    // Check for a server message
-                    if (data.message) {
-                        console.log(data.message);
-                        return expireCookiesAndRedirect();
-                    }
-                    else {
-                        // No message, wrong call?
-                        console.log("An error occurred while trying to get your account details. You have been signed out.")
-                        return expireCookiesAndRedirect();
-                    }
+                if (!response.ok) {
+                    console.log("An error occurred while trying to get your account details. You have been signed out.")
+                    return expireCookiesAndRedirect();
                 }
-                // Potential check: review all these fields are present
-                setAccountInformation({
-                    userName: data.response.userName,
-                    displayName: data.response.displayName,
-                    highestScore: data.response.highscore,
-                    gamesPlayed: data.response.gamesPlayed,
-                    wordsGuessed: data.response.wordsGuessed,
-                    accountDescription: data.response.description,
-                    achievements:  data.response.achievements
-                });
+                else {
+                    if (data.response === null) {
+                        // Check for a server message
+                        if (data.message) {
+                            console.log(data.message);
+                            return expireCookiesAndRedirect();
+                        }
+                        else {
+                            // No message, wrong call?
+                            console.log("An error occurred while trying to get your account details. You have been signed out.")
+                            return expireCookiesAndRedirect();
+                        }
+                    }
+                    // Potential check: review all these fields are present
+                    setAccountInformation({
+                        userName: data.response.userName,
+                        displayName: data.response.displayName,
+                        highestScore: data.response.highscore,
+                        gamesPlayed: data.response.gamesPlayed,
+                        wordsGuessed: data.response.wordsGuessed,
+                        accountDescription: data.response.description,
+                        achievements: data.response.achievements,
+                        inventory: data.response.inventory
+                    });
 
                     // Update cookies to match backend on path '/'
                     document.cookie = `userName=${data.response.userName};path=/;domain=`;
@@ -415,8 +423,6 @@ const AccountPage = () => {
     /**
      * **Renders the achievements**
      * 
-     * **WARNING:** CURRENTLY ACHIEVEMENTS ARE NOT IMPLEMENTED IN THE BACKEND
-     * 
      * This function will be called when the page loads.
      * @returns React Achievement component for each achievement in the account
      */
@@ -432,6 +438,27 @@ const AccountPage = () => {
             }
         }
     }
+
+    /**
+     * **Renders the inventory**
+     * @returns React Inventory component for each item in the account
+     */
+    const inventoryData = () => {
+        if (accountInformation.inventory) {
+            if (accountInformation.inventory.length === 0) {
+                return <p style={{ fontSize: 24 }}>No items yet!</p>
+            }
+            else {
+                return accountInformation.inventory.map((item) => (
+                    <div className='inventoryItem'>
+                        <span className='largeLabel inv'>{item.name} | </span>
+                        <span className='largeNumber inv'>{item.quantity}</span>
+                    </div>
+                ))
+            }
+        }
+    };
+
 
     if (completeAllFEChecks() || testEnvironment) {
         if (editing) return (
@@ -510,6 +537,12 @@ const AccountPage = () => {
                             <h4 className='largeNumber'>{accountInformation.gamesPlayed}</h4>
                             <h4 className='largeLabel'>Words Guessed</h4>
                             <h4 className='largeNumber'>{accountInformation.wordsGuessed}</h4>
+                            <div className='accountInventory'>
+                                <h4 className='largeLabel'>Inventory</h4>
+                                <div className='inventoryItems'>
+                                    {inventoryData()}
+                                </div>
+                            </div>
                         </div>
 
                     </div>
