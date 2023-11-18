@@ -1,10 +1,9 @@
 import React from "react";
 import { useEffect } from "react";
 
-import LetterBox from "./LetterBox";
-import IncorrectLetterBox from "./IncorrectLetterBox";
+import LetterBox from "../LetterBox";
 
-const CoreGame = ({wordData, roundEnd, roundNum, incorrectLetterGuessed, initialCorrectLetters = [], initialIncorrectLetters = []}) => {
+const CoreGame = ({wordData, roundEnd, roundNum, inventory, incorrectLetterGuessed, initialCorrectLetters = [], initialIncorrectLetters = [], activePowerup, powerupOnConsume}) => {
     let word = wordData.word.toLowerCase()
 
     const [roundStatus, updateRoundStatus] = React.useState({
@@ -26,10 +25,10 @@ const CoreGame = ({wordData, roundEnd, roundNum, incorrectLetterGuessed, initial
             // If current word matches, create a visible green box for it 
             if (correctLetters.includes(word.charAt(i).toLowerCase())) {
                 initialLetters.push(
-                    <div className="letterbox" style={{background: '#ABFF68'}} key = {i}>
+                    <div key = {word.concat(" ", i)}>
                         <LetterBox 
-                            letter = {word.charAt(i)}
-                            visibility = 'visible'
+                            letter = {word.charAt(i) + ''}
+                            correct = {true}
                         />
                     </div>
                 )
@@ -37,10 +36,9 @@ const CoreGame = ({wordData, roundEnd, roundNum, incorrectLetterGuessed, initial
             // If not, create a hidden white box for it
             else {
                 initialLetters.push(
-                    <div className="letterbox" style={{background: '#FFF'}} key = {i}>
+                    <div key = {word.concat(" ", i)}>
                         <LetterBox 
-                            letter = {word.charAt(i)}
-                            visibility = 'hidden'
+                            letter = ""
                         />
                     </div>
                 )
@@ -52,9 +50,10 @@ const CoreGame = ({wordData, roundEnd, roundNum, incorrectLetterGuessed, initial
     function createIncorrectLetterBoxes(incorrectLetters) {
         let incorrectLetterBoxes = incorrectLetters.map(incorrectLetter => {
             return (
-                <div className="incorrectLetterBox" key = {incorrectLetter}>
-                    <IncorrectLetterBox 
+                <div key = {incorrectLetter}>
+                    <LetterBox 
                         letter = {incorrectLetter}
+                        correct = {false}
                     />
                 </div>
             )
@@ -117,7 +116,7 @@ const CoreGame = ({wordData, roundEnd, roundNum, incorrectLetterGuessed, initial
         }
     }
 
-    // Whenever a user makes a guess (ie gameStatus changes), run this code block to check if the game 
+    // Whenever a user makes a guess (ie roundStatus changes), run this code block to check if the game 
     // has ended
     useEffect(() => {
         let allWordsGuessed = true
@@ -138,8 +137,8 @@ const CoreGame = ({wordData, roundEnd, roundNum, incorrectLetterGuessed, initial
                 roundOver: true
             })
 
-            // Reset round status for next round
-            roundEnd(100)
+            // Let Game.js know that round has ended
+            roundEnd()
         }
     }, [roundStatus])
 
@@ -157,20 +156,51 @@ const CoreGame = ({wordData, roundEnd, roundNum, incorrectLetterGuessed, initial
         // Reset letter boxes
         updateLetters(createLetterBoxes(initialCorrectLetters))
         updateIncorrectLetters(createIncorrectLetterBoxes(initialIncorrectLetters))
-    }, [word])
+    }, [wordData])
+
+    useEffect(() => {
+        if (activePowerup == "Reveal Letter") {
+            let letterFound = false
+
+            while (!letterFound) { 
+                // Random index
+                let i = Math.floor(Math.random() * ((word.length-1) - 0 + 1) + 0)
+                
+                if (!letterFound && !roundStatus.correctLetters.includes(word.charAt(i).toLowerCase())) {
+                    letterFound = true
+                    
+                    // Create deep copy of the correct letters to be used by update
+                    // Need to do this because updateRoundStatus won't update quickly enough before running
+                    // updateLetters
+                    let correctLettersCopy = JSON.parse(JSON.stringify(roundStatus.correctLetters))
+                    correctLettersCopy.push(word.charAt(i).toLowerCase())
+
+                    updateRoundStatus(prev => ({
+                        ...prev,
+                        correctLetters: [... prev.correctLetters, word.charAt(i).toLowerCase()]
+                    }))
+                    
+                    updateLetters(createLetterBoxes(correctLettersCopy))
+                }
+            }
+
+            powerupOnConsume()
+        }
+    }, [activePowerup])
 
     return(
-        <div className="coreGame">
-            <div className="hint">
+        <div className="gameMain">
+            <div className="gameClue">
                 {wordData.hints[0]}
             </div>
-            <div className="lettergrid">
+            <div className="gameLetterBoxes">
                 {letters}
             </div>
-            <div className ="lettergrid">
+            <div className ="gameLetterBoxes">
                 {incorrectLetterBoxes}
             </div>
         </div>
+        
     )
 }
 

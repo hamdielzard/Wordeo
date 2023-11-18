@@ -103,6 +103,8 @@
 }
 
 .warningFooter {
+    position: absolute;
+    bottom: 10%;
     color: #660000;
     font-weight: 700;
     font-size: 24px;

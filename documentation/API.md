@@ -9,14 +9,17 @@
   - [`GET /user` - Get user(s) info](#get-user---get-users-info)
   - [`PATCH /user` - Update user details](#patch-user---update-user-details)
   - [`DELETE /user/` - Delete user](#delete-user---delete-user)
-- [Words (v1)](#words-v1)
-  - [`WARNING` - Endpoint at v1](#warning---endpoint-at-v1)
-  - [`POST /words/word` - Create a word](#post-wordsword---create-a-word)
-  - [`GET /words/word` - Get a word](#get-wordsword---get-a-word)
-  - [`PATCH /words/word` - Update a word](#patch-wordsword---update-a-word)
-  - [`DELETE /words/word` - Delete a word](#delete-wordsword---delete-a-word)
-  - [`POST /words` - Create multiple words](#post-words---create-multiple-words)
-  - [`GET /words` - Get words](#get-words---get-words)
+- [Multiplayer: Game](#multiplayer-game)
+  - [`POST /game` - Request new lobby](#post-game---request-new-lobby)
+  - [`customSettings` Object](#customsettings-object)
+- [Words](#words)
+  - [`POST /words` - Create multiple words (V2)](#post-words---create-multiple-words-v2)
+  - [`GET /words` - Get words (V2)](#get-words---get-words-v2)
+  - [Deprecated (V1)](#deprecated-v1)
+    - [`POST /words/word` - Create a word](#post-wordsword---create-a-word)
+    - [`GET /words/word` - Get a word](#get-wordsword---get-a-word)
+    - [`PATCH /words/word` - Update a word](#patch-wordsword---update-a-word)
+    - [`DELETE /words/word` - Delete a word](#delete-wordsword---delete-a-word)
 - [Scores](#scores)
   - [`POST /scores` - Create a score](#post-scores---create-a-score)
   - [`GET /scores` - Get scores](#get-scores---get-scores)
@@ -248,10 +251,146 @@ fetch("/user")
 
 ----
 
-# Words (v1)
-## `WARNING` - Endpoint at v1 
-This backend endpoint has not been updated yet.
-## `POST /words/word` - Create a word
+# Multiplayer: Game
+**NOT FINAL**: These endpoints could be changed, replaced, or removed at any time.
+## `POST /game` - Request new lobby
+**NOT FINAL**
+*Requests the server for a new lobby*
+
+**Request Body**
+```json
+{
+   "userName": "name",
+   "gameMode": "multi",
+   "customSettings": {
+      
+   }
+}
+```
+- `userName` (string): User requesting the creation of a new game
+- `gameMode` (string, enum): Game mode requested by the user's client [`solo`, `multi`]
+- `customSettings` (Object) (**optional**): Object referring to changing game settings. Refer to [this section](#customsettings-object) for more details on what to pass here. Defaults to regular game settings.
+
+**Response Body (Solo Play)**
+```json
+{
+   "message": "Solo game created",
+   "gameDetails": {
+      "countOfPuzzles": 10,
+      "category": "all",
+      "gameMode": "solo",
+      "gameCode": "ABCDEF",
+   },
+   "players": [], // Empty at creation
+   "createdAt": "dateOfCreation",
+   "privateGame": true,
+   "userName": "name"
+}
+```
+
+**Response Body (Multiplayer)**
+```json
+{
+   "message": "Multi game created",
+   "gameDetails": {
+      "countOfPuzzles": 10,
+      "category": "all",
+      "gameMode": "multi",
+      "gameCode": "ABCDEF",
+   },
+   "players": [], // Empty at creation
+   "createdAt": "dateOfCreation",
+   "privateGame": false,
+   "userName": "name"
+}
+```
+
+
+**Response Body**
+> **200**
+>```json
+>{
+>   "message": "JOIN Game exists",
+>   "gameDetails": {
+>      "countOfPuzzles": 10,
+>      "category": "all",
+>      "gameMode": "multi",
+>      "gameCode": "ABCDEF",
+>   },
+>   "players": [
+>      "name2","name3"
+>   ],
+>   "createdAt": "dateOfCreation",
+>   "privateGame": false,
+>   "userName": "name"
+>}
+>```
+
+> **404**
+>```json
+>{
+>   "message": "EMPTY Game ABCDEF does not exist",
+>   "userName": "name"
+>}
+>```
+
+## `customSettings` Object
+**NOT FINAL**
+*The `customSettings` parameter allows for editing the game prior to creation. Put these in an object in your JSON request.*
+
+All of the options shown are optional, anything in [square brackets] means their default options.
+
+Your options are:
+- `puzzleCount` (int) [10] - Number of puzzles in a game, maximum 30.
+- `category` (string, enum) [`'all'`] - Category to restrict words from when the game gets started
+- 
+
+# Words
+## `POST /words` - Create multiple words (V2)
+*Creates multiple words in the database*
+
+**Request Body**
+- `words` (words[]): The list of words to be inserted. Note that a single word have all of the required components.
+   - `word` (string): The word to be created
+   - `hints` (string[]): Array of hints or descriptions for the given word, **required to have 3 in the array, but use `""` for an empty hint.**
+   - `category` (string): The category of the given word
+   - `difficulty` (number): The difficulty of the word, where a higher number would indicate a harder difficulty
+
+**Response Body**
+Returns the list of inserted word documents.
+
+**Example**
+```
+const payload = { words: [
+   { word: "my word1", hints: ["hint1", "hint2"], category: "word", difficulty: 0 },
+   { word: "my word2", hints: ["hint3", "hint4"], category: "word", difficulty: 1 }
+]};
+
+request.post('/words', payload);
+```
+
+## `GET /words` - Get words (V2)
+*Gets a list of words or all words in the database*
+
+**Request Query**
+- `category` (string): The category of the words to get
+- `difficulty` (number): The difficulty of the words to get
+- `count` (number): Number of words to get (note that when specifying the count, the list will be randomized)
+
+**Response Body**
+Returns the list of word documents.
+
+**Example**
+```
+request.get('/words');                 // gets all words
+request.get('/words?category=word');   // gets all words with the category "word"
+request.get('/words?difficulty=1');    // gets all words with the difficulty 1
+request.get('/words?count=1');         // gets 1 random word from the database
+```
+## Deprecated (V1)
+The following endpoints still exist, but should be removed as they do not serve any use. Manage words using `manage.py` under `./server/data` locally. Server will always pull the word list there by every restart.
+
+### `POST /words/word` - Create a word
 *Creates a single word in the database*
 
 **Request Body**
@@ -270,7 +409,7 @@ request.post('/words/word', payload);
 
 ```
 
-## `GET /words/word` - Get a word
+### `GET /words/word` - Get a word
 *Finds a list of words in the database by a given "word"*
 
 **Request Body**
@@ -286,7 +425,7 @@ const payload = { word: "my word" };
 request.get('/words/word', payload);
 ```
 
-## `PATCH /words/word` - Update a word
+### `PATCH /words/word` - Update a word
 *Finds a single word from the database*
 
 **Request Body**
@@ -304,7 +443,7 @@ const payload = { word: "my word", hint: "hint1", newHints: ["new hint1", "new h
 request.patch('/words/word', payload);
 ```
 
-## `DELETE /words/word` - Delete a word
+### `DELETE /words/word` - Delete a word
 *Deletes a single word from the database*
 
 **Request Body**
@@ -319,48 +458,6 @@ Returns the delete status (e.g., `res.body.deletedCount == 1` for success).
 const payload = { word: "my word", hint: "hint1" };
 
 request.delete('/words/word', payload);
-```
-
-## `POST /words` - Create multiple words
-*Creates multiple words in the database*
-
-**Request Body**
-- `words` (words[]): The list of words to be inserted. Note that a single word have all of the required components.
-   - `word` (string): The word to be created
-   - `hints` (string[]): List of hints or descriptions for the given word
-   - `category` (string): The category of the given word
-   - `difficulty` (number): The difficulty of the word, where a higher number would indicate a harder difficulty
-
-**Response Body**
-Returns the list of inserted word documents.
-
-**Example**
-```
-const payload = { words: [
-   { word: "my word1", hints: ["hint1", "hint2"], category: "word", difficulty: 0 },
-   { word: "my word2", hints: ["hint3", "hint4"], category: "word", difficulty: 1 }
-]};
-
-request.post('/words', payload);
-```
-
-## `GET /words` - Get words
-*Gets a list of words or all words in the database*
-
-**Request Query**
-- `category` (string): The category of the words to get
-- `difficulty` (number): The difficulty of the words to get
-- `count` (number): Number of words to get (note that when specifying the count, the list will be randomized)
-
-**Response Body**
-Returns the list of word documents.
-
-**Example**
-```
-request.get('/words');                 // gets all words
-request.get('/words?category=word');   // gets all words with the category "word"
-request.get('/words?difficulty=1');    // gets all words with the difficulty 1
-request.get('/words?count=1');         // gets 1 random word from the database
 ```
 
 # Scores

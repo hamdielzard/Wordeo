@@ -8,8 +8,11 @@ import '../Styles/Button.css';
  * @param onClick - Function that is called when the button is clicked
  * @param type - String that determines the type of button [primary, secondary, ternary, toggles]
  * @param size - String that determines the text size of the button [small, medium, large]
+ * @param transparent - Boolean that determines if the button is transparent or not
+ * @param scale - Number that determines the scale of the button
+ * @param width - Number that determines the width of the button
  */
-const Button = ({ label, onClick, type, size, transparent, scale }) => {
+const Button = ({ label, onClick, type, size, transparent, scale, width }) => {
 
     let buttonType = 'button-primary';
 
@@ -19,6 +22,8 @@ const Button = ({ label, onClick, type, size, transparent, scale }) => {
         buttonType = 'button-ternary';
     } else if (type === 'toggles') {
         buttonType = 'button-toggles';
+    } else if (type === 'gray') {
+        buttonType = 'button-gray';
     }
 
     let buttonTextSize = 32;
@@ -28,6 +33,9 @@ const Button = ({ label, onClick, type, size, transparent, scale }) => {
     }
     else if (size === 'large') {
         buttonTextSize = 48;
+    }
+    else if (!isNaN(size)) {
+        buttonTextSize = size;
     }
 
     let opacity = 1;
@@ -40,9 +48,14 @@ const Button = ({ label, onClick, type, size, transparent, scale }) => {
         buttonScale = scale;
     }
 
+    let buttonWidth = 340;
+    if (width) {
+        buttonWidth = width;
+    }
+
 
     return (
-        <button className={buttonType} style={{ fontSize: buttonTextSize, opacity: opacity, scale: buttonScale }} onClick={onClick}>
+        <button className={buttonType} style={{ fontSize: buttonTextSize, opacity: opacity, scale: buttonScale, width: width }} onClick={onClick}>
             {label}
         </button>
     );
@@ -51,8 +64,8 @@ const Button = ({ label, onClick, type, size, transparent, scale }) => {
 Button.propTypes = {
     label: PropTypes.string.isRequired,
     onClick: PropTypes.func.isRequired,
-    type: PropTypes.oneOf(['primary', 'secondary', 'ternary', 'toggles']),
-    size: PropTypes.oneOf(['small', 'medium', 'large']),
+    type: PropTypes.oneOf(['primary', 'secondary', 'ternary', 'toggles', 'gray']),
+    size: PropTypes.number || PropTypes.oneOf(['small', 'medium', 'large']),
     transparent: PropTypes.bool,
     scale: PropTypes.number,
 };

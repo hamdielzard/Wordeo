@@ -8,11 +8,12 @@ const MAX_LOGS = 50;
 const logFilePath = path.join(__dirname, 'logs.txt');
 
 let logs = [];
+let logSockets = true; // added boolean to decide whether to log socket logs or not
 
 const logger = {
     info: (message) => {
         const timestamp = new Date().toISOString();
-        console.log(chalk.blue(`[INFO] [${timestamp}] ${message}`));
+        console.log(chalk.bgBlue.white(`[INFO]`) + chalk.blue(` [${timestamp}] ${message}`));
         logs.push(`[INFO] [${timestamp}] ${message}`);
         if (logs.length > MAX_LOGS) {
             logs.shift();
@@ -21,7 +22,7 @@ const logger = {
     },
     warn: (message) => {
         const timestamp = new Date().toISOString();
-        console.log(chalk.yellow(`[WARN] [${timestamp}] ${message}`));
+        console.log(chalk.bgYellow.black(`[WARN]`) + chalk.yellow(` [${timestamp}] ${message}`));
         logs.push(`[WARN] [${timestamp}] ${message}`);
         if (logs.length > MAX_LOGS) {
             logs.shift();
@@ -30,7 +31,7 @@ const logger = {
     },
     error: (message) => {
         const timestamp = new Date().toISOString();
-        console.log(chalk.red(`[ERROR] [${timestamp}] ${message}`));
+        console.log(chalk.bgRed.whiteBright(`[ERROR]`) + chalk.red(` [${timestamp}] ${message}`));
         logs.push(`[ERROR] ${message}`);
         if (logs.length > MAX_LOGS) {
             logs.shift();
@@ -44,6 +45,18 @@ const logger = {
             logs.shift();
         }
         exportLogs();
+    },
+    socket: (message) => {
+        // Use this for socket logs (designed for multiplayer)
+        if (logSockets) { // check if logSockets is true before logging socket logs
+            const timestamp = new Date().toISOString();
+            console.log(chalk.bgGreenBright(`[SOCK]`) + chalk.green(` [${timestamp}] ${message}`));
+            logs.push(`[SOCK] [${timestamp}] ${message}`);
+            if (logs.length > MAX_LOGS) {
+                logs.shift();
+            }
+            //exportLogs(); - TODO: Turn this on after fixing client spam, otherwise it will destroy your hard drive with constant writes :)
+        }
     }
 };
 

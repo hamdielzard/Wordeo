@@ -1,10 +1,13 @@
+// Responsible for timer on game page and calculates the score based on time remaining
+
 import React from "react";
 import { useState, useEffect } from "react";
 
 import "../../Styles/Timer.css"
 
-const Timer = ({ initialTime, wordGuessed, onEnd, timePenalty, incorrectLettersGuessed }) => {
+const Timer = ({ initialTime, wordGuessed, onEnd, timePenalty, incorrectLettersGuessed, activePowerup, powerupOnConsume }) => {
     const [time, setTime] = useState(initialTime)
+    const [hasEnded, updateHasEnded] = useState(false)
     
     useEffect(() => {
 
@@ -16,20 +19,11 @@ const Timer = ({ initialTime, wordGuessed, onEnd, timePenalty, incorrectLettersG
         } 
         // time ends
         else if (!wordGuessed && time <= 0) {    
-            onEnd(0)
+            onEnd(initialTime, time)
+            setTime(initialTime)
         } 
-        // Word was guessed correctly
-        else if (wordGuessed) {
-            let scoreEarned = Math.round((initialTime * 10) * (time / initialTime))
-            onEnd(scoreEarned)
-        }
         return () => clearInterval(intervalId);
-    }, [wordGuessed, time]);
-
-    // If initalTime has changed, a new round has started
-    useEffect(() => {
-        setTime(initialTime)
-    }, [initialTime])
+    }, [time]);
 
     useEffect(() => {
         // Only apply penalties when there are wrong letters
@@ -37,6 +31,21 @@ const Timer = ({ initialTime, wordGuessed, onEnd, timePenalty, incorrectLettersG
             setTime(prev => prev - timePenalty)
         }
     }, [incorrectLettersGuessed])
+
+    // Check if word was guessed correctly
+    useEffect(() => {
+        if (wordGuessed) {
+            onEnd(initialTime, time)
+            setTime(initialTime)
+        }
+    }, [wordGuessed])
+
+    useEffect(() => {
+        if (activePowerup == "Add Time") {
+            setTime(prev => prev + 5)
+            powerupOnConsume()
+        }
+    }, [activePowerup])
 
     return (
         <div className="timer">

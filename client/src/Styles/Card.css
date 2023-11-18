@@ -1,0 +1,26 @@
+.mainCard {
+    width: 100%;
+    background-size: cover;
+    background-position: center;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    transition: all 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
+    cursor: pointer;
+    box-shadow: none;
+    user-select: none;
+}
+
+.mainCard:hover {
+    transition: all 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
+    transform: scale(1.01);
+    filter: brightness(1.1);
+}
+
+.mainCard:active {
+    transition: all 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
+    transform: scale(0.99);
+    filter: brightness(1.3);
+}

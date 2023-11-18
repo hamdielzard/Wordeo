@@ -168,7 +168,7 @@ function SignInPage() {
                             <h1 className='signHeader'>Sign In</h1>
                             <input className="inputField" type="text" id="signInUser" name="username" placeholder='Username' />
                             <input className="inputField" type="password" id="signInPass" name="password" placeholder='Password' />
-                            <button className="signButton" type="submit">Sign In</button>
+                            <button className="button-secondary" style={{fontSize:32}} type="submit">Sign In</button>
                         </div>
                     </form>
                 </div>
@@ -179,7 +179,8 @@ function SignInPage() {
                             <h1 className='signHeader'>Sign Up</h1>
                             <input className="inputField" type="text" id="username" name="username" placeholder='Username' />
                             <input className="inputField" type="password" id="signUpPass" name="password" placeholder='Password' />
-                            <button className="signButton" type="submit">Sign Up</button>
+                            <button className="button-secondary" style={{fontSize:32}} type="submit">Sign Up</button>
+
 
                         </div>
                     </form>
