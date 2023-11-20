@@ -1,0 +1,20 @@
+env:
+  browser: true
+  es2021: true
+  node: true
+extends: airbnb
+parserOptions:
+  ecmaVersion: latest
+  sourceType: module
+rules: {
+ "react/prop-types": "warn",
+  "import/prefer-default-export": "warn",
+  "no-use-before-define": "off",
+  "consistent-return": "off",
+  "react/destructuring-assignment": "off",
+  "max-len": "off",
+  "prefer-destructuring": "warn",
+  "no-nested-ternary": "warn",
+  "no-param-reassign": "off",
+  "no-plusplus": "off",
+}

@@ -1,6 +1,6 @@
 const router = require('express').Router();
 
-const GameController = require('../controllers/GameController.js');
+const GameController = require('../controllers/GameController');
 
 // Figure out if game mode requested is single player or multiplayer
 // If single player, create a new game and send user to game with a private game code

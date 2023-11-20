@@ -1,40 +1,39 @@
-import { GAME_MODES } from "./GameModes";
+import { GAME_MODES } from './GameModes';
 
-const baseUrl = "http://localhost:8080";
+const baseUrl = 'http://localhost:8080';
 
 async function fetchWords(count) {
-    var words;
-    try {
-        const response = await fetch(`${baseUrl}/words?count=${count}`);
-        const result = await response.json();
-        words = result;
-    } catch (error) {
-        console.log(error);
-    }
-    return words;
+  let words;
+  try {
+    const response = await fetch(`${baseUrl}/words?count=${count}`);
+    const result = await response.json();
+    words = result;
+  } catch (error) {
+    console.log(error);
+  }
+  return words;
 }
 
 async function postScore(userId, score) {
-    const payload = {
-        score: score,
-        userID: userId,
-        gameMode: GAME_MODES.Solo // TODO: update to reflect game mode
-    }
+  const payload = {
+    score,
+    userID: userId,
+    gameMode: GAME_MODES.Solo, // TODO: update to reflect game mode
+  };
 
-    console.log(payload);
-   
-    await fetch(`${baseUrl}/scores`, {
-        method: 'POST',
-        headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-    });
+  console.log(payload);
+
+  await fetch(`${baseUrl}/scores`, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  });
 }
 
-
 export {
-    fetchWords,
-    postScore
+  fetchWords,
+  postScore,
 };
