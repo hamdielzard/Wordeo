@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useEffect } from 'react';
 import '../Styles/Game.css';
 import Button from '../Components/Button';
@@ -19,10 +21,10 @@ const userNameCK = document.cookie.split(';').some((item) => item.trim().startsW
 const gameCode = window.location.pathname.split('/').pop();
 
 function GamePage({
-  initialLoad = true,
   initialState = false,
   initialCorrectLetters = [],
-  lobbyDebug = false, data = [],
+  lobbyDebug = false,
+  data = [],
   numRounds = data.length ? data.length : 10,
 }) {
   const user = 'Guest';
@@ -48,12 +50,10 @@ function GamePage({
     userName: null,
     words: null,
   });
-  const [wordList, setWordList] = React.useState(null);
   const [roundCount, setRoundCount] = React.useState(data.length ? data.length : null);
   const [currentRound, setCurrentRound] = React.useState(1);
   const [playerList, setPlayerList] = React.useState([]);
   const [currentScore, setCurrentScore] = React.useState(0);
-  const [sentStarted, setSentStarted] = React.useState(false);
 
   // Game states
   const [gameStatus, updateGameStatus] = React.useState({
@@ -68,7 +68,6 @@ function GamePage({
   const [roundStatus, updateRoundStatus] = React.useState({
     incorrectLettersGuessed: 0,
   });
-  const [loading, setLoading] = React.useState(initialLoad);
   const [gameData, setGameData] = React.useState(data);
 
   if (!playerList.includes(playerName)) {
@@ -77,38 +76,38 @@ function GamePage({
 
   // SOCKET IO
   // playerJoined event received
-  socket.on('playerJoined', (data) => {
-    if (playerList.includes(data.playerName)) {
+  socket.on('playerJoined', (socketData) => {
+    if (playerList.includes(socketData.playerName)) {
       return;
     }
-    setPlayerList(playerList.concat(data.playerName));
+    setPlayerList(playerList.concat(socketData.playerName));
 
     // Also emit to the server that I am in the game too
     socket.emit('iAmHereToo', { gameCode, playerName });
   });
 
   // youAreHereToo event received
-  socket.on('youAreHereToo', (data) => {
-    if (playerList.includes(data.playerName)) {
+  socket.on('youAreHereToo', (socketData) => {
+    if (playerList.includes(socketData.playerName)) {
       return;
     }
-    setPlayerList(playerList.concat(data.playerName));
+    setPlayerList(playerList.concat(socketData.playerName));
   });
 
   // playerLeft event received
-  socket.on('playerLeft', (data) => {
-    setPlayerList(playerList.filter((player) => player !== data.playerName));
+  socket.on('playerLeft', (socketData) => {
+    setPlayerList(playerList.filter((player) => player !== socketData.playerName));
   });
 
   // gameStarted event received
-  socket.on('gameStarted', (data) => {
+  socket.on('gameStarted', () => {
     if (lobbyShown) {
       startClientGame();
     }
   });
 
-  // gameRoundStarted event received
-  socket.on('gameRoundStarted', (data) => {
+  // gameRoundStarted event received
+  socket.on('gameRoundStarted', () => {
     setCurrentRound(currentRound + 1);
     setCurrentScore(0);
   });
@@ -130,8 +129,8 @@ function GamePage({
   // Called whenever game ends, if game ends then post score
   // If game does not end, get new word data
   React.useEffect(() => {
-    if (lobbyDebug == false) {
-      if (gameStatus.gameEnd == true) {
+    if (lobbyDebug === false) {
+      if (gameStatus.gameEnd === true) {
         // submit score
         if (user !== 'Guest') {
           console.log(`final score: ${gameStatus.score}`);
@@ -139,16 +138,15 @@ function GamePage({
         }
       } else {
         fetchWords(numRounds)
-          .then((data) => {
-            setGameData(data);
+          .then((wordData) => {
+            setGameData(wordData);
             updateGameStatus((prev) => ({
               ...prev,
-              currWord: data[0],
-              initialScore: determineWordInitialScore(data[0].difficulty, data[0].word.length),
-              roundTime: determineWordInitialTime(data[0].difficulty, data[0].word.length),
+              currWord: wordData[0],
+              initialScore: determineWordInitialScore(wordData[0].difficulty, wordData[0].word.length),
+              roundTime: determineWordInitialTime(wordData[0].difficulty, wordData[0].word.length),
             }));
-            setRoundCount(data.length);
-            setLoading(false);
+            setRoundCount(wordData.length);
           });
       }
     }
@@ -203,6 +201,7 @@ function GamePage({
             </div>
             <div className="lobbyPlayerList">
               {playerList.map((player, index) => (
+                // eslint-disable-next-line react/no-array-index-key
                 <Card name={player} key={index} />
               ))}
             </div>
@@ -324,18 +323,6 @@ function GamePage({
     restartRound();
   }
 
-  // Called by CoreGame.js to update game status
-  // Called whenever a word was guessed, wordGuessed is set to true,
-  // And Timer.js will calculate the score and call roundEnd()
-  function wordGuessed() {
-    updateGameStatus((prev) => ({
-      ...prev,
-      wordGuessed: true,
-    }));
-
-    restartRound();
-  }
-
   // Called by CoreGame.js to update round status
   function incorrectLetterWasGuessed() {
     updateRoundStatus((prev) => ({
@@ -370,9 +357,9 @@ function GamePage({
       powerup.quantity -= 1;
       powerup.hasActivated = true;
 
-      if (powerup.name == 'Add Time') {
+      if (powerup.name === 'Add Time') {
         updateActivePowerup('Add Time');
-      } else if (powerup.name == 'Reveal Letter') {
+      } else if (powerup.name === 'Reveal Letter') {
         updateActivePowerup('Reveal Letter');
       }
     }
@@ -387,15 +374,15 @@ function GamePage({
 
   /**
      * Gets game details and if valid joins the game lobby
-     * @param {string} gameCode Game code to get details for
+     * @param {string} code Game code to get details for
      * @returns Game details object
      */
-  async function getGameDetails(gameCode) {
-    const response = await fetch(`${API_URL}/game?gameCode=${gameCode}`);
+  async function getGameDetails(code) {
+    const response = await fetch(`${API_URL}/game?gameCode=${code}`);
     if (response.status === 200) {
-      const data = await response.json();
+      const resData = await response.json();
       socket.emit('join-lobby', { gameCode, playerName });
-      setGameDetails(data);
+      setGameDetails(resData);
     } else if (response.status === 404) {
       window.location.pathname = '/';
     } else {
@@ -438,14 +425,9 @@ function GamePage({
   function startClientGame() {
     setLobbyShown(false);
     console.log(gameDetails);
-    // setWordList(gameDetails.words);
-    // setRoundCount(gameDetails.words.length);
   }
 
-  function getPuzzleAtCurrentRound() {
-    return wordList[currentRound - 1];
-  }
-
+  // eslint-disable-next-line no-unused-vars
   function progressRound() {
     if (currentRound === roundCount) {
       endGame();
@@ -468,6 +450,7 @@ function GamePage({
  * @param {int} wordLength The length of the word (unimplemented, maybe easier LONGER words should take longer to solve)
  * @returns Array of [initialTime, initialScore]
  */
+// eslint-disable-next-line no-unused-vars
 function determineWordInitialTime(difficulty, wordLength) {
   if (difficulty <= 2) {
     // 0 to 2
@@ -490,6 +473,7 @@ function determineWordInitialTime(difficulty, wordLength) {
   return 30;
 }
 
+// eslint-disable-next-line no-unused-vars
 function determineWordInitialScore(difficulty, wordLength) {
   if (difficulty <= 2) {
     // 0 to 2
