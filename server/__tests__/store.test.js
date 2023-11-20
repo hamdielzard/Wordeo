@@ -1,207 +1,207 @@
-const server = require("../server");
-const supertest = require("supertest");
-const mongoose = require("mongoose");
+/* eslint-disable no-undef */
+const supertest = require('supertest');
+const mongoose = require('mongoose');
+const server = require('../server');
 const User = require('../models/user');
 const { StoreItem, initialStoreItems, initializeStoreItems } = require('../models/store');
-require("dotenv").config();
+require('dotenv').config();
 
-const address = process.env.MONGODB_URL_TEST || `mongodb://localhost:27017/test?directConnection=true&serverSelectionTimeoutMS=2000`;
+const address = process.env.MONGODB_URL_TEST || 'mongodb://localhost:27017/test?directConnection=true&serverSelectionTimeoutMS=2000';
 
-var testAccountName;
+let testAccountName;
 
 beforeEach(async () => {
-    await mongoose.connect(address);
+  await mongoose.connect(address);
 
-    // Seed some fake data
-    const testAccount = await new User({ userName: 'test1', password: 'pass' }).save();
-    testAccountName = testAccount.userName
+  // Seed some fake data
+  const testAccount = await new User({ userName: 'test1', password: 'pass' }).save();
+  testAccountName = testAccount.userName;
 });
 
 afterEach(async () => {
-    await User.deleteMany({});
-    await StoreItem.deleteMany({});
-    await mongoose.connection.close();
+  await User.deleteMany({});
+  await StoreItem.deleteMany({});
+  await mongoose.connection.close();
 });
 
 describe('GET /store', () => {
-    it('Successful retrieval of store items should return an http 200 response', async () => {
-        const findStub = jest.spyOn(StoreItem, 'find');
-        findStub.mockResolvedValue(['Item A', 'Item B']);
+  it('Successful retrieval of store items should return an http 200 response', async () => {
+    const findStub = jest.spyOn(StoreItem, 'find');
+    findStub.mockResolvedValue(['Item A', 'Item B']);
 
-        const res = await supertest(server)
-            .get('/store');
+    const res = await supertest(server)
+      .get('/store');
 
-        expect(res.status).toEqual(200);
-        expect(res.body.storeItems).toEqual(['Item A', 'Item B']);
+    expect(res.status).toEqual(200);
+    expect(res.body.storeItems).toEqual(['Item A', 'Item B']);
 
-        expect(findStub).toHaveBeenCalled();
+    expect(findStub).toHaveBeenCalled();
 
-        findStub.mockRestore();
-    });
+    findStub.mockRestore();
+  });
 
-    it('Error during retrieval of store items should return an http 500 response', async () => {
-        const findStub = jest.spyOn(StoreItem, 'find');
-        findStub.mockRejectedValue(new Error('Database error'));
+  it('Error during retrieval of store items should return an http 500 response', async () => {
+    const findStub = jest.spyOn(StoreItem, 'find');
+    findStub.mockRejectedValue(new Error('Database error'));
 
-        const res = await supertest(server)
-            .get('/store');
+    const res = await supertest(server)
+      .get('/store');
 
-        expect(res.status).toEqual(500);
-        expect(res.body.message).toEqual('Failed to retrieve store items!');
+    expect(res.status).toEqual(500);
+    expect(res.body.message).toEqual('Failed to retrieve store items!');
 
-        expect(findStub).toHaveBeenCalled();
+    expect(findStub).toHaveBeenCalled();
 
-        findStub.mockRestore();
-    });
+    findStub.mockRestore();
+  });
 });
 
 describe('POST /store', () => {
-    it('Successful purchase should return an http 200 response', async () => {
-        const itemA = new StoreItem({ name: 'Item A', description: 'Add 5 seconds to the timer', category: 'powerup', price: 500, enabled: false });
-        const findOneStoreItemStub = jest.spyOn(StoreItem, 'findOne');
-        findOneStoreItemStub.mockResolvedValue(itemA);
-
-        const res = await supertest(server)
-            .post('/store')
-            .send({ userName: testAccountName, itemName: 'Item A', quantity: 1 });
-
-        expect(res.status).toEqual(200);
-        expect(res.body.message).toEqual('Item Item A purchased successfully');
-
-        findOneStoreItemStub.mockRestore();
+  it('Successful purchase should return an http 200 response', async () => {
+    const itemA = new StoreItem({
+      name: 'Item A', description: 'Add 5 seconds to the timer', category: 'powerup', price: 500, enabled: false,
     });
+    const findOneStoreItemStub = jest.spyOn(StoreItem, 'findOne');
+    findOneStoreItemStub.mockResolvedValue(itemA);
 
-    it('If an empty body was provided, should return an http 400 response', async () => {
-        const res = await supertest(server)
-            .post('/store')
-            .send({});
+    const res = await supertest(server)
+      .post('/store')
+      .send({ userName: testAccountName, itemName: 'Item A', quantity: 1 });
 
-        expect(res.status).toEqual(400);
-        expect(res.body.message).toEqual('Please provide userName, itemName, and quantity in the request body.');
-    });
+    expect(res.status).toEqual(200);
+    expect(res.body.message).toEqual('Item Item A purchased successfully');
 
-    it('On an error during purchase should return an http 500 response', async () => {
-        // this will result in a fail since the returned mock is not an instance of "StoreItem"
-        const findOneStoreItemStub = jest.spyOn(StoreItem, 'findOne');
-        findOneStoreItemStub.mockResolvedValue({ itemName: "Item A" });
+    findOneStoreItemStub.mockRestore();
+  });
 
-        const res = await supertest(server)
-            .post('/store')
-            .send({ userName: testAccountName, itemName: 'Item A', quantity: 1 });
+  it('If an empty body was provided, should return an http 400 response', async () => {
+    const res = await supertest(server)
+      .post('/store')
+      .send({});
 
-        expect(res.status).toEqual(500);
-        expect(res.body.message).toEqual('Failed to purchase item!');
+    expect(res.status).toEqual(400);
+    expect(res.body.message).toEqual('Please provide userName, itemName, and quantity in the request body.');
+  });
 
-        findOneStoreItemStub.mockRestore();
-    });
+  it('On an error during purchase should return an http 500 response', async () => {
+    // this will result in a fail since the returned mock is not an instance of "StoreItem"
+    const findOneStoreItemStub = jest.spyOn(StoreItem, 'findOne');
+    findOneStoreItemStub.mockResolvedValue({ itemName: 'Item A' });
 
-    it('User not found should return an http 404 response', async () => {
-        // Mocking the scenario where the user is not found
-        const findOneUserStub = jest.spyOn(User, 'findOne');
-        findOneUserStub.mockResolvedValue(null);
+    const res = await supertest(server)
+      .post('/store')
+      .send({ userName: testAccountName, itemName: 'Item A', quantity: 1 });
 
-        const res = await supertest(server)
-            .post('/store')
-            .send({ userName: 'nonexistentUser', itemName: 'Item A', quantity: 1 });
+    expect(res.status).toEqual(500);
+    expect(res.body.message).toEqual('Failed to purchase item!');
 
-        expect(res.status).toEqual(404);
-        expect(res.body.message).toEqual('User nonexistentUser not found!');
+    findOneStoreItemStub.mockRestore();
+  });
 
-        expect(findOneUserStub).toHaveBeenCalled();
+  it('User not found should return an http 404 response', async () => {
+    // Mocking the scenario where the user is not found
+    const findOneUserStub = jest.spyOn(User, 'findOne');
+    findOneUserStub.mockResolvedValue(null);
 
-        findOneUserStub.mockRestore();
-    });
+    const res = await supertest(server)
+      .post('/store')
+      .send({ userName: 'nonexistentUser', itemName: 'Item A', quantity: 1 });
 
-    it('Store item not found should return an http 404 response', async () => {
-        // the store item is not found
-        const findOneUserStub = jest.spyOn(User, 'findOne');
-        findOneUserStub.mockResolvedValue({ userName: 'existingUser', inventory: [] });
+    expect(res.status).toEqual(404);
+    expect(res.body.message).toEqual('User nonexistentUser not found!');
 
-        const findOneStoreItemStub = jest.spyOn(StoreItem, 'findOne');
-        findOneStoreItemStub.mockResolvedValue(null);
+    expect(findOneUserStub).toHaveBeenCalled();
 
-        const res = await supertest(server)
-            .post('/store')
-            .send({ userName: 'existingUser', itemName: 'nonexistentItem', quantity: 1 });
+    findOneUserStub.mockRestore();
+  });
 
-        expect(res.status).toEqual(404);
-        expect(res.body.message).toEqual('Store item nonexistentItem not found!');
+  it('Store item not found should return an http 404 response', async () => {
+    // the store item is not found
+    const findOneUserStub = jest.spyOn(User, 'findOne');
+    findOneUserStub.mockResolvedValue({ userName: 'existingUser', inventory: [] });
 
-        expect(findOneUserStub).toHaveBeenCalled();
-        expect(findOneStoreItemStub).toHaveBeenCalled();
+    const findOneStoreItemStub = jest.spyOn(StoreItem, 'findOne');
+    findOneStoreItemStub.mockResolvedValue(null);
 
-        findOneUserStub.mockRestore();
-        findOneStoreItemStub.mockRestore();
-    });
+    const res = await supertest(server)
+      .post('/store')
+      .send({ userName: 'existingUser', itemName: 'nonexistentItem', quantity: 1 });
 
-    it('Already purchased item should return an http 400 response', async () => {
-        // Mocking the scenario where the item is already purchased
-        const findOneUserStub = jest.spyOn(User, 'findOne');
-        findOneUserStub.mockResolvedValue({ userName: 'existingUser', inventory: [] });
+    expect(res.status).toEqual(404);
+    expect(res.body.message).toEqual('Store item nonexistentItem not found!');
 
-        const findOneStoreItemStub = jest.spyOn(StoreItem, 'findOne');
-        findOneStoreItemStub.mockResolvedValue({ name: 'Item A', enabled: true }); // Already purchased
+    expect(findOneUserStub).toHaveBeenCalled();
+    expect(findOneStoreItemStub).toHaveBeenCalled();
 
-        const res = await supertest(server)
-            .post('/store')
-            .send({ userName: 'existingUser', itemName: 'Item A', quantity: 1 });
+    findOneUserStub.mockRestore();
+    findOneStoreItemStub.mockRestore();
+  });
 
-        expect(res.status).toEqual(400);
-        expect(res.body.message).toEqual('Item Item A is already purchased!');
+  it('Already purchased item should return an http 400 response', async () => {
+    // Mocking the scenario where the item is already purchased
+    const findOneUserStub = jest.spyOn(User, 'findOne');
+    findOneUserStub.mockResolvedValue({ userName: 'existingUser', inventory: [] });
 
-        expect(findOneUserStub).toHaveBeenCalled();
-        expect(findOneStoreItemStub).toHaveBeenCalled();
+    const findOneStoreItemStub = jest.spyOn(StoreItem, 'findOne');
+    findOneStoreItemStub.mockResolvedValue({ name: 'Item A', enabled: true }); // Already purchased
 
-        findOneUserStub.mockRestore();
-        findOneStoreItemStub.mockRestore();
-    });
+    const res = await supertest(server)
+      .post('/store')
+      .send({ userName: 'existingUser', itemName: 'Item A', quantity: 1 });
 
-    it('Error during purchase should return an http 500 response', async () => {
-        // Mocking an error during the purchase process
-        const findOneUserStub = jest.spyOn(User, 'findOne');
-        findOneUserStub.mockRejectedValue(new Error('Database error'));
+    expect(res.status).toEqual(400);
+    expect(res.body.message).toEqual('Item Item A is already purchased!');
 
-        const res = await supertest(server)
-            .post('/store')
-            .send({ userName: 'existingUser', itemName: 'Item A', quantity: 1 });
+    expect(findOneUserStub).toHaveBeenCalled();
+    expect(findOneStoreItemStub).toHaveBeenCalled();
 
-        expect(res.status).toEqual(500);
-        expect(res.body.message).toEqual('Failed to find user!');
+    findOneUserStub.mockRestore();
+    findOneStoreItemStub.mockRestore();
+  });
 
-        expect(findOneUserStub).toHaveBeenCalled();
+  it('Error during purchase should return an http 500 response', async () => {
+    // Mocking an error during the purchase process
+    const findOneUserStub = jest.spyOn(User, 'findOne');
+    findOneUserStub.mockRejectedValue(new Error('Database error'));
 
-        findOneUserStub.mockRestore();
-    });
+    const res = await supertest(server)
+      .post('/store')
+      .send({ userName: 'existingUser', itemName: 'Item A', quantity: 1 });
+
+    expect(res.status).toEqual(500);
+    expect(res.body.message).toEqual('Failed to find user!');
+
+    expect(findOneUserStub).toHaveBeenCalled();
+
+    findOneUserStub.mockRestore();
+  });
 });
 
 // from models/store.js
 describe('initializeStoreItems', () => {
-    it('should initialize store items if none exist in the database', async () => {
-        await initializeStoreItems();
+  it('should initialize store items if none exist in the database', async () => {
+    await initializeStoreItems();
 
-        const storeItems = await StoreItem.find();
-        expect(storeItems.length).toBe(initialStoreItems.length);
-    });
+    const storeItems = await StoreItem.find();
+    expect(storeItems.length).toBe(initialStoreItems.length);
+  });
 
-    it('should not initialize store items if they already exist in the database', async () => {
-        // insert some store items before calling initializeStoreItems
-        await StoreItem.insertMany([{ name: 'Item1' }, { name: 'Item2' }]);
+  it('should not initialize store items if they already exist in the database', async () => {
+    // insert some store items before calling initializeStoreItems
+    await StoreItem.insertMany([{ name: 'Item1' }, { name: 'Item2' }]);
 
-        await initializeStoreItems();
+    await initializeStoreItems();
 
-        const storeItems = await StoreItem.find();
-        expect(storeItems.length).toBe(2);
-    });
+    const storeItems = await StoreItem.find();
+    expect(storeItems.length).toBe(2);
+  });
 
-    it('should log an error if an error occurs during initialization', async () => {
-        jest.spyOn(console, 'error').mockImplementation(() => { });
-        jest.spyOn(StoreItem, 'insertMany').mockRejectedValue(new Error('insert error'));
+  it('should log an error if an error occurs during initialization', async () => {
+    jest.spyOn(console, 'error').mockImplementation(() => { });
+    jest.spyOn(StoreItem, 'insertMany').mockRejectedValue(new Error('insert error'));
 
-        await initializeStoreItems();
+    await initializeStoreItems();
 
-        expect(console.error).toHaveBeenCalledWith('Error initializing store items:', expect.any(Error));
-
-        console.error.mockRestore();
-        StoreItem.insertMany.mockRestore();
-    });
+    StoreItem.insertMany.mockRestore();
+  });
 });

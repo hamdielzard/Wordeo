@@ -5,4 +5,7 @@ env:
 extends: airbnb-base
 parserOptions:
   ecmaVersion: latest
-rules: {}
+rules: {
+   "consistent-return": "off",
+   "no-param-reassign": "off",
+}

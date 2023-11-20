@@ -1,13 +1,14 @@
-const express = require('express')
-const router = express.Router()
+const express = require('express');
 
-const UserController = require('../controllers/UserController.js'); 
+const router = express.Router();
 
-router.get('/', UserController.index)
-router.patch('/', UserController.update)
-router.patch('/inventory', UserController.createInventory)
-router.patch('/coin', UserController.updateCoins)
-router.get('/coin', UserController.getCoinBalance)
-router.delete('/', UserController.destroy)
+const UserController = require('../controllers/UserController');
 
-module.exports = router
+router.get('/', UserController.index);
+router.patch('/', UserController.update);
+router.patch('/inventory', UserController.createInventory);
+router.patch('/coin', UserController.updateCoins);
+router.get('/coin', UserController.getCoinBalance);
+router.delete('/', UserController.destroy);
+
+module.exports = router;
