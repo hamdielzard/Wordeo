@@ -1,0 +1,22 @@
+name: SonarQube Analysis - Server
+
+on:
+    push:
+        branches: [ "main" ]
+    pull_request:
+        branches: [ "main" ]
+    workflow_dispatch:
+        # manual trigger
+jobs:
+    sonarqube:
+        runs-on: ubuntu-latest
+        steps:
+        - name: Checkout
+          uses: actions/checkout@v3
+          with:
+          # Disabling shallow clones is recommended for improving the relevancy of reporting
+            fetch-depth: 0
+        - name: SonarQube Scan
+          uses: sonarsource/sonarqube-scan-action@master
+        env:
+            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_SERVER }}
