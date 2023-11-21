@@ -23,7 +23,7 @@ const initialStoreItems = [
     name: 'Add Time', description: 'Add 5 seconds to the timer', category: 'powerup', price: 500, enabled: false,
   },
   {
-    name: 'Reveal Letter', description: 'Reveal one random letter in the word', category: 'powerup', price: 2500, enabled: false,
+    name: 'Reveal Letter', description: 'Reveal one random letter in the wordz', category: 'powerup', price: 2500, enabled: false,
   },
 ];
 
