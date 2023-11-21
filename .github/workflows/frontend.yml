@@ -4,8 +4,10 @@ on:
   # On every push to main, and pull request for merging to main, run this action.
   push:
     branches: [ "main" ]
+    paths: ["./client/**"]
   pull_request:
     branches: [ "main" ]
+    paths: ["./client/**"]
 
 jobs:
   Test:

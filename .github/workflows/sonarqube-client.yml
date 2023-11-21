@@ -3,8 +3,10 @@ name: SonarQube Analysis - Client
 on:
     push:
         branches: [ "main" ]
+        paths: ["./client/**"]
     pull_request:
         branches: [ "main" ]
+        paths: ["./client/**"]
     workflow_dispatch:
         # manual trigger
 jobs:
