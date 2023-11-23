@@ -1,5 +1,3 @@
-/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useState, useLayoutEffect, useEffect } from 'react';
 import BoardEntry from '../Components/BoardEntry';
 import WordeoLogo from '../Images/WordeoLogo.png';
