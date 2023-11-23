@@ -314,7 +314,10 @@ function AccountPage() {
 
     // The text boxes are limited to 15 and 200 characters respectively,
     // but this is a double check.
-    if (newDisplayName.length > 15) {
+    if (newDisplayName.length < 1) {
+      setEditingError('Display name is too short!');
+      return false;
+    } if (newDisplayName.length > 15) {
       setEditingError('Display name is too long!');
       return false;
     } if (newDescription.length > 200) {
