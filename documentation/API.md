@@ -2,8 +2,8 @@
 
 - [API Documentation](#api-documentation)
 - [Authentication](#authentication)
-  - [`POST /auth/regiser` - Register new account](#post-authregiser---register-new-account)
-  - [`POST /auth/login` - Login to existing account](#post-authlogin---login-to-existing-account)
+  - [`POST /api/regiser` - Register new account](#post-authregiser---register-new-account)
+  - [`POST /api/login` - Login to existing account](#post-authlogin---login-to-existing-account)
 - [User Management](#user-management)
   - [`INFO` - Achievements for Users](#info---achievements-for-users)
   - [`GET /user` - Get user(s) info](#get-user---get-users-info)
@@ -30,7 +30,7 @@
 
 
 # Authentication
-## `POST /auth/regiser` - Register new account
+## `POST /api/regiser` - Register new account
 *Registers a new account and saves it*
 
 **Request Body**
@@ -75,7 +75,7 @@
 >}
 >```
 
-## `POST /auth/login` - Login to existing account
+## `POST /api/login` - Login to existing account
 *Logs in to an account by verifying its details.*
 
 **Request Body**
