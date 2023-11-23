@@ -1,11 +1,11 @@
 const express = require('express');
 
 const router = express.Router();
-const StoreController = require('../controllers/StoreController');
+const storeController = require('../controllers/store-controller');
 
 // GET request to retrieve all store items
-router.get('/', StoreController.getAllStoreItems);
+router.get('/', storeController.getAllStoreItems);
 
-router.post('/', StoreController.buyItem);
+router.post('/', storeController.buyItem);
 
 module.exports = router;

@@ -2,13 +2,13 @@ const express = require('express');
 
 const router = express.Router();
 
-const UserController = require('../controllers/UserController');
+const userController = require('../controllers/user-controller');
 
-router.get('/', UserController.index);
-router.patch('/', UserController.update);
-router.patch('/inventory', UserController.createInventory);
-router.patch('/coin', UserController.updateCoins);
-router.get('/coin', UserController.getCoinBalance);
-router.delete('/', UserController.destroy);
+router.get('/', userController.index);
+router.patch('/', userController.update);
+router.patch('/inventory', userController.createInventory);
+router.patch('/coin', userController.updateCoins);
+router.get('/coin', userController.getCoinBalance);
+router.delete('/', userController.destroy);
 
 module.exports = router;
