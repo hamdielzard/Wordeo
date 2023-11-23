@@ -93,6 +93,11 @@
     border-radius: 20px;
     background: #F0F0F0;
     cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.item-icon:hover{
+    transform: scale(0.95);
 }
 
 .item-icon-image {

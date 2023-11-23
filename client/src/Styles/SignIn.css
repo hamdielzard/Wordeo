@@ -37,6 +37,11 @@
     border-radius: 10px;
     border: 5px solid;
     border-color: #5B42F4;
+    transition: all 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.inputHolder:hover{
+    transform: scale(1.05);
 }
 
 .inputField {
@@ -98,8 +103,16 @@
     font-weight: 900;
     font-size: 72px;
     color: #FFF;
-    -webkit-text-stroke: 3px #000;
-    text-stroke: 3px #000;
+    -webkit-text-stroke: 1px #000;
+}
+
+.homepageLogo {
+    transition: all 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.homepageLogo:hover {
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 15px rgb(237, 178, 0));
 }
 
 .warningFooter {
