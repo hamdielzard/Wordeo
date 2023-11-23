@@ -127,6 +127,14 @@
     line-height: normal;
 }
 
+.not-login-text {
+    color: #FFF;
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+
 .item-popup, .success-popup {
     position: fixed;
     top: 15%;
