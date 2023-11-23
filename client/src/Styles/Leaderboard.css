@@ -23,6 +23,12 @@
     border-radius:20px;
 }
 
+.scoreRow:hover{
+    transition: all 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);  
+    transform: scale(1.1);
+    box-shadow: 0 0 5px rgb(237, 178, 0);
+}
+
 .searchBar{
     background-color: white;
     justify-content: center;
@@ -34,10 +40,40 @@
     width:210px;
 }
 
+.searchBar:hover{
+    transition: all 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);  
+    transform: scale(1.05);
+}
+
+.homepageLogo {
+    transition: all 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.homepageLogo:hover {
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 5px rgb(237, 178, 0));
+}
+
 .searchButton{
     border: 4px solid #248C28;
     background: #4CAF50;
     border-radius: 10px;
     padding:"15px";
     border-radius:"10px";
+    transition: all 0.2s ease-in-out;
+}
+
+.searchButton:hover {
+    background: #4CAF50;
+    border: 5px solid #248C28;
+    box-shadow: 0 0 10px #4CAF50;
+    transition: all 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.searchButton:active {
+    background: #24FF28;
+    border: 5px solid #248F28;
+    box-shadow: 0 0 10px #4CAF50;
+    transform: scale(0.95);
+    transition: all 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
