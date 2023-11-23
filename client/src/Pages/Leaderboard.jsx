@@ -29,7 +29,7 @@ function Leaderboard() {
   useEffect(() => {
     if ((document.cookie.split(';').some((item) => item.trim().startsWith('userName=')))) {
       const currentUser = (`; ${document.cookie}`).split('; userName=').pop().split(';')[0];
-      if (currentUser) setCookieName(cookie);
+      if (currentUser) setCookieName(currentUser);
     }
 
     fetchScoreData('solo');
