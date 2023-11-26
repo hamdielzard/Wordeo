@@ -411,7 +411,7 @@ function AccountPage() {
       }
 
       return accountInformation.achievements.map((achievement) => (
-        <Achievement name={achievement.name} description={achievement.description} locked={achievement.locked} />
+        <Achievement key={achievement.name} name={achievement.name} description={achievement.description} locked={achievement.locked} />
       ));
     }
   };
