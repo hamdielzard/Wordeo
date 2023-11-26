@@ -8,12 +8,12 @@ const urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 // load router modules: https://expressjs.com/en/guide/routing.html
 const io = require('socket.io-client');
-const WordRoute = require('./routes/words');
-const ScoreRoute = require('./routes/scores');
-const AuthRoute = require('./routes/auth');
-const UserRoute = require('./routes/user');
-const GameRoute = require('./routes/game');
-const StoreRoutes = require('./routes/store');
+const wordRoute = require('./routes/words');
+const scoreRoute = require('./routes/scores');
+const authRoute = require('./routes/auth');
+const userRoute = require('./routes/user');
+const gameRoute = require('./routes/game');
+const storeRoutes = require('./routes/store');
 
 // Load socket io client to emit events to the server
 
@@ -44,12 +44,12 @@ const app = express();
 app.use(cors());
 app.use(jsonParser);
 app.use(urlencodedParser);
-app.use('/words', WordRoute);
-app.use('/scores', ScoreRoute);
-app.use('/api', AuthRoute);
-app.use('/user', UserRoute);
-app.use('/game', GameRoute);
-app.use('/store', StoreRoutes);
+app.use('/words', wordRoute);
+app.use('/scores', scoreRoute);
+app.use('/api', authRoute);
+app.use('/user', userRoute);
+app.use('/game', gameRoute);
+app.use('/store', storeRoutes);
 
 // test endpoint
 app.get('/', (req, res) => {
