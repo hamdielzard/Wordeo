@@ -203,8 +203,8 @@ function AccountPage() {
   async function performAccountEdit(userName, displayName, description) {
     // PATCH /user
 
-    let updatedDisplayName = '';
-    let updatedDescription = '';
+    let updatedDisplayName = displayName;
+    let updatedDescription = description;
 
     if (testEnvironment) {
       setAccountInformation({
@@ -225,8 +225,8 @@ function AccountPage() {
       },
       body: JSON.stringify({
         userName,
-        updatedDisplayName,
-        updatedDescription,
+        displayName: updatedDisplayName,
+        description: updatedDescription,
       }),
     });
 
