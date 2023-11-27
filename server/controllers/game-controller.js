@@ -13,7 +13,7 @@ let lobbies = [];
  *
  * @see {@link createLobby}
  */
-const create = (req, res) => {
+const create = async (req, res) => {
   // Create a new lobby server-side and return the game code
   // If single player, create a new game with private game code
   // If multiplayer, create a new game with public game code.
@@ -46,7 +46,8 @@ const create = (req, res) => {
     logger.warn('[400] POST /game - GameController: User name not provided');
   } else {
     try {
-      if (User.findOne({ userName }) == null) {
+      const user = await User.findOne({ userName });
+      if (user == null) {
         res.status(404).json({
           message: `User ${userName} not found!`,
         });
@@ -114,10 +115,6 @@ const get = (req, res) => {
       logger.cont(`Details: ${error}`);
     }
   }
-};
-
-module.exports = {
-  create, get,
 };
 
 // Helper functions
@@ -308,3 +305,7 @@ process.stdin.on('data', (data) => {
     lobbies = [];
   }
 });
+
+module.exports = {
+  create, get,
+};
