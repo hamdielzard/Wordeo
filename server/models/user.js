@@ -19,6 +19,11 @@ const defaultAchievements = [
     description: 'Achieved for updating your description!',
     locked: true,
   },
+  {
+    name: 'Ace',
+    description: 'Achieved for winning 5 games!',
+    locked: true,
+  },
 ];
 
 const AccountSchema = new Schema({
