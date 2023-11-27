@@ -93,6 +93,11 @@
     border-radius: 20px;
     background: #F0F0F0;
     cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.item-icon:hover{
+    transform: scale(0.95);
 }
 
 .item-icon-image {
@@ -117,6 +122,14 @@
 .item-icon-price {
     color: #FFF;
     font-size: 40px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+
+.not-login-text {
+    color: #FFF;
+    font-size: 32px;
     font-style: normal;
     font-weight: 700;
     line-height: normal;

@@ -4,6 +4,14 @@ import WordeoLogo from '../Images/WordeoLogo.png';
 import magGlass from '../Images/search.png';
 import '../Styles/Leaderboard.css';
 
+/**
+ * **This leaderboard page allows users to view the top score for each player of Wordeo.**
+ *
+ * If the player is logged in and has a score on the board, their score will be blue instead of white.
+ *
+ * @returns React page for leaderboards
+ */
+
 function Leaderboard() {
   const baseUrl = 'http://localhost:8080';
   const [scores, setScores] = useState([]);
@@ -29,7 +37,7 @@ function Leaderboard() {
   useEffect(() => {
     if ((document.cookie.split(';').some((item) => item.trim().startsWith('userName=')))) {
       const currentUser = (`; ${document.cookie}`).split('; userName=').pop().split(';')[0];
-      if (currentUser) setCookieName(cookie);
+      if (currentUser) setCookieName(currentUser);
     }
 
     fetchScoreData('solo');
@@ -103,7 +111,7 @@ function Leaderboard() {
 
   return (
     <div className="leaderboard">
-      <img src={WordeoLogo} alt="Wordeo" style={{ height: 128, cursor: 'pointer' }} onClick={() => { window.location = '/'; }} />
+      <img src={WordeoLogo} alt="Wordeo" className="homepageLogo" style={{ height: 128, cursor: 'pointer' }} onClick={() => { window.location = '/'; }} />
       <h1>Leaderboards</h1>
       <div className="scoreRow" style={{ justifyContent: 'center' }}>
         <input className="searchBar" id="nameSelect" />

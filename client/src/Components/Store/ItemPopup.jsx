@@ -18,7 +18,7 @@ function ItemPopup({ item, isVisible, popupOnExit }) {
               updateQuantity(1);
             }}
             type="ternary"
-            size="small"
+            size="medium"
           />
         </div>
         <div className="item-popup-image">

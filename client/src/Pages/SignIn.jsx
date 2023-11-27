@@ -155,7 +155,7 @@ function SignInPage() {
 
   return (
     <div className="signInMain">
-      <img src={WordeoLogo} alt="Wordeo Logo" onClick={() => { window.location.pathname = '/'; }} style={{ cursor: 'pointer' }} />
+      <img src={WordeoLogo} alt="Wordeo Logo" onClick={() => { window.location.pathname = '/'; }} className="homepageLogo" style={{ cursor: 'pointer' }} />
       <div className="signinContainer">
         <div className="signBox">
           <form onSubmit={handleSubmit} name="signin">
