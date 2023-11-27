@@ -60,10 +60,29 @@ const updateDescriptionAchievement = async (updateData, user) => {
   return userUpdated;
 };
 
+const updateWinGameAchievement = async (user) => {
+  let userUpdated = false;
+
+  if (user.gamesWon >= 5 && user.achievements[1].locked) {
+    // Check if the user has won 5 or more games and the achievement is still locked
+    user.achievements[1].locked = false; // Unlock the achievement
+    await user.save();
+    userUpdated = true;
+  }
+
+  return userUpdated;
+};
+
 const updateAchievements = async (updateData, user) => {
   const descriptionAchievementUnlocked = await updateDescriptionAchievement(updateData, user);
-  // Add more achievement logic here if needed
-  return descriptionAchievementUnlocked;
+  const winGameAchievementUnlocked = await updateWinGameAchievement(user);
+
+  // You can add more achievement logic here if needed
+
+  return {
+    descriptionAchievementUnlocked,
+    winGameAchievementUnlocked,
+  };
 };
 
 // PATCH /user/
