@@ -25,6 +25,12 @@ const initialStoreItems = [
   {
     name: 'Reveal Letter', description: 'Reveal one random letter in the word', category: 'powerup', price: 2500, enabled: false,
   },
+  {
+    name: 'Calico Cat', description: 'Cute and grumpy', category: 'icon', price: 500, enabled: false,
+  },
+  {
+    name: 'Spooky Ghost', description: 'Boo!', category: 'icon', price: 500, enabled: false,
+  },
 ];
 
 // Function to initialize the store items in the database
