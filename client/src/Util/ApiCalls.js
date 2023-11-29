@@ -1,5 +1,3 @@
-import { GAME_MODES } from './GameModes';
-
 const baseUrl = 'http://localhost:8080';
 
 async function fetchWords(count) {
@@ -14,14 +12,12 @@ async function fetchWords(count) {
   return words;
 }
 
-async function postScore(userId, score) {
+async function postScore(gameMode, userName, score) {
   const payload = {
+    gameMode,
+    userName,
     score,
-    userID: userId,
-    gameMode: GAME_MODES.Solo, // TODO: update to reflect game mode
   };
-
-  console.log(payload);
 
   await fetch(`${baseUrl}/scores`, {
     method: 'POST',
@@ -33,7 +29,24 @@ async function postScore(userId, score) {
   });
 }
 
+async function patchCoins(userName, quantity) {
+  const payload = {
+    userName,
+    quantity,
+  };
+
+  await fetch(`${baseUrl}/user/coin`, {
+    method: 'PATCH',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  });
+}
+
 export {
   fetchWords,
   postScore,
+  patchCoins,
 };

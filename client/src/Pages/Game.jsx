@@ -7,7 +7,7 @@ import { Powerup } from '../Components/Game/Powerups/Powerup';
 import PowerupButton from '../Components/Game/Powerups/PowerupButton';
 import CoreGame from '../Components/OldGame/CoreGame';
 import OldTimer from '../Components/OldGame/OldTimer';
-import { fetchWords, postScore } from '../Util/ApiCalls';
+import { fetchWords, postScore, patchCoins } from '../Util/ApiCalls';
 
 const io = require('socket.io-client');
 
@@ -25,15 +25,12 @@ function GamePage({
   data = [],
   numRounds = data.length ? data.length : 10,
 }) {
-  const user = 'Guest';
-  const userId = '';
-
   // VERIFICATION
   if (gameCode === 'game') {
     window.location.pathname = '/';
   }
 
-  // STATE
+  // Lobby state
   const [gameCodeCopied, setGameCodeCopied] = React.useState(false);
   const [lobbyShown, setLobbyShown] = React.useState(true);
   const [gameDetails, setGameDetails] = React.useState({
@@ -52,6 +49,7 @@ function GamePage({
   const [currentRound, setCurrentRound] = React.useState(1);
   const [playerList, setPlayerList] = React.useState([]);
   const [currentScore, setCurrentScore] = React.useState(0);
+  const [coins, setCoins] = React.useState(0);
 
   // Game states
   const [gameStatus, updateGameStatus] = React.useState({
@@ -128,11 +126,14 @@ function GamePage({
   // If game does not end, get new word data
   React.useEffect(() => {
     if (lobbyDebug === false) {
+      console.log(gameStatus.gameEnd);
       if (gameStatus.gameEnd === true) {
-        // submit score
-        if (user !== 'Guest') {
-          console.log(`final score: ${gameStatus.score}`);
-          postScore(userId, gameStatus.score);
+        // submit score & update coins
+        if (userNameCK) {
+          const earnedCoins = Math.floor(gameStatus.score / 30);
+          setCoins(earnedCoins);
+          postScore(gameDetails.gameDetails.gameMode, userNameCK, gameStatus.score);
+          patchCoins(userNameCK, earnedCoins);
         }
       } else {
         fetchWords(numRounds)
@@ -235,6 +236,7 @@ function GamePage({
                 && (
                 <GameOver
                   score={currentScore}
+                  coins={coins}
                   restartGame={restartGame}
                 />
                 )}
@@ -422,7 +424,6 @@ function GamePage({
 
   function startClientGame() {
     setLobbyShown(false);
-    console.log(gameDetails);
   }
 
   // eslint-disable-next-line no-unused-vars
