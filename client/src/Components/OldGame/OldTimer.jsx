@@ -18,7 +18,7 @@ function Timer({
   useEffect(() => {
     let intervalId;
     if (!wordGuessed && time > 0) {
-      if ((time < initialTime) && (time % 5 === 0)) { // Call update hint every 5 seconds
+      if ((time !== initialTime) && (time % 5 === 0)) { // Call update hint every 5 seconds
         console.log('update');
         updateHint();
       }
