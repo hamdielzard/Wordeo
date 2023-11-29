@@ -79,7 +79,7 @@ io.on('connection', (socket) => {
   // Client sends message to lobby
   socket.on('message-lobby', (data) => {
     logger.socket(`${data.playerName} sent message to lobby: ${data.gameCode} - ${socket.id}`);
-    socket.to(data.gameCode).emit('message-lobby', data);
+    io.to(data.gameCode).emit('message-lobby', data);
   });
 
   // Client starts game
