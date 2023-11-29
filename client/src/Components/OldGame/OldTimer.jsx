@@ -12,25 +12,35 @@ function Timer({
   incorrectLettersGuessed,
   activePowerup,
   powerupOnConsume,
+  updateHint,
 }) {
   const [time, setTime] = useState(initialTime);
-
   useEffect(() => {
     let intervalId;
     if (!wordGuessed && time > 0) {
+      if ((time < initialTime) && (time % 5 === 0)) { // Call update hint every 5 seconds
+        console.log('update');
+        updateHint();
+      }
       intervalId = setInterval(() => {
         setTime((prevTime) => prevTime - 1);
       }, 1000);
-    } else if (!wordGuessed && time <= 0) { // time ends
+    } else if (!wordGuessed && time <= 0) { // Out of time
       onEnd(initialTime, time);
       setTime(initialTime);
     }
+
+    console.log(time);
+    console.log(initialTime);
+    console.log(time % 5 === 0);
+    console.log('\n');
     return () => clearInterval(intervalId);
   }, [time]);
 
+  // Penalties
   useEffect(() => {
     // Only apply penalties when there are wrong letters
-    if (!incorrectLettersGuessed === 0) {
+    if (!(incorrectLettersGuessed === 0)) {
       setTime((prev) => prev - timePenalty);
     }
   }, [incorrectLettersGuessed]);
@@ -49,6 +59,12 @@ function Timer({
       powerupOnConsume();
     }
   }, [activePowerup]);
+
+  useEffect(() => {
+    if (time !== initialTime) {
+      setTime(initialTime);
+    }
+  }, [initialTime]);
 
   return (
     <div className="timer">
