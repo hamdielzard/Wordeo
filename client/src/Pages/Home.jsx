@@ -39,7 +39,12 @@ function Home() {
   };
 
   const handleJoinGameClick = () => {
-    window.location.pathname = `/game/${joinCode}`;
+    // TODO: use proper error popups instead of alerts
+    if (joinCode == null || joinCode.length === 0) {
+      alert('Please provide a join code!');
+    } else {
+      window.location.pathname = `/game/${joinCode}`;
+    }
   };
 
   const handleCreateGameClick = () => {
