@@ -15,19 +15,25 @@ function Timer({
   updateHint,
 }) {
   const [time, setTime] = useState(initialTime);
+  const [timeSinceLastHint, setTimeSinceLastHint] = useState(0);
+  const [timerStyle, setTimerStyle] = useState({
+    backgroundColor: '#F2F2F2',
+  });
+
   useEffect(() => {
     let intervalId;
     if (!wordGuessed && time > 0) {
-      if ((time !== initialTime) && (time % 5 === 0)) { // Call update hint every 5 seconds
+      if (timeSinceLastHint >= 5) { // Call update hint every 5 seconds
         console.log('update');
         updateHint();
       }
       intervalId = setInterval(() => {
         setTime((prevTime) => prevTime - 1);
+        setTimeSinceLastHint((prevTime) => prevTime + 1);
       }, 1000);
     } else if (!wordGuessed && time <= 0) { // Out of time
       onEnd(initialTime, time);
-      setTime(initialTime);
+      resetTimers();
     }
 
     console.log(time);
@@ -41,7 +47,21 @@ function Timer({
   useEffect(() => {
     // Only apply penalties when there are wrong letters
     if (!(incorrectLettersGuessed === 0)) {
+      // Set timer color to red to indicate that a mistake was made
+      setTimerStyle({
+        backgroundColor: '#FF6767',
+      });
+
       setTime((prev) => prev - timePenalty);
+
+      // Set timer color back to white after one second
+      const timeoutId = setTimeout(() => {
+        setTimerStyle({
+          backgroundColor: '#F2F2F2',
+        });m
+      }, 1000);
+
+      return () => clearTimeout(timeoutId);
     }
   }, [incorrectLettersGuessed]);
 
@@ -49,7 +69,7 @@ function Timer({
   useEffect(() => {
     if (wordGuessed) {
       onEnd(initialTime, time);
-      setTime(initialTime);
+      resetTimers();
     }
   }, [wordGuessed]);
 
@@ -62,12 +82,17 @@ function Timer({
 
   useEffect(() => {
     if (time !== initialTime) {
-      setTime(initialTime);
+      resetTimers();
     }
   }, [initialTime]);
 
+  function resetTimers() {
+    setTime(initialTime);
+    setTimeSinceLastHint(0);
+  }
+
   return (
-    <div className="timer">
+    <div className="timer" style={timerStyle}>
       <div className="timer-text">{time}</div>
     </div>
   );
