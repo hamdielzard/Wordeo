@@ -58,7 +58,7 @@ function Timer({
       const timeoutId = setTimeout(() => {
         setTimerStyle({
           backgroundColor: '#F2F2F2',
-        });m
+        });
       }, 1000);
 
       return () => clearTimeout(timeoutId);
