@@ -8,15 +8,17 @@ import '../Styles/Button.css';
  * @param label - String that is displayed on the button
  * @param onClick - Function that is called when the button is clicked
  * @param type - String that determines the type of button [primary, secondary, ternary, toggles]
+ * @param functionalType - the functional type of the button e.g., submit
  * @param size - String that determines the text size of the button [small, medium, large]
  * @param transparent - Boolean that determines if the button is transparent or not
  * @param scale - Number that determines the scale of the button
  * @param width - Number that determines the width of the button
  */
 function Button({
-  label, onClick, type, size, transparent, scale, width,
+  label, onClick, type, functionalType, size, transparent, scale, width,
 }) {
   let buttonType = 'button-primary';
+  let buttonFunctionalType = 'button';
 
   if (type === 'secondary') {
     buttonType = 'button-secondary';
@@ -26,6 +28,10 @@ function Button({
     buttonType = 'button-toggles';
   } else if (type === 'gray') {
     buttonType = 'button-gray';
+  }
+
+  if (functionalType) {
+    buttonFunctionalType = functionalType;
   }
 
   let buttonTextSize = 32;
@@ -56,13 +62,14 @@ function Button({
 
   return (
     // generic button
-    // eslint-disable-next-line react/button-has-type
     <button
       className={buttonType}
       style={{
         fontSize: buttonTextSize, opacity, scale: buttonScale, buttonWidth,
       }}
       onClick={onClick}
+      // eslint-disable-next-line react/button-has-type
+      type={buttonFunctionalType}
     >
       {label}
     </button>
