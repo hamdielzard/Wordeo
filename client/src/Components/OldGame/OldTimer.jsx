@@ -25,6 +25,7 @@ function Timer({
     if (!wordGuessed && time > 0) {
       if (timeSinceLastHint >= 5) { // Call update hint every 5 seconds
         console.log('update');
+        setTimeSinceLastHint(0);
         updateHint();
       }
       intervalId = setInterval(() => {
@@ -53,13 +54,14 @@ function Timer({
       });
 
       setTime((prev) => prev - timePenalty);
+      setTimeSinceLastHint((prev) => prev + timePenalty);
 
-      // Set timer color back to white after one second
+      // Set timer color back to white after half a second
       const timeoutId = setTimeout(() => {
         setTimerStyle({
           backgroundColor: '#F2F2F2',
         });
-      }, 1000);
+      }, 500);
 
       return () => clearTimeout(timeoutId);
     }

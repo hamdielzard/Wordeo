@@ -8,6 +8,7 @@ import PowerupButton from '../Components/Game/Powerups/PowerupButton';
 import CoreGame from '../Components/OldGame/CoreGame';
 import OldTimer from '../Components/OldGame/OldTimer';
 import RoundOver from '../Components/Game/Powerups/RoundOver';
+import GameStart from '../Components/Game/Powerups/GameStart';
 import { fetchWords, postScore } from '../Util/ApiCalls';
 
 const io = require('socket.io-client');
@@ -53,19 +54,37 @@ function GamePage({
   const [currentRound, setCurrentRound] = React.useState(1);
   const [playerList, setPlayerList] = React.useState([]);
   const [currentScore, setCurrentScore] = React.useState(0);
-
   // Game states
+  /*
+   * round - Curr round for the game
+   * score - Curr score for the game
+   * currWord - Curr word for the game
+   * initialScore - Highest possible score for currWord
+   * roundEnd - If true, display RoundOver
+   * gameStart - If true, display GameStart
+   * gameEnd - If true, display GameEnd
+   * roundTime - Time given for currWord
+   * wordGuessed - If true, word was guessed
+   * hintNum - Number of hints to be displayed
+   */
   const [gameStatus, updateGameStatus] = React.useState({
     round: 1,
     score: 0,
     currWord: data.length ? data[0] : null,
     initialScore: data.length ? determineWordInitialScore(data[0].difficulty, data[0].word.length) : 0,
     roundEnd: false,
+    gameStart: false,
     gameEnd: initialState,
     roundTime: null,
     wordGuessed: false,
     hintNum: 0,
   });
+  // Round States
+  /*
+   * roundWon - If true, round was won
+   * wordSolved - Word that was solved in this round
+   * incorrectLettersGuessed - Number of incorrect letters guessed this round
+   */
   const [roundStatus, updateRoundStatus] = React.useState({
     roundWon: null,
     wordSolved: null,
@@ -236,14 +255,20 @@ function GamePage({
             {playerName || 'Loading userName'}
           </div>
         </div>
-        { gameStatus.gameEnd
+        { (gameStatus.gameEnd && !gameStatus.roundEnd)
                 && (
                 <GameOver
                   score={currentScore}
                   restartGame={restartGame}
                 />
                 )}
-        { (!gameStatus.gameEnd && !gameStatus.roundEnd)
+        { gameStatus.gameStart
+                && (
+                  <GameStart
+                    startCoreGame={startCoreGame}
+                  />
+                )}
+        { (!gameStatus.gameEnd && !gameStatus.gameStart && !gameStatus.roundEnd)
                 && (
                 <div className="gameInteractive">
                   <div className="gamePowerups">
@@ -276,7 +301,16 @@ function GamePage({
                   />
                 </div>
                 )}
-        { (!gameStatus.gameEnd && gameStatus.roundEnd)
+        { (!gameStatus.gameEnd && !gameStatus.gameStart && gameStatus.roundEnd)
+                && (
+                  <RoundOver
+                    word={roundStatus.wordSolved}
+                    restartRound={restartRound}
+                    roundWon={roundStatus.roundWon}
+                    lastWord={false}
+                  />
+                )}
+        { (gameStatus.gameEnd && !gameStatus.gameStart && gameStatus.roundEnd)
                 && (
                   <RoundOver
                     word={roundStatus.wordSolved}
@@ -289,6 +323,15 @@ function GamePage({
   }
 
   // GAME FUNCTIONS
+
+  // Called by GameStart.jsx to stop displaying start screen
+  function startCoreGame() {
+    updateGameStatus((prev) => ({
+      ...prev,
+      gameStart: false,
+    }));
+  }
+
   // Called by CoreGame.js whenever a word was guessed, wordGuessed is set to true,
   // Since gameStatus.wordGuessed is a dependency of Timer.js, Timer.js will respond to this
   // change in state
@@ -342,6 +385,7 @@ function GamePage({
       updateGameStatus((prev) => ({
         ...prev,
         score: prev.score + scoreEarned,
+        roundEnd: true,
         gameEnd: true,
         roundTime: 0,
       }));
@@ -357,7 +401,7 @@ function GamePage({
     }));
   }
 
-  // Called by CoreGame.js whenever an incorrect letter was guissed
+  // Called by CoreGame.js whenever an incorrect letter was guessed
   function incorrectLetterWasGuessed() {
     updateRoundStatus((prev) => ({
       incorrectLettersGuessed: prev.incorrectLettersGuessed + 1,
@@ -382,6 +426,7 @@ function GamePage({
       score: 0,
       currWord: gameData[0],
       gameEnd: false,
+      gameStart: true,
       roundEnd: false,
       initialScore: determineWordInitialScore(gameData[0].difficulty, gameData[0].word.length),
       roundTime: determineWordInitialTime(gameData[0].difficulty, gameData[0].word.length),
@@ -465,6 +510,10 @@ function GamePage({
 
   function startClientGame() {
     setLobbyShown(false);
+    updateGameStatus((prev) => ({
+      ...prev,
+      gameStart: true,
+    }));
     console.log(gameDetails);
   }
 

@@ -2,7 +2,12 @@ import React, { useState, useEffect } from 'react';
 
 const TIMER_TIME = 3;
 
-function RoundOver({ word, restartRound, roundWon }) {
+function RoundOver({
+  word,
+  restartRound,
+  roundWon,
+  lastWord = true,
+}) {
   const [time, setTime] = useState(TIMER_TIME);
   const backgroundStyle = {
     backgroundColor: '#393939',
@@ -33,7 +38,7 @@ function RoundOver({ word, restartRound, roundWon }) {
         {word}
       </div>
       <div className="round-over-text">
-        The next round begins in
+        {lastWord ? 'Game ends in...' : 'The next round begins in...'}
       </div>
       <div className="timer round-over-timer">
         <div className="timer-text">{time}</div>
