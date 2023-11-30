@@ -13,7 +13,7 @@ function GameOver(props) {
       <div className="gameOver--coins">
         +
         {' '}
-        {Math.floor(props.score / 30)}
+        {props.coins}
         {' '}
         Coins
       </div>

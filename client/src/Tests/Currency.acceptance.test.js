@@ -51,10 +51,11 @@ describe('The Store Page Acceptance Tests', () => {
     expect(popupOnExit).toHaveBeenCalledWith(true, stubData[0], 1, 500);
   });
 
-  test('Earn currency\nGetting 60 points in the game should earn 2 coins', () => {
-    const { container } = render(<GameOver score={60} />);
+  test('Should render the number of coins specified', () => {
+    const numCoins = 2;
+    const { container } = render(<GameOver score={60} coins={numCoins} />);
 
-    expect(container.getElementsByClassName('gameOver--coins')[0].textContent).toBe('+ 2 Coins');
+    expect(container.getElementsByClassName('gameOver--coins')[0].textContent).toBe(`+ ${numCoins} Coins`);
   });
 
   test('Use power up items (Reveal letter)\nThere should be at least one correct box upon using Reveal letter powerup', () => {
