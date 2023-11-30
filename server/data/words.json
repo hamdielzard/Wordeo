@@ -237,7 +237,7 @@
                 "Used to observe distant objects",
                 "Has lenses and mirrors"
             ],
-            "category": "Astronomy",
+            "category": "Science",
             "difficulty": 6
         },
         {
@@ -259,6 +259,746 @@
             ],
             "category": "Genre",
             "difficulty": 2
-        }
+        },
+        {
+            "word": "Elephant",
+            "hints": [
+                "Largest land mammal",
+                "Long trunk and tusks",
+                "Gray and thick-skinned"
+            ],
+            "category": "Animals",
+            "difficulty": 2
+        },
+        {
+            "word": "Photosynthesis",
+            "hints": [
+                "Generates oxygen",
+                "Occurs in plants",
+                "Requires sunlight"
+            ],
+            "category": "Science",
+            "difficulty": 5
+        },
+        {
+            "word": "Ephemeral",
+            "hints": [
+                "Lasting for a very short time",
+                "Transient or fleeting",
+                "Used to describe experiences"
+            ],
+            "category": "Vocabulary",
+            "difficulty": 4
+        },
+        {
+            "word": "Renaissance",
+            "hints": [
+                "Cultural revival",
+                "14th to 17th centuries",
+                "Europe"
+            ],
+            "category": "History",
+            "difficulty": 8
+        },
+        {
+            "word": "Nebula",
+            "hints": [
+                "Interstellar cloud",
+                "Sites of star formation",
+                "Horsehead ___"
+            ],
+            "category": "Science",
+            "difficulty": 7
+        },
+        {
+            "word": "Serendipity",
+            "hints": [
+                "Events by chance",
+                "Finding something without looking for it",
+                "Luck and happy accidents"
+            ],
+            "category": "Vocabulary",
+            "difficulty": 3
+        },
+        {
+            "word": "Quasar",
+            "hints": [
+                "Luminous celestial object",
+                "Powered by black holes",
+                "Emits large amounts of energy"
+            ],
+            "category": "Astronomy",
+            "difficulty": 8
+        },
+        {
+            "word": "Epiphany",
+            "hints": [
+                "Sudden realization",
+                "Aha moment",
+                "A moment of profound insight"
+            ],
+            "category": "Vocabulary",
+            "difficulty": 4
+        },
+        {
+            "word": "Hypotenuse",
+            "hints": [
+                "Longest side of a triangle",
+                "Opposite the right angle",
+                "Pythagorean theorem"
+            ],
+            "category": "Mathematics",
+            "difficulty": 6
+        },
+        {
+            "word": "Melancholy",
+            "hints": [
+                "Pensive sadness",
+                "Thoughtful reflection",
+                "Sorrowful and contemplative"
+            ],
+            "category": "Emotions",
+            "difficulty": 4
+        },
+        {
+            "word": "Myopia",
+            "hints": [
+                "Nearsightedness",
+                "Visual impairment for distant objects",
+                "Corrective lenses"
+            ],
+            "category": "Medical",
+            "difficulty": 6
+        },
+        {
+            "word": "Ineffable",
+            "hints": [
+                "Inexpressible",
+                "Beyond verbal expression",
+                "Too great or extreme to be expressed or described in words"
+            ],
+            "category": "Vocabulary",
+            "difficulty": 8
+        },
+        {
+            "word": "Cryptocurrency",
+            "hints": [
+                "Blockchain",
+                "Digital or virtual currency",
+                "Bitcoin and Ethereum"
+            ],
+            "category": "Technology",
+            "difficulty": 7
+        },
+        {
+            "word": "Symbiosis",
+            "hints": [
+                "Interdependence",
+                "Mutually beneficial relationship",
+                "Interaction between two species"
+            ],
+            "category": "Biology",
+            "difficulty": 6
+        },
+        {
+            "word": "Chiaroscuro",
+            "hints": [
+                "Artistic technique",
+                "Contrasts with light and dark",
+                "3D effect"
+            ],
+            "category": "Art",
+            "difficulty": 9
+        },
+        {
+            "word": "Nefarious",
+            "hints": [
+                "Villainous",
+                "Evil in nature",
+                "Flagrantly immoral"
+            ],
+            "category": "Vocabulary",
+            "difficulty": 7
+        },
+        {
+            "word": "Cacophony",
+            "hints": [
+                "Discordant mixture of sounds",
+                "Unpleasant noise",
+                "Opposite of harmony"
+            ],
+            "category": "Vocabulary",
+            "difficulty": 6
+        },
+        {
+            "word": "Nostalgia",
+            "hints": [
+                "A sentimental longing for the past",
+                "Fondness for memories",
+                "Yearning for a bygone era"
+            ],
+            "category": "Emotions",
+            "difficulty": 5
+        },
+        {
+            "word": "Palindrome",
+            "hints": [
+                "Same backward as forward",
+                "radar, level, civic",
+                "Wordplay and linguistic curiosity"
+            ],
+            "category": "Linguistics",
+            "difficulty": 7
+        },
+        {
+            "word": "Capitulate",
+            "hints": [
+                "To surrender",
+                "To yield",
+                "Cease to resist"
+            ],
+            "category": "Vocabulary",
+            "difficulty": 6
+        },
+        {
+            "word": "Pseudonym",
+            "hints": [
+                "Used for anonymity",
+                "Pen name or alias",
+                "A fictitious name used by an author"
+            ],
+            "category": "Literature",
+            "difficulty": 4
+        },
+        {
+            "word": "Circadian",
+            "hints": [
+                "24-hour biological cycle",
+                "Sleep-wake cycle",
+                "Influences bodily functions"
+            ],
+            "category": "Biology",
+            "difficulty": 6
+        },
+        {
+            "word": "Indelible",
+            "hints": [
+                "Making marks that cannot be removed",
+                "Permanent or lasting",
+                "Impossible to erase or remove"
+            ],
+            "category": "Vocabulary",
+            "difficulty": 5
+        },
+        {
+            "word": "Polyglot",
+            "hints": [
+                "Several languages",
+                "Multilingual individual",
+                "Fluent in multiple languages"
+            ],
+            "category": "Languages",
+            "difficulty": 6
+        },
+        {
+            "word": "Hemisphere",
+            "hints": [
+                "Half of a sphere or globe",
+                "Northern and Southern parts",
+                "Related to geography"
+            ],
+            "category": "Geography",
+            "difficulty": 4
+        },
+        {
+            "word": "Dystopia",
+            "hints": [
+                "An imagined state or society",
+                "Opposite of utopia",
+                "Often depicted in speculative fiction"
+            ],
+            "category": "Literature",
+            "difficulty": 7
+        },
+        {
+            "word": "Apotheosis",
+            "hints": [
+                "The highest point in the development of something",
+                "Elevation to divine status",
+                "Exalted or glorified"
+            ],
+            "category": "Vocabulary",
+            "difficulty": 8
+        },
+        {
+            "word": "Ambivalent",
+            "hints": [
+                "Having mixed feelings",
+                "Uncertain or conflicted",
+                "Doubtful or hesitant"
+            ],
+            "category": "Vocabulary",
+            "difficulty": 5
+        },
+        {
+            "word": "Auspicious",
+            "hints": [
+                "Conducive to success or favorable circumstances",
+                "Favorable or promising",
+                "Fortunate or lucky"
+            ],
+            "category": "Vocabulary",
+            "difficulty": 6
+        },
+        {
+            "word": "Zephyr",
+            "hints": [
+                "A gentle, mild breeze",
+                "Soft and refreshing wind",
+                "Associated with spring or early summer"
+            ],
+            "category": "Meteorology",
+            "difficulty": 4
+        },
+        {
+            "word": "Intransigent",
+            "hints": [
+                "Unwilling to change one's views",
+                "Stubborn or uncompromising",
+                "Resistant to compromise"
+            ],
+            "category": "Vocabulary",
+            "difficulty": 7
+        },
+        {
+            "word": "Mellifluous",
+            "hints": [
+                "Sweetly or smoothly flowing",
+                "Pleasant to hear",
+                "Melodious or harmonious"
+            ],
+            "category": "Vocabulary",
+            "difficulty": 6
+        },
+        {
+            "word": "Paradigm",
+            "hints": [
+                "A typical example or pattern of something",
+                "A model or framework",
+                "Standard or example"
+            ],
+            "category": "Vocabulary",
+            "difficulty": 5
+        },
+        {
+            "word": "Ebullient",
+            "hints": [
+                "Cheerful and full of energy",
+                "Overflowing with enthusiasm",
+                "Bubbling with excitement"
+            ],
+            "category": "Vocabulary",
+            "difficulty": 6
+        },
+        {
+            "word": "Sycophant",
+            "hints": [
+                "A toady individual",
+                "Insincere flatterer",
+                "Submissive and insincere"
+            ],
+            "category": "Vocabulary",
+            "difficulty": 7
+        },
+        {
+            "word": "Panacea",
+            "hints": [
+                "A remedy for all difficulties",
+                "Cure-all or universal remedy",
+                "Supposed answer to all problems"
+            ],
+            "category": "Vocabulary",
+            "difficulty": 6
+        },
+        {
+            "word": "Pasta",
+            "hints": [
+                "Italian dish",
+                "Various shapes and sizes",
+                "Often served with sauce or cheese"
+            ],
+            "category": "Food",
+            "difficulty": 3
+        },
+        {
+            "word": "Sushi",
+            "hints": [
+                "Japanese dish",
+                "Contains rice",
+                "Soy sauce and wasabi"
+            ],
+            "category": "Food",
+            "difficulty": 4
+        },
+        {
+            "word": "Burger",
+            "hints": [
+                "Fast food",
+                "Ground meat patty served in a bun",
+                "Lettuce, tomato, cheese"
+            ],
+            "category": "Food",
+            "difficulty": 2
+        },
+        {
+            "word": "Pizza",
+            "hints": [
+                "Italian dish",
+                "Flat, round base of dough",
+                "Topped with tomato sauce, cheese, and various toppings"
+            ],
+            "category": "Food",
+            "difficulty": 3
+        },
+        {
+            "word": "Avocado",
+            "hints": [
+                "Creamy green fruit",
+                "Rich in healthy fats",
+                "Guacamole"
+            ],
+            "category": "Food",
+            "difficulty": 4
+        },
+        {
+            "word": "Sausage",
+            "hints": [
+                "Cylindrical meat",
+                "Flavored with spices",
+                "Cooked or cured"
+            ],
+            "category": "Food",
+            "difficulty": 3
+        },
+        {
+            "word": "Broccoli",
+            "hints": [
+                "Edible green plant",
+                "High in fiber",
+                "Commonly steamed, boiled, or stir-fried"
+            ],
+            "category": "Food",
+            "difficulty": 2
+        },
+        {
+            "word": "Salmon",
+            "hints": [
+                "Pink-fleshed fish",
+                "Rich in omega-3 fatty acids",
+                "Popular in various cuisines"
+            ],
+            "category": "Food",
+            "difficulty": 3
+        },
+        {
+            "word": "Kangaroo",
+            "hints": [
+                "Native to Australia",
+                "Known for powerful hind legs",
+                "Carries and raises its young in a pouch"
+            ],
+            "category": "Animals",
+            "difficulty": 3
+        },
+        {
+            "word": "Cheetah",
+            "hints": [
+                "Fastest land animal",
+                "Native to Africa and parts of Iran",
+                "Distinctive black tear stripes"
+            ],
+            "category": "Animals",
+            "difficulty": 4
+        },
+        {
+            "word": "Dolphin",
+            "hints": [
+                "Highly intelligent marine mammal",
+                "Known for playful behavior",
+                "Uses echolocation"
+            ],
+            "category": "Animals",
+            "difficulty": 3
+        },
+        {
+            "word": "Giraffe",
+            "hints": [
+                "Tallest living terrestrial animal",
+                "Native to Africa",
+                "Long neck and distinctive spotted coat"
+            ],
+            "category": "Animals",
+            "difficulty": 3
+        },
+        {
+            "word": "Koala",
+            "hints": [
+                "Marsupial native to Australia",
+                "Eats primarily eucalyptus leaves",
+                "Known for its cuddly appearance"
+            ],
+            "category": "Animals",
+            "difficulty": 2
+        },
+        {
+            "word": "Lion",
+            "hints": [
+                "Large carnivorous feline",
+                "Known as the 'king of the jungle'",
+                "Native to Africa and parts of Asia"
+            ],
+            "category": "Animals",
+            "difficulty": 3
+        },
+        {
+            "word": "Tiger",
+            "hints": [
+                "Orange fur and black stripes",
+                "Native to various parts of Asia",
+                "Apex predator"
+            ],
+            "category": "Animals",
+            "difficulty": 3
+        },
+        {
+            "word": "Panda",
+            "hints": [
+                "Characterized by black and white fur",
+                "Primarily herbivorous",
+                "Large bear native to China"
+            ],
+            "category": "Animals",
+            "difficulty": 2
+        },
+        {
+            "word": "Melody",
+            "hints": [
+                "A sequence of single pitches",
+                "Tune or musical line",
+                "Central theme in a piece of music"
+            ],
+            "category": "Music",
+            "difficulty": 3
+        },
+        {
+            "word": "Harmony",
+            "hints": [
+                "The combination of musical notes",
+                "Chords or intervals that sound pleasing",
+                "Enhances the overall sound of music"
+            ],
+            "category": "Music",
+            "difficulty": 4
+        },
+        {
+            "word": "Tempo",
+            "hints": [
+                "The speed at which a piece of music is played",
+                "Beats per minute",
+                "Mood and feel of a composition"
+            ],
+            "category": "Music",
+            "difficulty": 3
+        },
+        {
+            "word": "Chorus",
+            "hints": [
+                "A repeated section of a song",
+                "Features the main theme or lyrics",
+                "Often sung by a group of singers"
+            ],
+            "category": "Music",
+            "difficulty": 2
+        },
+        {
+            "word": "Rhythm",
+            "hints": [
+                "The pattern of beats or time intervals in music",
+                "Foundation of music's temporal aspects",
+                "Includes elements like meter and tempo"
+            ],
+            "category": "Music",
+            "difficulty": 4
+        },
+        {
+            "word": "Composer",
+            "hints": [
+                "A person who creates and writes music",
+                "Author of a musical composition",
+                "May work in various genres and styles"
+            ],
+            "category": "Music",
+            "difficulty": 3
+        },
+        {
+            "word": "Symphony",
+            "hints": [
+                "A long musical composition for full orchestra",
+                "Consists of multiple movements",
+                "Commonly associated with classical music"
+            ],
+            "category": "Music",
+            "difficulty": 5
+        },
+        {
+            "word": "Lyrics",
+            "hints": [
+                "The words of a song",
+                "Convey the song's message or story",
+                "Often accompanied by a melody"
+            ],
+            "category": "Music",
+            "difficulty": 2
+        },
+        {
+            "word": "Crescendo",
+            "hints": [
+                "A gradual increase in loudness or intensity",
+                "Indicated by the symbol '<'",
+                "Builds tension"
+            ],
+            "category": "Music",
+            "difficulty": 4
+        },
+        {
+            "word": "Orchestra",
+            "hints": [
+                "A large instrumental ensemble",
+                "Includes strings, woodwinds, brass, and percussion",
+                "Common in classical and symphonic music"
+            ],
+            "category": "Music",
+            "difficulty": 4
+        },
+        {
+            "word": "Overture",
+            "hints": [
+                "Beginning of an opera or play",
+                "Sets the mood for the upcoming work",
+                "Serves as an introduction"
+            ],
+            "category": "Music",
+            "difficulty": 4
+        },
+        {
+            "word": "Refrain",
+            "hints": [
+                "A repeated line or lines in a song",
+                "Usually follows each verse",
+                "A key element in the structure of a song"
+            ],
+            "category": "Music",
+            "difficulty": 2
+        },
+        {
+            "word": "Aria",
+            "hints": [
+                "A solo vocal piece in an opera",
+                "Showcases the vocal abilities of the singer",
+                "Often expresses intense emotions"
+            ],
+            "category": "Music",
+            "difficulty": 4
+        },
+        {
+            "word": "Algorithm",
+            "hints": [
+                "A set of rules or steps",
+                "Basis for computer programming",
+                "Computational processes"
+            ],
+            "category": "Technology",
+            "difficulty": 4
+        },
+        {
+            "word": "Cybersecurity",
+            "hints": [
+                "The practice of protecting systems",
+                "Involves measures to prevent unauthorized access",
+                "Confidentiality and integrity of information"
+            ],
+            "category": "Technology",
+            "difficulty": 5
+        },
+        {
+            "word": "Philanthropist",
+            "hints": [
+                "Someone who seeks to promote the welfare of others",
+                "Engages in charitable activities",
+                "Donates resources to social causes"
+            ],
+            "category": "Vocabulary",
+            "difficulty": 5
+        },
+        {
+            "word": "DevOps",
+            "hints": [
+                "Collaborative IT approach",
+                "Automation in development and operations",
+                "Continuous integration and deployment"
+            ],
+            "category": "Technology",
+            "difficulty": 4
+        },
+        {
+            "word": "Psycho",
+            "hints": [
+              "Alfred Hitchcock",
+              "Thriller Movie",
+              "1960"
+            ],
+            "category": "Movie",
+            "difficulty": 6
+          },
+          {
+            "word": "Gladiator",
+            "hints": [
+              "Movie with a Roman General",
+              "Russell Crowe",
+              "2000"
+            ],
+            "category": "Movie",
+            "difficulty": 3
+          },
+          {
+            "word": "Titanic",
+            "hints": [
+              "Leonardo DiCaprio & Kate Winslet",
+              "Romance Movie",
+              "1997"
+            ],
+            "category": "Movie",
+            "difficulty": 2
+          },
+          {
+            "word": "Jaws",
+            "hints": [
+              "Killer shark",
+              "Steven Spielberg",
+              "1975"
+            ],
+            "category": "Movie",
+            "difficulty": 2
+          },
+          {
+            "word": "Oppenheimer",
+            "hints": [
+              "The Manhattan Project",
+              "Christopher Nolan",
+              "American physicist"
+            ],
+            "category": "Movie",
+            "difficulty": 4
+          }
     ]
 }
