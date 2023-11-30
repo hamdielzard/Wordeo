@@ -75,7 +75,7 @@ function GamePage({
     roundEnd: false,
     gameStart: false,
     gameEnd: initialState,
-    roundTime: null,
+    roundTime: data.length ? determineWordInitialTime(data[0].difficulty, data[0].word.length) : null,
     wordGuessed: false,
     hintNum: 0,
   });
@@ -262,7 +262,7 @@ function GamePage({
                   restartGame={restartGame}
                 />
                 )}
-        { gameStatus.gameStart
+        { (gameStatus.gameStart)
                 && (
                   <GameStart
                     startCoreGame={startCoreGame}

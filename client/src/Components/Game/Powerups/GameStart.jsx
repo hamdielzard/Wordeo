@@ -15,7 +15,7 @@ function GameStart({ startCoreGame }) {
     }
 
     return () => clearInterval(intervalId);
-  });
+  }, [time]);
   return (
     <div className="game-start">
       <div className="game-start-text">

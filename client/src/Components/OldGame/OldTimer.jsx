@@ -24,7 +24,6 @@ function Timer({
     let intervalId;
     if (!wordGuessed && time > 0) {
       if (timeSinceLastHint >= 5) { // Call update hint every 5 seconds
-        console.log('update');
         setTimeSinceLastHint(0);
         updateHint();
       }
@@ -36,13 +35,8 @@ function Timer({
       onEnd(initialTime, time);
       resetTimers();
     }
-
-    console.log(time);
-    console.log(initialTime);
-    console.log(time % 5 === 0);
-    console.log('\n');
     return () => clearInterval(intervalId);
-  }, [time]);
+  });
 
   // Penalties
   useEffect(() => {
