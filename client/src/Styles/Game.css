@@ -148,7 +148,7 @@
     text-align: center;
 }
 
-.gameClue {
+.gameClue, .round-over-highlight, .game-start-text {
     font-size: 64px;
     color: #f0f0f0;
     font-weight: 700;
@@ -259,3 +259,25 @@
     background: #fe8700;
     border-radius: 5px;
 }
+
+.round-over, .game-start {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    row-gap: 15px;
+    width: 100%;
+    height: calc(100vh - 75px);
+}
+
+.round-over-highlight {
+    margin: 25px
+}
+
+.round-over-text {
+    font-size: 32px;
+    color: #f0f0f0;
+    font-weight: 500;
+}
+

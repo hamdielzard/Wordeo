@@ -10,6 +10,7 @@ function CoreGame({
   initialIncorrectLetters = [],
   activePowerup,
   powerupOnConsume,
+  hintNum,
 }) {
   const word = wordData.word.toLowerCase();
 
@@ -192,10 +193,24 @@ function CoreGame({
     }
   }, [activePowerup]);
 
+  // Given hintNum (number of hints to display), display hintNum hints
+  function generateHints() {
+    let hints = '';
+    const numHints = Math.min(hintNum, wordData.hints.length - 1); // Adjust for overflow
+
+    for (let i = 0; i < numHints; i++) {
+      hints = hints.concat(wordData.hints[i], ', ');
+    }
+
+    hints = hints.concat(wordData.hints[numHints]);
+
+    return hints;
+  }
+
   return (
     <div className="gameMain">
       <div className="gameClue">
-        {wordData.hints[0]}
+        {generateHints()}
       </div>
       <div className="gameLetterBoxes">
         {letters}

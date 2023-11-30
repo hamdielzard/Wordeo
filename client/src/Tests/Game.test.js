@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-filename-extension */
 /* eslint-disable no-undef */
 import React from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, act } from '@testing-library/react';
 import Game from '../Pages/Game';
 import CoreGame from '../Components/OldGame/CoreGame';
 import Timer from '../Components/OldGame/OldTimer';
@@ -25,6 +25,10 @@ const stubData = [{
   difficulty: 2,
 }];
 
+function skipGameBeginning() {
+  
+}
+
 describe('The Game Page', () => {
   test('should render the header', () => {
     const { container } = render(<Game initialLoad={false} data={stubData} />);
@@ -32,26 +36,62 @@ describe('The Game Page', () => {
     expect(container.getElementsByClassName('lobbyHeader').length).toBe(1);
   });
 
+  jest.useFakeTimers()
   test('should render the core game component', () => {
-    const { container } = render(<Game initialLoad={false} data={stubData} lobbyDebug />);
+    const { container } = render(<Game data={stubData}/>);
+    const button = screen.getByText('Start Game');
+    act(() => {
+      fireEvent.click(button);
+    })
+    // Wait for the game start page to disappear
+    act(() => {
+      jest.advanceTimersByTime(5000)
+    })
+
     expect(container.getElementsByClassName('gameMain').length).toBe(1);
   });
 
   test('should render the timer component', () => {
-    const { container } = render(<Game initialLoad={false} data={stubData} lobbyDebug />);
+    const { container } = render(<Game data={stubData}/>);
+    const button = screen.getByText('Start Game');
+    act(() => {
+      fireEvent.click(button);
+    })
+    // Wait for the game start page to disappear
+    act(() => {
+      jest.advanceTimersByTime(5000)
+    })
 
     expect(container.getElementsByClassName('gameTimer').length).toBe(1);
   });
 
+
   test('should render the letter boxes', () => {
-    const { container } = render(<Game initialLoad={false} data={stubData} lobbyDebug />);
+    const { container } = render(<Game data={stubData}/>);
+    const button = screen.getByText('Start Game');
+    act(() => {
+      fireEvent.click(button);
+    })
+    // Wait for the game start page to disappear
+    act(() => {
+      jest.advanceTimersByTime(5000)
+    })
 
     // one for the word, one for the incorrect letters
     expect(container.getElementsByClassName('gameLetterBoxes').length).toBe(2);
   });
 
+  
   test('should render the game over component when gameEnd is true', () => {
-    const { container } = render(<Game initialLoad={false} initialState data={stubData} lobbyDebug />);
+    const { container } = render(<Game initialState data={stubData} />);
+    const button = screen.getByText('Start Game');
+    act(() => {
+      fireEvent.click(button);
+    })
+    // Wait for the game start page to disappear
+    act(() => {
+      jest.advanceTimersByTime(5000)
+    })
 
     expect(container.getElementsByClassName('gameOver').length).toBe(1);
   });
@@ -118,20 +158,32 @@ describe('The Game Page', () => {
     expect(box6.textContent).toBe('d');
   });
 
-  test('View remaining time\nTimer should match time given', () => {
-    const { container } = render(<Timer initialTime={30} wordGuessed={false} />);
+  test('View remaining time\nTime should be according to the difficulty of the word', () => {
+    const { container } = render(<Game data={stubData} />);
+    const button = screen.getByText('Start Game');
+    act(() => {
+      fireEvent.click(button);
+    })
+    // Wait for the game start page to disappear
+    act(() => {
+      jest.advanceTimersByTime(5000)
+    })
 
-    expect(container.getElementsByClassName('timer-text')[0].textContent).toBe('30');
+    expect(container.getElementsByClassName('timer-text')[0].textContent).toBe('15');
   });
 
   test('When a round starts, the client should have loaded all the words', () => {
     const { container } = render(<Game data={stubData} />);
     const button = screen.getByText('Start Game');
-    fireEvent.click(button);
-
+    act(() => {
+      fireEvent.click(button);
+    })
+    // Wait for the game start page to disappear
+    act(() => {
+      jest.advanceTimersByTime(5000)
+    })
     // There are 3 words, check if all three words are being loaded by the header
-    // USES Round 2 instead of 1 due to front end implementation
-    expect(container.getElementsByClassName('lobbyHeaderSide')[1].textContent).toBe('Round 2 of3');
+    expect(container.getElementsByClassName('lobbyHeaderSide')[1].textContent).toBe('Round 1 of3');
   });
 
   test('When a round starts, the client should set the timer', () => {

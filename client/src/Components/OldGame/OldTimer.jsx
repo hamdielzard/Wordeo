@@ -12,26 +12,52 @@ function Timer({
   incorrectLettersGuessed,
   activePowerup,
   powerupOnConsume,
+  updateHint,
 }) {
   const [time, setTime] = useState(initialTime);
+  const [timeSinceLastHint, setTimeSinceLastHint] = useState(0);
+  const [timerStyle, setTimerStyle] = useState({
+    backgroundColor: '#F2F2F2',
+  });
 
   useEffect(() => {
     let intervalId;
     if (!wordGuessed && time > 0) {
+      if (timeSinceLastHint >= 5) { // Call update hint every 5 seconds
+        setTimeSinceLastHint(0);
+        updateHint();
+      }
       intervalId = setInterval(() => {
         setTime((prevTime) => prevTime - 1);
+        setTimeSinceLastHint((prevTime) => prevTime + 1);
       }, 1000);
-    } else if (!wordGuessed && time <= 0) { // time ends
+    } else if (!wordGuessed && time <= 0) { // Out of time
       onEnd(initialTime, time);
-      setTime(initialTime);
+      resetTimers();
     }
     return () => clearInterval(intervalId);
-  }, [time]);
+  });
 
+  // Penalties
   useEffect(() => {
     // Only apply penalties when there are wrong letters
-    if (!incorrectLettersGuessed === 0) {
+    if (!(incorrectLettersGuessed === 0)) {
+      // Set timer color to red to indicate that a mistake was made
+      setTimerStyle({
+        backgroundColor: '#FF6767',
+      });
+
       setTime((prev) => prev - timePenalty);
+      setTimeSinceLastHint((prev) => prev + timePenalty);
+
+      // Set timer color back to white after half a second
+      const timeoutId = setTimeout(() => {
+        setTimerStyle({
+          backgroundColor: '#F2F2F2',
+        });
+      }, 500);
+
+      return () => clearTimeout(timeoutId);
     }
   }, [incorrectLettersGuessed]);
 
@@ -39,7 +65,7 @@ function Timer({
   useEffect(() => {
     if (wordGuessed) {
       onEnd(initialTime, time);
-      setTime(initialTime);
+      resetTimers();
     }
   }, [wordGuessed]);
 
@@ -50,8 +76,19 @@ function Timer({
     }
   }, [activePowerup]);
 
+  useEffect(() => {
+    if (time !== initialTime) {
+      resetTimers();
+    }
+  }, [initialTime]);
+
+  function resetTimers() {
+    setTime(initialTime);
+    setTimeSinceLastHint(0);
+  }
+
   return (
-    <div className="timer">
+    <div className="timer" style={timerStyle}>
       <div className="timer-text">{time}</div>
     </div>
   );
