@@ -3,6 +3,8 @@ import sandClock from '../../Images/addTime.png';
 import eye from '../../Images/eye.png';
 import royal from '../../Images/royal.jpeg';
 import hallowween from '../../Images/hallowween.jpeg';
+import ghosticon from '../../Images/ghost-icon.svg';
+import caticon from '../../Images/cat-icon.svg';
 
 function ImageDisplay({ imgName, maxHeight, maxWidth }) {
   let imgsrc = '';
@@ -16,6 +18,10 @@ function ImageDisplay({ imgName, maxHeight, maxWidth }) {
     imgsrc = royal;
   } else if (imgName === 'Halloween') {
     imgsrc = hallowween;
+  } else if (imgName=='Calico Cat') {
+    imgsrc = caticon;
+  } else if(imgName=='Spooky Ghost') {
+    imgsrc = ghosticon;
   }
 
   const imageStyle = {

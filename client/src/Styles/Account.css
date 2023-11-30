@@ -158,6 +158,7 @@ html {
     padding: 10px;
     width: 50cqw;
     height: 5vh;
+    font-family: Inter, Arial, Helvetica, sans-serif;
 }
 
 .accountEditInputDescription {
@@ -168,6 +169,7 @@ html {
     padding: 10px;
     width: 50cqw;
     height: 10vh;
+    font-family: Inter, Arial, Helvetica, sans-serif;
 }
 
 .warningNote:empty {

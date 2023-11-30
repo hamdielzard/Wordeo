@@ -193,7 +193,7 @@ describe('initializeStoreItems', () => {
     await initializeStoreItems();
 
     const storeItems = await StoreItem.find();
-    expect(storeItems.length).toBe(2);
+    expect(storeItems.length).toBe(4);
   });
 
   it('should log an error if an error occurs during initialization', async () => {
