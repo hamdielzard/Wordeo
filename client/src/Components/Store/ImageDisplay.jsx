@@ -18,9 +18,9 @@ function ImageDisplay({ imgName, maxHeight, maxWidth }) {
     imgsrc = royal;
   } else if (imgName === 'Halloween') {
     imgsrc = hallowween;
-  } else if (imgName=='Calico Cat') {
+  } else if (imgName === 'Calico Cat') {
     imgsrc = caticon;
-  } else if(imgName=='Spooky Ghost') {
+  } else if (imgName === 'Spooky Ghost') {
     imgsrc = ghosticon;
   }
 
