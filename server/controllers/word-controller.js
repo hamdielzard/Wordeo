@@ -81,30 +81,39 @@ const createWords = async (req, res) => {
     logger.error(`[400] POST /words / - Add multiple words error occurred: ${err}`);
   }
 };
-const getWords = async (req, res) => {
+
+const getWords = async (count, category, difficulty) => {
   const filter = {};
 
   // filter by category
-  if (req.query.category) {
-    filter.category = req.query.category;
+  if (category) {
+    filter.category = category;
   }
 
   // filter by difficulty
-  if (req.query.difficulty) {
-    filter.difficulty = req.query.difficulty;
+  if (difficulty) {
+    filter.difficulty = difficulty;
   }
 
+  let result;
+  // limit the number of items used and return randomized list
+  if (count) {
+    result = await Word.aggregate([
+      { $match: filter },
+      { $sample: { size: parseInt(count, 10) } },
+    ]);
+  } else {
+    result = await Word.find(filter);
+  }
+
+  return result;
+};
+
+const getWordsReq = async (req, res) => {
+  const { count, category, difficulty } = req.query; // a single word
+
   try {
-    let result;
-    // limit the number of items used and return randomized list
-    if (req.query.count) {
-      result = await Word.aggregate([
-        { $match: filter },
-        { $sample: { size: parseInt(req.query.count, 10) } },
-      ]);
-    } else {
-      result = await Word.find(filter);
-    }
+    const result = await getWords(count, category, difficulty);
     res.status(200).json(result);
     logger.info('[200] GET /words / - Get all words successful');
   } catch (err) {
@@ -120,4 +129,5 @@ module.exports = {
   deleteWord,
   createWords,
   getWords,
+  getWordsReq,
 };

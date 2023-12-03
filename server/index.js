@@ -9,6 +9,7 @@ const logger = require('./logger');
 const app = require('./server');
 const wordData = require('./data/words.json');
 const Word = require('./models/words');
+const { getWords } = require('./controllers/word-controller');
 const { initializeStoreItems } = require('./models/store');
 
 const HOST = '0.0.0.0';
@@ -45,6 +46,8 @@ const io = new Server(SOCKET_PORT, {
   },
 });
 
+const lobbies = {}; // dictionary to store room information
+
 // Socket.io event handlers
 io.on('connection', (socket) => {
   // When a client connects, log it - Commented out because it's annoying
@@ -67,6 +70,19 @@ io.on('connection', (socket) => {
     logger.socket(`${data.playerName} joined lobby: ${data.gameCode} - ${socket.id}`);
     socket.join(data.gameCode);
     socket.to(data.gameCode).emit('playerJoined', data);
+
+    if (!lobbies[data.gameCode]) {
+      // Lobby doesn't exist, create it
+      lobbies[data.gameCode] = {
+        players: {},
+        submittedScores: {},
+      };
+    }
+
+    // add player to lobby
+    lobbies[data.gameCode].players[socket.id] = {
+      playerName: data.playerName, score: data.score,
+    };
   });
 
   // Client leaves lobby
@@ -83,9 +99,13 @@ io.on('connection', (socket) => {
   });
 
   // Client starts game
-  socket.on('start-game', (data) => {
+  socket.on('start-game', async (data) => {
     logger.socket(`${data.playerName} started game: ${data.gameCode} - ${socket.id}`);
-    socket.to(data.gameCode).emit('gameStarted', data);
+
+    // retrieve game words and broadcast it to room
+    const words = await getWords(data.count);
+
+    io.to(data.gameCode).emit('gameStarted', words);
   });
 
   // Client tells other clients that they are in the game too
@@ -99,6 +119,22 @@ io.on('connection', (socket) => {
     logger.socket(`${data.playerName} telling clients that they have switched to started: ${data.gameCode} - ${socket.id}`);
     socket.to(data.gameCode).emit('gameRoundStarted', data);
   });
-});
 
+  socket.on('submitScore', (data) => {
+    logger.socket(`${data.playerName} has submitted their score for lobby ${data.gameCode} - ${data.score}`);
+
+    lobbies[data.gameCode].submittedScores[data.playerName] = data.score;
+
+    // Check if all players have submitted their scores
+    const allPlayers = Object.keys(lobbies[data.gameCode].players);
+    const submittedPlayers = Object.keys(lobbies[data.gameCode].submittedScores);
+
+    if (submittedPlayers.length === allPlayers.length) {
+      // All players have submitted their scores
+      // Emit the result back to all clients in the room
+      logger.socket(`All scores submitted for lobby ${data.gameCode}`);
+      io.to(data.gameCode).emit('gameResult', lobbies[data.gameCode].submittedScores);
+    }
+  });
+});
 // -----

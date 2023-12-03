@@ -223,6 +223,16 @@
     line-height: normal;
 }
 
+.gameOver--scores {
+    color: #F5F5F5;
+    text-align: left;
+    font-family: Inter;
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+
 .gameOver--coins {
     color: #72A2F1;
     font-family: Inter;

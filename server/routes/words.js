@@ -28,7 +28,7 @@ router.post('/', wordController.createWords);
 // get all words
 // you can filter by category or difficulty using query parameters: e.g., ?difficulty=1&category=Odd
 // when specifying a count int the query parameters, the resulting list will be a randomized
-router.get('/', wordController.getWords);
+router.get('/', wordController.getWordsReq);
 
 // export
 module.exports = router;
