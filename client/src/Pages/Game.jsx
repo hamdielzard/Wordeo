@@ -26,7 +26,9 @@ function GamePage({
   initialCorrectLetters = [],
   lobbyDebug = false,
   data = [],
+  usingStub = data.length !== 0,
   numRounds = data.length ? data.length : 10,
+  gameMode = 'solo',
 }) {
   // VERIFICATION
   if (gameCode === 'game') {
@@ -39,7 +41,7 @@ function GamePage({
   const [gameDetails, setGameDetails] = React.useState({
     message: null,
     gameDetails: {
-      gameMode: null,
+      gameMode,
       gameCode: 'ABCDEF',
     },
     players: null,
@@ -93,7 +95,7 @@ function GamePage({
     wordSolved: null,
     incorrectLettersGuessed: 0,
   });
-  const [gameData, setGameData] = React.useState(data);
+  const [gameData, setGameData] = React.useState([]);
   const [messages, setMessages] = React.useState([]);
 
   if (!playerList.includes(playerName)) {
@@ -206,7 +208,16 @@ function GamePage({
     };
   }, []);
 
+  function startClientGame() {
+    updateGameStatus((prev) => ({
+      ...prev,
+      gameStart: true,
+    }));
+    setLobbyShown(false);
+  }
+
   useEffect(() => {
+    // start game if data is loaded and gameStart component is not displayed
     if (gameData.length !== 0) {
       startClientGame();
     }
@@ -564,14 +575,11 @@ function GamePage({
     } else {
       alert('You are not the owner of this game!');
     }
-  }
 
-  function startClientGame() {
-    updateGameStatus((prev) => ({
-      ...prev,
-      gameStart: true,
-    }));
-    setLobbyShown(false);
+    // when loading data from stubs, update the data only when startGame is called
+    if (usingStub) {
+      setGameData(data);
+    }
   }
 }
 
