@@ -159,22 +159,20 @@ function GamePage({
       return [];
     };
 
-    if (userNameCK.length !== 0) {
-      fetchUserInventory(userNameCK).then((res) => {
-        if (res.length !== 0) {
-          console.log(res);
-          const quantities = res.reduce((result, item) => {
-            result[item.name] = item.quantity;
-            return result;
-          }, {});
+    fetchUserInventory(userNameCK).then((res) => {
+      if (res.length !== 0) {
+        console.log(res);
+        const quantities = res.reduce((result, item) => {
+          result[item.name] = item.quantity;
+          return result;
+        }, {});
 
-          const addTime = new Powerup('Add Time', quantities['Add Time'], false);
-          const reveal = new Powerup('Reveal Letter', quantities['Reveal Letter'], false);
+        const addTime = new Powerup('Add Time', quantities['Add Time'], false);
+        const reveal = new Powerup('Reveal Letter', quantities['Reveal Letter'], false);
 
-          updateInventory([addTime, reveal]);
-        }
-      });
-    }
+        updateInventory([addTime, reveal]);
+      }
+    });
 
     // SOCKET IO
     // playerJoined event received
