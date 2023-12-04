@@ -10,7 +10,7 @@ import OldTimer from '../Components/OldGame/OldTimer';
 import RoundOver from '../Components/Game/Powerups/RoundOver';
 import GameStart from '../Components/Game/Powerups/GameStart';
 import ChatBox from '../Components/Chat';
-import { postScore, patchCoins } from '../Util/ApiCalls';
+import { postScore, patchCoins, patchStatistics } from '../Util/ApiCalls';
 
 const io = require('socket.io-client');
 
@@ -26,7 +26,7 @@ function GamePage({
   initialCorrectLetters = [],
   lobbyDebug = false,
   data = [],
-  numRounds = data.length ? data.length : 2,
+  numRounds = data.length ? data.length : 10,
 }) {
   // VERIFICATION
   if (gameCode === 'game') {
@@ -78,8 +78,10 @@ function GamePage({
     gameEnd: initialState,
     roundTime: data.length ? determineWordInitialTime(data[0].difficulty, data[0].word.length) : null,
     wordGuessed: false,
+    wordsGuessed: 0,
     hintNum: 0,
   });
+
   // Round States
   /*
    * roundWon - If true, round was won
@@ -129,6 +131,7 @@ function GamePage({
           setCoins(earnedCoins);
           postScore(gameDetails.gameDetails.gameMode, userNameCK, gameStatus.score);
           patchCoins(userNameCK, earnedCoins);
+          patchStatistics(userNameCK, gameStatus.wordsGuessed);
         }
 
         socket.emit('submitScore', { playerName, gameCode: gameDetails.gameDetails.gameCode, score: gameStatus.score });
@@ -204,7 +207,7 @@ function GamePage({
   }, []);
 
   useEffect(() => {
-    if (gameData.length) {
+    if (gameData.length !== 0) {
       startClientGame();
     }
   }, [gameData]);
@@ -379,6 +382,7 @@ function GamePage({
     updateGameStatus((prev) => ({
       ...prev,
       wordGuessed: true,
+      wordsGuessed: (prev.wordsGuessed || 0) + 1,
     }));
   }
 
@@ -411,6 +415,7 @@ function GamePage({
       setCurrentRound((prev) => prev + 1);
 
       updateGameStatus((prev) => ({
+        ...prev,
         round: prev.round + 1,
         score: prev.score + scoreEarned,
         currWord: gameData[prev.round],
@@ -461,16 +466,18 @@ function GamePage({
   }
 
   function restartGame() {
+    startGame();
     updateGameStatus({
       round: 1,
       score: 0,
       currWord: gameData[0],
       gameEnd: false,
-      gameStart: true,
+      gameStart: false, // this is set by startClientGame
       roundEnd: false,
       initialScore: determineWordInitialScore(gameData[0].difficulty, gameData[0].word.length),
       roundTime: determineWordInitialTime(gameData[0].difficulty, gameData[0].word.length),
       wordGuessed: false,
+      hintNum: 0,
     });
     setCurrentRound(1);
     setCurrentScore(0);
@@ -500,7 +507,7 @@ function GamePage({
   // Called by the ChatBox child component to send messages
   function sendMessage(message) {
     const newMessage = {
-      playerName: userNameCK,
+      playerName,
       message,
       gameCode: gameDetails.gameDetails.gameCode,
     };
@@ -565,19 +572,6 @@ function GamePage({
       gameStart: true,
     }));
     setLobbyShown(false);
-  }
-
-  // eslint-disable-next-line no-unused-vars
-  function progressRound() {
-    if (currentRound === roundCount) {
-      endGame();
-    } else {
-      setCurrentRound(currentRound + 1);
-    }
-  }
-
-  function endGame() {
-    console.log('Game ended');
   }
 }
 

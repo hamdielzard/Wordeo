@@ -62,7 +62,6 @@ const createScore = async (req, res) => {
       logger.info('[200] POST /scores - Add score successful');
     })
     .catch((error) => {
-      // WARN: Can't test this?
       res.status(500).json({
         message: 'An error occurred!',
       });

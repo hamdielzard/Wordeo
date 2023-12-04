@@ -305,6 +305,41 @@ const destroy = (req, res) => {
     });
 };
 
+// PATCH /user/stats
+const updateStatistics = (req, res) => {
+  const { userName, wordsGuessed } = req.body;
+
+  // Ensure required fields are provided in the request body
+  if (!userName || isNaN(wordsGuessed)) {
+    logger.error('[400] PATCH /user/stats - UserController: Bad request.');
+    return res.status(400).json({ message: 'Please provide userName and wordsGuessed in the body.' });
+  }
+
+  User.findOne({ userName })
+    .then((user) => {
+      if (!user) {
+        // User not found (404)
+        return res.status(404).json({ message: `User ${userName} not found!` });
+      }
+
+      user.gamesPlayed += 1;
+      user.wordsGuessed += wordsGuessed;
+
+      // Save the updated user document
+      return user.save()
+        .then((updatedUser) => {
+          res.status(200).json({ message: 'Statistics updated successfully', user: updatedUser });
+          logger.info(`[200] PATCH /user/stats - UserController: Statistics update successful for ${userName}`);
+        });
+    })
+
+    .catch((error) => {
+      res.status(500).json({ message: 'Failed to update statistics!' });
+      logger.error(`[500] PATCH /user/stats - UserController: Statistics update error occurred for ${userName}`);
+      logger.cont(`Details: ${error}`);
+    });
+};
+
 module.exports = {
-  index, update, createInventory, updateCoins, getCoinBalance, destroy,
+  index, update, createInventory, updateCoins, getCoinBalance, destroy, updateStatistics,
 };

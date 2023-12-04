@@ -8,6 +8,7 @@ router.get('/', userController.index);
 router.patch('/', userController.update);
 router.patch('/inventory', userController.createInventory);
 router.patch('/coin', userController.updateCoins);
+router.patch('/stats', userController.updateStatistics);
 router.get('/coin', userController.getCoinBalance);
 router.delete('/', userController.destroy);
 

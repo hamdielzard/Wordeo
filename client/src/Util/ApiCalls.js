@@ -33,7 +33,24 @@ async function patchCoins(userName, quantity) {
   });
 }
 
+async function patchStatistics(userName, wordsGuessed) {
+  const payload = {
+    userName,
+    wordsGuessed,
+  };
+
+  await fetch(`${baseUrl}/user/stats`, {
+    method: 'PATCH',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  });
+}
+
 export {
   postScore,
   patchCoins,
+  patchStatistics,
 };
