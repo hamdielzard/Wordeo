@@ -88,6 +88,10 @@ io.on('connection', (socket) => {
   // Client leaves lobby
   socket.on('leave-lobby', (data) => {
     logger.socket(`${data.playerName} left lobby: ${data.gameCode} - ${socket.id}`);
+
+    // Remove the player from the lobby
+    delete lobbies[data.gameCode].players[socket.id];
+
     socket.leave(data.gameCode);
     socket.to(data.gameCode).emit('playerLeft', data);
   });
