@@ -146,7 +146,10 @@ function AccountPage() {
         const response = await fetch(`${API_URL}/user?userName=${userName}`);
         const data = await response.json();
 
-        if (!response.ok) {
+        const scores = await fetch(`${API_URL}/scores?userName=${userName}`);
+        const scoreData = await scores.json();
+
+        if (!response.ok || !scores.ok) {
           console.log('An error occurred while trying to get your account details. You have been signed out.');
           return expireCookiesAndRedirect();
         }
@@ -164,7 +167,7 @@ function AccountPage() {
         setAccountInformation({
           userName: data.response.userName,
           displayName: data.response.displayName,
-          highestScore: data.response.highscore,
+          highestScore: scoreData.response[0].score,
           gamesPlayed: data.response.gamesPlayed,
           wordsGuessed: data.response.wordsGuessed,
           accountDescription: data.response.description,
