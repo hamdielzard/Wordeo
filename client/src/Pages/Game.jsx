@@ -10,7 +10,9 @@ import OldTimer from '../Components/OldGame/OldTimer';
 import RoundOver from '../Components/Game/Powerups/RoundOver';
 import GameStart from '../Components/Game/Powerups/GameStart';
 import ChatBox from '../Components/Chat';
-import { postScore, patchCoins, patchStatistics } from '../Util/ApiCalls';
+import {
+  postScore, patchCoins, patchStatistics,
+} from '../Util/ApiCalls';
 
 const io = require('socket.io-client');
 
@@ -118,7 +120,7 @@ function GamePage({
   const [activePowerup, updateActivePowerup] = React.useState('none');
 
   function initializeInventory() {
-    return [new Powerup('Add Time', 5, false), new Powerup('Reveal Letter', 1, false)];
+    return [new Powerup('Add Time', 0, false), new Powerup('Reveal Letter', 0, false)];
   }
 
   // Called at the beginning
@@ -146,6 +148,33 @@ function GamePage({
       // Update the state with the new message
       setMessages((prevMessages) => [...prevMessages, socketData]);
     };
+
+    const fetchUserInventory = async (userName) => {
+      const res = await fetch(`${API_URL}/user?userName=${userName}`);
+      const userData = await res.json();
+      if (userData.response) {
+        return userData.response.inventory;
+      }
+
+      return [];
+    };
+
+    if (userNameCK.length !== 0) {
+      fetchUserInventory(userNameCK).then((res) => {
+        if (res.length !== 0) {
+          console.log(res);
+          const quantities = res.reduce((result, item) => {
+            result[item.name] = item.quantity;
+            return result;
+          }, {});
+
+          const addTime = new Powerup('Add Time', quantities['Add Time'], false);
+          const reveal = new Powerup('Reveal Letter', quantities['Reveal Letter'], false);
+
+          updateInventory([addTime, reveal]);
+        }
+      });
+    }
 
     // SOCKET IO
     // playerJoined event received
