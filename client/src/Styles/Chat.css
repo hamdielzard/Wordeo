@@ -6,7 +6,7 @@
   
   .chat-messages {
     margin-bottom: 10px;
-    max-height: 300px;
+    max-height: 20vh;
     overflow-y: auto;
   }
   
@@ -25,6 +25,7 @@
   .input-container {
     display: flex;
     margin-right: 10px;
+    max-height: 10vh;
   }
   
   input {

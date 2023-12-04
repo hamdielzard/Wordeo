@@ -10,7 +10,9 @@ import OldTimer from '../Components/OldGame/OldTimer';
 import RoundOver from '../Components/Game/Powerups/RoundOver';
 import GameStart from '../Components/Game/Powerups/GameStart';
 import ChatBox from '../Components/Chat';
-import { fetchWords, postScore, patchCoins } from '../Util/ApiCalls';
+import {
+  postScore, patchCoins, patchStatistics,
+} from '../Util/ApiCalls';
 
 const io = require('socket.io-client');
 
@@ -26,7 +28,9 @@ function GamePage({
   initialCorrectLetters = [],
   lobbyDebug = false,
   data = [],
+  usingStub = data.length !== 0,
   numRounds = data.length ? data.length : 10,
+  gameMode = 'solo',
 }) {
   // VERIFICATION
   if (gameCode === 'game') {
@@ -39,7 +43,7 @@ function GamePage({
   const [gameDetails, setGameDetails] = React.useState({
     message: null,
     gameDetails: {
-      gameMode: null,
+      gameMode,
       gameCode: 'ABCDEF',
     },
     players: null,
@@ -52,6 +56,8 @@ function GamePage({
   const [currentRound, setCurrentRound] = React.useState(1);
   const [playerList, setPlayerList] = React.useState([]);
   const [currentScore, setCurrentScore] = React.useState(0);
+  const [multiScores, setMultiScores] = React.useState({});
+  const [multiWinner, setMultiWinner] = React.useState(null);
   const [coins, setCoins] = React.useState(0);
   // Game states
   /*
@@ -76,8 +82,10 @@ function GamePage({
     gameEnd: initialState,
     roundTime: data.length ? determineWordInitialTime(data[0].difficulty, data[0].word.length) : null,
     wordGuessed: false,
+    wordsGuessed: 0,
     hintNum: 0,
   });
+
   // Round States
   /*
    * roundWon - If true, round was won
@@ -89,44 +97,12 @@ function GamePage({
     wordSolved: null,
     incorrectLettersGuessed: 0,
   });
-  const [gameData, setGameData] = React.useState(data);
+  const [gameData, setGameData] = React.useState([]);
   const [messages, setMessages] = React.useState([]);
 
   if (!playerList.includes(playerName)) {
     setPlayerList(playerList.concat(playerName));
   }
-
-  // SOCKET IO
-  // playerJoined event received
-  socket.on('playerJoined', (socketData) => {
-    if (playerList.includes(socketData.playerName)) {
-      return;
-    }
-    setPlayerList(playerList.concat(socketData.playerName));
-
-    // Also emit to the server that I am in the game too
-    socket.emit('iAmHereToo', { gameCode, playerName });
-  });
-
-  // youAreHereToo event received
-  socket.on('youAreHereToo', (socketData) => {
-    if (playerList.includes(socketData.playerName)) {
-      return;
-    }
-    setPlayerList(playerList.concat(socketData.playerName));
-  });
-
-  // playerLeft event received
-  socket.on('playerLeft', (socketData) => {
-    setPlayerList(playerList.filter((player) => player !== socketData.playerName));
-  });
-
-  // gameStarted event received
-  socket.on('gameStarted', () => {
-    if (lobbyShown) {
-      startClientGame();
-    }
-  });
 
   // gameRoundStarted event received
   socket.on('gameRoundStarted', () => {
@@ -144,7 +120,7 @@ function GamePage({
   const [activePowerup, updateActivePowerup] = React.useState('none');
 
   function initializeInventory() {
-    return [new Powerup('Add Time', 5, false), new Powerup('Reveal Letter', 1, false)];
+    return [new Powerup('Add Time', 0, false), new Powerup('Reveal Letter', 0, false)];
   }
 
   // Called at the beginning
@@ -152,7 +128,6 @@ function GamePage({
   // If game does not end, get new word data
   useEffect(() => {
     if (lobbyDebug === false) {
-      console.log(gameStatus.gameEnd);
       if (gameStatus.gameEnd === true) {
         // submit score & update coins
         if (userNameCK) {
@@ -160,19 +135,10 @@ function GamePage({
           setCoins(earnedCoins);
           postScore(gameDetails.gameDetails.gameMode, userNameCK, gameStatus.score);
           patchCoins(userNameCK, earnedCoins);
+          patchStatistics(userNameCK, gameStatus.wordsGuessed);
         }
-      } else {
-        fetchWords(numRounds)
-          .then((wordData) => {
-            setGameData(wordData);
-            updateGameStatus((prev) => ({
-              ...prev,
-              currWord: wordData[0],
-              initialScore: determineWordInitialScore(wordData[0].difficulty, wordData[0].word.length),
-              roundTime: determineWordInitialTime(wordData[0].difficulty, wordData[0].word.length),
-            }));
-            setRoundCount(wordData.length);
-          });
+
+        socket.emit('submitScore', { playerName, gameCode: gameDetails.gameDetails.gameCode, score: gameStatus.score });
       }
     }
   }, [gameStatus.gameEnd]);
@@ -183,12 +149,106 @@ function GamePage({
       setMessages((prevMessages) => [...prevMessages, socketData]);
     };
 
+    const fetchUserInventory = async (userName) => {
+      const res = await fetch(`${API_URL}/user?userName=${userName}`);
+      const userData = await res.json();
+      if (userData.response) {
+        return userData.response.inventory;
+      }
+
+      return [];
+    };
+
+    fetchUserInventory(userNameCK).then((res) => {
+      if (res.length !== 0) {
+        console.log(res);
+        const quantities = res.reduce((result, item) => {
+          result[item.name] = item.quantity;
+          return result;
+        }, {});
+
+        const addTime = new Powerup('Add Time', quantities['Add Time'], false);
+        const reveal = new Powerup('Reveal Letter', quantities['Reveal Letter'], false);
+
+        updateInventory([addTime, reveal]);
+      }
+    });
+
+    // SOCKET IO
+    // playerJoined event received
+    socket.on('playerJoined', (socketData) => {
+      if (playerList.includes(socketData.playerName)) {
+        return;
+      }
+      setPlayerList(playerList.concat(socketData.playerName));
+
+      // Also emit to the server that I am in the game too
+      socket.emit('iAmHereToo', { gameCode, playerName });
+    });
+
+    // youAreHereToo event received
+    socket.on('youAreHereToo', (socketData) => {
+      if (playerList.includes(socketData.playerName)) {
+        return;
+      }
+      setPlayerList(playerList.concat(socketData.playerName));
+    });
+
+    // playerLeft event received
+    socket.on('playerLeft', (socketData) => {
+      setPlayerList(playerList.filter((player) => player !== socketData.playerName));
+    });
+
+    // gameStarted event received
+    socket.on('gameStarted', (socketData) => {
+      setGameData(socketData);
+      updateGameStatus((prev) => ({
+        ...prev,
+        currWord: socketData[0],
+        initialScore: determineWordInitialScore(socketData[0].difficulty, socketData[0].word.length),
+        roundTime: determineWordInitialTime(socketData[0].difficulty, socketData[0].word.length),
+      }));
+      setRoundCount(socketData.length);
+    });
+
+    socket.on('gameResult', (socketData) => {
+      setMultiScores(socketData);
+
+      // determine the winner
+      let winner = null;
+      let highestScore = -1;
+
+      Object.entries(socketData).forEach(([name, score]) => {
+        if (score > highestScore) {
+          winner = name;
+          highestScore = score;
+        }
+      });
+
+      setMultiWinner(winner);
+    });
+
     socket.on('message-lobby', handleNewMessage);
 
     return () => {
       socket.off('message-lobby', handleNewMessage);
     };
   }, []);
+
+  function startClientGame() {
+    updateGameStatus((prev) => ({
+      ...prev,
+      gameStart: true,
+    }));
+    setLobbyShown(false);
+  }
+
+  useEffect(() => {
+    // start game if data is loaded and gameStart component is not displayed
+    if (gameData.length !== 0) {
+      startClientGame();
+    }
+  }, [gameData]);
 
   // LOBBY
   if (lobbyShown && !lobbyDebug) {
@@ -265,76 +325,80 @@ function GamePage({
             {currentRound}
             {' '}
             of
+            {' '}
             {roundCount}
           </div>
           <div className="lobbyHeaderSide leftHead">
             {playerName || 'Loading userName'}
           </div>
         </div>
-        { (gameStatus.gameEnd && !gameStatus.roundEnd)
-                && (
-                <GameOver
-                  score={currentScore}
-                  coins={coins}
-                  restartGame={restartGame}
+        {(gameStatus.gameEnd && !gameStatus.roundEnd)
+          && (
+            <GameOver
+              score={currentScore}
+              coins={coins}
+              gameMode={gameDetails.gameDetails.gameMode}
+              multiScores={multiScores}
+              multiWinner={multiWinner}
+              restartGame={restartGame}
+            />
+          )}
+        {(gameStatus.gameStart)
+          && (
+            <GameStart
+              startCoreGame={startCoreGame}
+            />
+          )}
+        {(!gameStatus.gameEnd && !gameStatus.gameStart && !gameStatus.roundEnd)
+          && (
+            <div className="gameInteractive">
+              <div className="gamePowerups">
+                <PowerupButton
+                  powerups={inventory}
+                  powerupHandler={powerupHandler}
+                  activePowerup={activePowerup}
                 />
-                )}
-        { (gameStatus.gameStart)
-                && (
-                  <GameStart
-                    startCoreGame={startCoreGame}
-                  />
-                )}
-        { (!gameStatus.gameEnd && !gameStatus.gameStart && !gameStatus.roundEnd)
-                && (
-                <div className="gameInteractive">
-                  <div className="gamePowerups">
-                    <PowerupButton
-                      powerups={inventory}
-                      powerupHandler={powerupHandler}
-                      activePowerup={activePowerup}
-                    />
-                  </div>
-                  <div className="gameTimer">
-                    <OldTimer
-                      initialTime={gameStatus.roundTime}
-                      wordGuessed={gameStatus.wordGuessed}
-                      onEnd={roundEnd}
-                      timePenalty={2}
-                      incorrectLettersGuessed={roundStatus.incorrectLettersGuessed}
-                      activePowerup={activePowerup}
-                      powerupOnConsume={powerupOnConsume}
-                      updateHint={updateHint}
-                    />
-                  </div>
-                  <CoreGame
-                    wordData={gameStatus.currWord}
-                    roundEnd={wordGuessed}
-                    incorrectLetterGuessed={incorrectLetterWasGuessed}
-                    activePowerup={activePowerup}
-                    powerupOnConsume={powerupOnConsume}
-                    initialCorrectLetters={initialCorrectLetters}
-                    hintNum={gameStatus.hintNum}
-                  />
-                </div>
-                )}
-        { (!gameStatus.gameEnd && !gameStatus.gameStart && gameStatus.roundEnd)
-                && (
-                  <RoundOver
-                    word={roundStatus.wordSolved}
-                    restartRound={restartRound}
-                    roundWon={roundStatus.roundWon}
-                    lastWord={false}
-                  />
-                )}
-        { (gameStatus.gameEnd && !gameStatus.gameStart && gameStatus.roundEnd)
-                && (
-                  <RoundOver
-                    word={roundStatus.wordSolved}
-                    restartRound={restartRound}
-                    roundWon={roundStatus.roundWon}
-                  />
-                )}
+              </div>
+              <div className="gameTimer">
+                <OldTimer
+                  initialTime={gameStatus.roundTime}
+                  wordGuessed={gameStatus.wordGuessed}
+                  onEnd={roundEnd}
+                  timePenalty={2}
+                  incorrectLettersGuessed={roundStatus.incorrectLettersGuessed}
+                  activePowerup={activePowerup}
+                  powerupOnConsume={powerupOnConsume}
+                  updateHint={updateHint}
+                />
+              </div>
+              <CoreGame
+                wordData={gameStatus.currWord}
+                roundEnd={wordGuessed}
+                incorrectLetterGuessed={incorrectLetterWasGuessed}
+                activePowerup={activePowerup}
+                powerupOnConsume={powerupOnConsume}
+                initialCorrectLetters={initialCorrectLetters}
+                hintNum={gameStatus.hintNum}
+              />
+            </div>
+          )}
+        {(!gameStatus.gameEnd && !gameStatus.gameStart && gameStatus.roundEnd)
+          && (
+            <RoundOver
+              word={roundStatus.wordSolved}
+              restartRound={restartRound}
+              roundWon={roundStatus.roundWon}
+              lastWord={false}
+            />
+          )}
+        {(gameStatus.gameEnd && !gameStatus.gameStart && gameStatus.roundEnd)
+          && (
+            <RoundOver
+              word={roundStatus.wordSolved}
+              restartRound={restartRound}
+              roundWon={roundStatus.roundWon}
+            />
+          )}
       </div>
     );
   }
@@ -356,6 +420,7 @@ function GamePage({
     updateGameStatus((prev) => ({
       ...prev,
       wordGuessed: true,
+      wordsGuessed: (prev.wordsGuessed || 0) + 1,
     }));
   }
 
@@ -388,6 +453,7 @@ function GamePage({
       setCurrentRound((prev) => prev + 1);
 
       updateGameStatus((prev) => ({
+        ...prev,
         round: prev.round + 1,
         score: prev.score + scoreEarned,
         currWord: gameData[prev.round],
@@ -438,16 +504,18 @@ function GamePage({
   }
 
   function restartGame() {
+    startGame();
     updateGameStatus({
       round: 1,
       score: 0,
       currWord: gameData[0],
       gameEnd: false,
-      gameStart: true,
+      gameStart: false, // this is set by startClientGame
       roundEnd: false,
       initialScore: determineWordInitialScore(gameData[0].difficulty, gameData[0].word.length),
       roundTime: determineWordInitialTime(gameData[0].difficulty, gameData[0].word.length),
       wordGuessed: false,
+      hintNum: 0,
     });
     setCurrentRound(1);
     setCurrentScore(0);
@@ -477,7 +545,7 @@ function GamePage({
   // Called by the ChatBox child component to send messages
   function sendMessage(message) {
     const newMessage = {
-      playerName: userNameCK,
+      playerName,
       message,
       gameCode: gameDetails.gameDetails.gameCode,
     };
@@ -530,33 +598,15 @@ function GamePage({
   function startGame() {
     // Check if I am the owner
     if (userNameCK === gameDetails.userName) {
-      socket.emit('start-game', { gameCode, playerName });
-      startClientGame();
+      socket.emit('start-game', { gameCode, playerName, count: numRounds });
     } else {
       alert('You are not the owner of this game!');
     }
-  }
 
-  function startClientGame() {
-    setLobbyShown(false);
-    updateGameStatus((prev) => ({
-      ...prev,
-      gameStart: true,
-    }));
-    console.log(gameDetails);
-  }
-
-  // eslint-disable-next-line no-unused-vars
-  function progressRound() {
-    if (currentRound === roundCount) {
-      endGame();
-    } else {
-      setCurrentRound(currentRound + 1);
+    // when loading data from stubs, update the data only when startGame is called
+    if (usingStub) {
+      setGameData(data);
     }
-  }
-
-  function endGame() {
-    console.log('Game ended');
   }
 }
 

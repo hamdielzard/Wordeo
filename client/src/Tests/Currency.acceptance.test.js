@@ -1,12 +1,11 @@
 /* eslint-disable react/jsx-filename-extension */
 /* eslint-disable no-undef */
 import React from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render } from '@testing-library/react';
 import GameOver from '../Components/OldGame/GameOver';
 import ItemPopup from '../Components/Store/ItemPopup';
 import CoreGame from '../Components/OldGame/CoreGame';
 import OldTimer from '../Components/OldGame/OldTimer';
-import { act } from 'react-dom/test-utils';
 
 const stubData = [{
   name: 'Add Time',
@@ -40,7 +39,7 @@ describe('The Store Page Acceptance Tests', () => {
 
     expect(container.getElementsByClassName('item-popup-description')[0].textContent).toBe(expectedDescription);
   });
-  
+
   test('Purchase items\nOn click runs a function that returns item information to be sent to back end', () => {
     const popupOnExit = jest.fn();
     const { container } = render(<ItemPopup item={stubData[0]} isVisible popupOnExit={popupOnExit} />);
@@ -53,7 +52,7 @@ describe('The Store Page Acceptance Tests', () => {
 
   test('Should render the number of coins specified', () => {
     const numCoins = 2;
-    const { container } = render(<GameOver score={60} coins={numCoins} />);
+    const { container } = render(<GameOver score={60} coins={numCoins} gameMode="solo" />);
 
     expect(container.getElementsByClassName('gameOver--coins')[0].textContent).toBe(`+ ${numCoins} Coins`);
   });
@@ -74,8 +73,8 @@ describe('The Store Page Acceptance Tests', () => {
 
   test('Use power up items (Add time)\nTime should be five seconds more', () => {
     const powerupOnConsume = jest.fn();
-    const updateHint = jest.fn()
-    const { container } = render(<OldTimer initialTime={25} incorrectLettersGuessed={0} wordGuessed={false} updateHint={updateHint}  activePowerup="Add Time" powerupOnConsume={powerupOnConsume} />);
+    const updateHint = jest.fn();
+    const { container } = render(<OldTimer initialTime={25} incorrectLettersGuessed={0} wordGuessed={false} updateHint={updateHint} activePowerup="Add Time" powerupOnConsume={powerupOnConsume} />);
 
     expect(container.getElementsByClassName('timer-text')[0].textContent).toBe('30');
   });

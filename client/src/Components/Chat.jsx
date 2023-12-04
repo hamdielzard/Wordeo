@@ -60,7 +60,8 @@ function ChatBox({
             style={{
               marginLeft: '10px',
               fontSize: '20px',
-              width: '30%',
+              width: '100px',
+              height: '10vh',
             }}
           >
             Send
