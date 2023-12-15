@@ -5,8 +5,8 @@ import {
   fireEvent, render, screen, act,
 } from '@testing-library/react';
 import Game from '../Pages/Game';
-import CoreGame from '../Components/OldGame/CoreGame';
-import Timer from '../Components/OldGame/OldTimer';
+import CoreGame from '../Components/Game/Powerups/CoreGame';
+import Timer from '../Components/Game/Powerups/Timer';
 
 const stubData = [{
   word: 'DISCORD',

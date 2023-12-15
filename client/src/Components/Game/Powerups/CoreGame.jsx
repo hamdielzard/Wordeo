@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-import LetterBox from '../LetterBox';
+import LetterBox from './LetterBox';
 
 function CoreGame({
   wordData,
