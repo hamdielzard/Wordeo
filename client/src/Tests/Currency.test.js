@@ -2,10 +2,10 @@
 /* eslint-disable no-undef */
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
-import GameOver from '../Components/OldGame/GameOver';
+import GameOver from '../Components/Game/Powerups/GameOver';
 import ItemPopup from '../Components/Store/ItemPopup';
-import CoreGame from '../Components/OldGame/CoreGame';
-import OldTimer from '../Components/OldGame/OldTimer';
+import CoreGame from '../Components/Game/Powerups/CoreGame';
+import OldTimer from '../Components/Game/Powerups/Timer';
 
 const stubData = [{
   name: 'Add Time',
